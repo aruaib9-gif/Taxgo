@@ -1,0 +1,14 @@
+import { Suspense } from "react";
+import { BankInbox } from "@/components/finance/inbox";
+
+// The list stays mounted while sub-routes open panels beside it (or replace it, for full pages).
+export default function Layout({ children }: { children: React.ReactNode }) {
+  return (
+    <>
+      <Suspense>
+        <BankInbox />
+      </Suspense>
+      {children}
+    </>
+  );
+}

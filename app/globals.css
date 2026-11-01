@@ -1,26 +1,288 @@
 @import "tailwindcss";
 
+/*
+  Tax GO.ai design system — ported from the captured platform (shadcn/ui + Tailwind).
+  Font: Outfit. Brand blue #0168b3. Warm cream canvas. radius 1rem.
+  Themes (top-bar menu): "blue" is the default warm palette below, [data-theme="light"] is a
+  neutral white variant, [data-theme="dark"] a derived slate palette.
+*/
+
 :root {
+  --background: #f4f0e9;
+  --body: #f4f0e9;
+  --foreground: #16233a;
+  --card: #ffffff;
+  --card-foreground: #16233a;
+  --popover: #ffffff;
+  --popover-foreground: #16233a;
+  --muted: #f0eee9;
+  --muted-foreground: #5d6473;
+  --secondary: #f0eee9;
+  --secondary-foreground: #16233a;
+  --border: #e5e1d8;
+  --input: #e5e1d8;
+  --ring: #0168b3;
+
+  --brand: #0168b3;
+  --primary: #0168b3;
+  --primary-foreground: #ffffff;
+  --accent: #e7f0f8;
+  --accent-foreground: #114b7e;
+
+  --success: #16a34a;
+  --success-foreground: #ffffff;
+  --warning: #d97706;
+  --warning-foreground: #ffffff;
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+  --info: #0168b3;
+  --info-foreground: #ffffff;
+
+  /* AI legend: turquoise = AI did it, blue = needs a human */
+  --ai-done: #0d9488;
+  --needs-human: #0168b3;
+
+  --sidebar: #f9f7f2;
+  --sidebar-foreground: #16233a;
+  --sidebar-primary: #0168b3;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #e7f0f8;
+  --sidebar-accent-foreground: #114b7e;
+  --sidebar-border: #e5e1d8;
+  --sidebar-ring: #0168b3;
+
+  --chart-1: #0168b3;
+  --chart-2: #3a9bd9;
+  --chart-3: #8ec8ec;
+  --chart-4: #16a34a;
+  --chart-5: #eab308;
+
+  --radius: 1rem;
+}
+
+/* Neutral light theme */
+:root[data-theme="light"] {
   --background: #ffffff;
-  --foreground: #171717;
+  --body: #f7f7f8;
+  --card: #ffffff;
+  --popover: #ffffff;
+  --muted: #f3f4f6;
+  --muted-foreground: #6b7280;
+  --secondary: #f3f4f6;
+  --border: #e5e7eb;
+  --input: #e5e7eb;
+  --accent: #eef4fb;
+  --sidebar: #fafafa;
+  --sidebar-accent: #f1f5f9;
+  --sidebar-border: #e5e7eb;
+}
+
+/* Dark theme — applied via [data-theme="dark"] or system preference (unless a light theme was picked) */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]):not([data-theme="blue"]) {
+    --background: #0c1320;
+    --body: #0a111c;
+    --foreground: #e6ebf2;
+    --card: #111a2b;
+    --card-foreground: #e6ebf2;
+    --popover: #111a2b;
+    --popover-foreground: #e6ebf2;
+    --muted: #1b2638;
+    --muted-foreground: #93a1b5;
+    --secondary: #162134;
+    --secondary-foreground: #e6ebf2;
+    --border: #22314a;
+    --input: #22314a;
+    --accent: #15314d;
+    --accent-foreground: #8ec8ec;
+    --sidebar: #0b1422;
+    --sidebar-foreground: #e6ebf2;
+    --sidebar-accent: #15314d;
+    --sidebar-accent-foreground: #8ec8ec;
+    --sidebar-border: #22314a;
+  }
+}
+
+:root[data-theme="dark"] {
+  --background: #0c1320;
+  --body: #0a111c;
+  --foreground: #e6ebf2;
+  --card: #111a2b;
+  --card-foreground: #e6ebf2;
+  --popover: #111a2b;
+  --popover-foreground: #e6ebf2;
+  --muted: #1b2638;
+  --muted-foreground: #93a1b5;
+  --secondary: #162134;
+  --secondary-foreground: #e6ebf2;
+  --border: #22314a;
+  --input: #22314a;
+  --accent: #15314d;
+  --accent-foreground: #8ec8ec;
+  --sidebar: #0b1422;
+  --sidebar-foreground: #e6ebf2;
+  --sidebar-accent: #15314d;
+  --sidebar-accent-foreground: #8ec8ec;
+  --sidebar-border: #22314a;
 }
 
 @theme inline {
   --color-background: var(--background);
+  --color-body: var(--body);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-brand: var(--brand);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+  --color-ai-done: var(--ai-done);
+  --color-needs-human: var(--needs-human);
+
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  --radius-sm: calc(var(--radius) - 8px);
+  --radius-md: calc(var(--radius) - 4px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --font-sans: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-newsreader), ui-serif, Georgia, serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* Marketing landing palette — fixed light values sampled from the design (used by app/page.tsx). */
+@theme {
+  --color-lp-canvas: #f3eeea;
+  --color-lp-alt: #efe9e5;
+  --color-lp-card: #fbf8f5;
+  --color-lp-line: #e3ddd7;
+  --color-lp-ink: #1a1714;
+  --color-lp-body: #393531;
+  --color-lp-muted: #6a645f;
+  --color-lp-blue: #2768ad;
+  --color-lp-teal: #1f7fa3;
+  --color-lp-navy: #0f2438;
+  --color-lp-sky: #8dc3e8;
+  --color-lp-amber: #cd7b2e;
+  --color-lp-mint: #4fa590;
+  --color-lp-chip: #e3e3e6;
+  --color-lp-whatsapp: #5fcf6f;
+
+  --animate-lp-rise: lp-rise 0.45s ease-out both;
+
+  @keyframes lp-rise {
+    from {
+      opacity: 0;
+      transform: translateY(4px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
   }
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
+/* App shell — a record panel open in #side-panel-slot collapses the menus to icons; expanded, it fills the screen. */
+@custom-variant panel-open (&:where(.group\/shell:has(#side-panel-slot > *) *));
+@custom-variant panel-expanded (&:where(.group\/shell:has([data-panel-expanded]) *));
+
+* {
+  border-color: var(--border);
+}
+
 body {
-  background: var(--background);
+  background: var(--body);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--brand) 22%, transparent);
+}
+
+/* Landing hero demo: typing caret, "turning" shimmer, verdict written on left-to-right. */
+@keyframes lp-caret-blink {
+  0%, 45% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+.lp-caret::after {
+  content: "";
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  margin-inline-start: 2px;
+  vertical-align: text-bottom;
+  background: var(--color-lp-blue);
+  animation: lp-caret-blink 1s step-end infinite;
+}
+
+@keyframes lp-think {
+  from { background-position: 200% 0; }
+  to { background-position: -200% 0; }
+}
+.lp-thinking {
+  color: transparent;
+  background: linear-gradient(90deg, var(--color-lp-muted) 40%, var(--color-lp-blue) 50%, var(--color-lp-muted) 60%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: lp-think 1.6s linear infinite;
+}
+
+@keyframes lp-write {
+  from { clip-path: inset(-15% 100% -15% -5%); }
+  to { clip-path: inset(-15% -5%); }
+}
+.lp-write {
+  animation: lp-write 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Background "TG." watermark turns slowly, once every two minutes. */
+@keyframes lp-turn {
+  to { transform: rotate(360deg); }
+}
+.lp-turn {
+  animation: lp-turn 120s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lp-caret::after, .lp-thinking, .lp-write, .lp-turn { animation: none; }
+  .lp-thinking { color: var(--color-lp-muted); background: none; }
 }
