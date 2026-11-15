@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Check } from "lucide-react";
 import { BRAND } from "@/lib/brand";
 import { cn } from "@/lib/utils";
-import { TGMark } from "@/components/landing/brand";
+import { TLogo } from "@/components/landing/brand";
 
 const DEFAULT_LINES = [
   "Reconciled — 38 bank lines matched",
@@ -65,9 +65,7 @@ export function WorkingPanel({
       <p className="mb-4 text-[13px] font-medium uppercase tracking-[0.14em] text-muted-foreground">{kicker}</p>
       <div className="rounded-2xl border border-border bg-card p-6 shadow-sm">
         <div className="flex items-center gap-2.5">
-          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-secondary text-foreground">
-            <TGMark className="text-[10px]" />
-          </span>
+          <TLogo className="h-9 w-9" />
           <div className="min-w-0">
             <p className="text-sm font-semibold tracking-tight text-foreground">{BRAND.fullName}</p>
             {p.done ? (

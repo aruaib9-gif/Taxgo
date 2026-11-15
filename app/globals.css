@@ -1,9 +1,9 @@
 @import "tailwindcss";
 
 /*
-  Tax GO.ai design system — ported from the captured platform (shadcn/ui + Tailwind).
-  Font: Outfit. Brand blue #0168b3. Warm cream canvas. radius 1rem.
-  Themes (top-bar menu): "blue" is the default warm palette below, [data-theme="light"] is a
+  Tax GO design system — ported from the captured platform (shadcn/ui + Tailwind).
+  Font: Outfit. Brand orange #D9682A (the logo tile). Warm cream canvas. radius 1rem.
+  Themes (top-bar menu): "blue" (labelled Warm) is the default palette below, [data-theme="light"] is a
   neutral white variant, [data-theme="dark"] a derived slate palette.
 */
 
@@ -21,13 +21,13 @@
   --secondary-foreground: #16233a;
   --border: #e5e1d8;
   --input: #e5e1d8;
-  --ring: #0168b3;
+  --ring: #d9682a;
 
-  --brand: #0168b3;
-  --primary: #0168b3;
+  --brand: #d9682a;
+  --primary: #d9682a;
   --primary-foreground: #ffffff;
-  --accent: #e7f0f8;
-  --accent-foreground: #114b7e;
+  --accent: #fbede2;
+  --accent-foreground: #8a3d12;
 
   --success: #16a34a;
   --success-foreground: #ffffff;
@@ -35,25 +35,25 @@
   --warning-foreground: #ffffff;
   --destructive: #dc2626;
   --destructive-foreground: #ffffff;
-  --info: #0168b3;
+  --info: #d9682a;
   --info-foreground: #ffffff;
 
   /* AI legend: turquoise = AI did it, blue = needs a human */
   --ai-done: #0d9488;
-  --needs-human: #0168b3;
+  --needs-human: #2563eb;
 
   --sidebar: #f9f7f2;
   --sidebar-foreground: #16233a;
-  --sidebar-primary: #0168b3;
+  --sidebar-primary: #d9682a;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #e7f0f8;
-  --sidebar-accent-foreground: #114b7e;
+  --sidebar-accent: #fbede2;
+  --sidebar-accent-foreground: #8a3d12;
   --sidebar-border: #e5e1d8;
-  --sidebar-ring: #0168b3;
+  --sidebar-ring: #d9682a;
 
-  --chart-1: #0168b3;
-  --chart-2: #3a9bd9;
-  --chart-3: #8ec8ec;
+  --chart-1: #d9682a;
+  --chart-2: #f0a055;
+  --chart-3: #f8d2ac;
   --chart-4: #16a34a;
   --chart-5: #eab308;
 
@@ -71,9 +71,9 @@
   --secondary: #f3f4f6;
   --border: #e5e7eb;
   --input: #e5e7eb;
-  --accent: #eef4fb;
+  --accent: #fdf3ea;
   --sidebar: #fafafa;
-  --sidebar-accent: #f1f5f9;
+  --sidebar-accent: #fdf3ea;
   --sidebar-border: #e5e7eb;
 }
 
@@ -93,12 +93,12 @@
     --secondary-foreground: #e6ebf2;
     --border: #22314a;
     --input: #22314a;
-    --accent: #15314d;
-    --accent-foreground: #8ec8ec;
+    --accent: #3a2416;
+    --accent-foreground: #f7b15a;
     --sidebar: #0b1422;
     --sidebar-foreground: #e6ebf2;
-    --sidebar-accent: #15314d;
-    --sidebar-accent-foreground: #8ec8ec;
+    --sidebar-accent: #3a2416;
+    --sidebar-accent-foreground: #f7b15a;
     --sidebar-border: #22314a;
   }
 }
@@ -117,12 +117,12 @@
   --secondary-foreground: #e6ebf2;
   --border: #22314a;
   --input: #22314a;
-  --accent: #15314d;
-  --accent-foreground: #8ec8ec;
+  --accent: #3a2416;
+  --accent-foreground: #f7b15a;
   --sidebar: #0b1422;
   --sidebar-foreground: #e6ebf2;
-  --sidebar-accent: #15314d;
-  --sidebar-accent-foreground: #8ec8ec;
+  --sidebar-accent: #3a2416;
+  --sidebar-accent-foreground: #f7b15a;
   --sidebar-border: #22314a;
 }
 
@@ -191,13 +191,13 @@
   --color-lp-ink: #1a1714;
   --color-lp-body: #393531;
   --color-lp-muted: #6a645f;
-  --color-lp-blue: #2768ad;
+  --color-lp-brand: #d9682a;
   --color-lp-teal: #1f7fa3;
   --color-lp-navy: #0f2438;
-  --color-lp-sky: #8dc3e8;
+  --color-lp-sky: #f7b15a;
   --color-lp-amber: #cd7b2e;
   --color-lp-mint: #4fa590;
-  --color-lp-chip: #e3e3e6;
+  --color-lp-chip: #f6e4d5;
   --color-lp-whatsapp: #5fcf6f;
 
   --animate-lp-rise: lp-rise 0.45s ease-out both;
@@ -249,7 +249,7 @@ body {
   height: 1em;
   margin-inline-start: 2px;
   vertical-align: text-bottom;
-  background: var(--color-lp-blue);
+  background: var(--color-lp-brand);
   animation: lp-caret-blink 1s step-end infinite;
 }
 
@@ -259,7 +259,7 @@ body {
 }
 .lp-thinking {
   color: transparent;
-  background: linear-gradient(90deg, var(--color-lp-muted) 40%, var(--color-lp-blue) 50%, var(--color-lp-muted) 60%);
+  background: linear-gradient(90deg, var(--color-lp-muted) 40%, var(--color-lp-brand) 50%, var(--color-lp-muted) 60%);
   background-size: 200% 100%;
   -webkit-background-clip: text;
   background-clip: text;
@@ -275,14 +275,7 @@ body {
 }
 
 /* Background "TG." watermark turns slowly, once every two minutes. */
-@keyframes lp-turn {
-  to { transform: rotate(360deg); }
-}
-.lp-turn {
-  animation: lp-turn 120s linear infinite;
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .lp-caret::after, .lp-thinking, .lp-write, .lp-turn { animation: none; }
+  .lp-caret::after, .lp-thinking, .lp-write { animation: none; }
   .lp-thinking { color: var(--color-lp-muted); background: none; }
 }

@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 type Theme = "blue" | "light" | "dark";
 
 const THEMES: { value: Theme; label: string; icon: LucideIcon }[] = [
-  { value: "blue", label: "Blue", icon: Droplet },
+  { value: "blue", label: "Warm", icon: Droplet },
   { value: "light", label: "Light", icon: Sun },
   { value: "dark", label: "Dark", icon: Moon },
 ];

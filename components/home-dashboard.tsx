@@ -180,7 +180,7 @@ const QUICK_ACTIONS: { label: string; href: string; icon: LucideIcon; primary?: 
   { label: "View Reports", href: "/reports", icon: TrendingUp },
 ];
 
-// "Tell Tax GO.ai —" prompt: rotating suggestions, ⌘K to focus, Enter asks the assistant.
+// "Tell Tax GO —" prompt: rotating suggestions, ⌘K to focus, Enter asks the assistant.
 function AskBar() {
   const { ask } = useAssistant();
   const [value, setValue] = useState("");

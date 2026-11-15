@@ -56,7 +56,7 @@ const BIZ: Biz[] = [
   { title: "Something else", desc: "Start lean — every module stays a click away.", icon: LayoutGrid, pills: [] },
 ];
 
-const COLORS = ["#0168b3", "#06b6d4", "#16a34a", "#0d9488", "#7c3aed", "#db2777", "#ea580c", "#dc2626", "#0f172a"];
+const COLORS = ["#d9682a", "#06b6d4", "#16a34a", "#0d9488", "#7c3aed", "#db2777", "#ea580c", "#dc2626", "#0f172a"];
 const UNIT_TYPES = ["Branches", "Divisions", "Departments", "Regions", "Stores", "Teams", "Sub-companies", "Head office"];
 
 const PHASES = ["Your company", "Organization", "Identity", "People", "Ready"];

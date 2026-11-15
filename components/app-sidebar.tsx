@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ChevronUp, ChevronsLeft, ChevronsRight, Ellipsis, Info, Search, X } from "lucide-react";
 import { groupForPath, railMore, railPrimary, topLinks, type NavGroup } from "@/lib/nav";
-import { TGMark } from "@/components/landing/brand";
+import { TLogo } from "@/components/landing/brand";
 import { BRAND } from "@/lib/brand";
 import { cn } from "@/lib/utils";
 
@@ -121,8 +121,8 @@ export function AppSidebar({ mobileOpen, onMobileClose }: { mobileOpen: boolean;
       >
         <div className="mb-1 flex h-10 shrink-0 items-center justify-between px-1 text-sidebar-foreground">
           <Link href="/home" onClick={onMobileClose} className="inline-flex min-w-0 items-center gap-2 text-base font-semibold tracking-tight">
-            <TGMark className="shrink-0 text-[11px]" />
-            {!narrow && <span className="truncate panel-open:hidden">{BRAND.fullName}</span>}
+            <TLogo className="h-7 w-7" />
+            {!narrow && <span className="truncate panel-open:hidden">{BRAND.name}</span>}
           </Link>
           {isDrawer && (
             <button type="button" onClick={onMobileClose} aria-label="Close menu" className="rounded-md p-1.5 text-muted-foreground hover:bg-sidebar-accent">

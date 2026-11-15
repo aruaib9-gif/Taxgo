@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Bell, BookOpen, ChevronDown, ClipboardCheck, ExternalLink, Inbox, Menu, Network, Package, Store } from "lucide-react";
+import { ArrowLeft, Bell, BookOpen, ChevronDown, ClipboardCheck, ExternalLink, Inbox, Menu, Network, Package, Store } from "lucide-react";
 import { ThemeMenu } from "@/components/theme-toggle";
 import { UserMenu } from "@/components/user-menu";
 import { LanguageMenu } from "@/components/auth/fields";
@@ -17,6 +17,15 @@ export function TopBar({ onMenu }: { onMenu: () => void }) {
       <button type="button" onClick={onMenu} aria-label="Open menu" className="inline-flex h-9 w-9 items-center justify-center rounded-md hover:bg-accent lg:hidden">
         <Menu className="h-4 w-4" />
       </button>
+      <Link
+        href="/"
+        aria-label="Back to the website"
+        title="Back to the website"
+        className="inline-flex h-9 items-center gap-1.5 rounded-md px-2.5 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+      >
+        <ArrowLeft className="h-4 w-4" />
+        <span className="hidden sm:inline">Back to website</span>
+      </Link>
       <div className="flex-1" />
       <OrgSwitcher />
       <LanguageMenu />

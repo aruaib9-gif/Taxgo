@@ -1,234 +1,255 @@
 import Link from "next/link";
 import {
   ArrowRight,
-  BookOpen,
-  Boxes,
   Brain,
   Banknote,
   Calculator,
-  ChartColumn,
   ChartLine,
   Check,
-  Cog,
   FileText,
-  FolderOpen,
-  Heart,
   Hourglass,
   Landmark,
   MessageSquare,
-  Package,
-  PackageOpen,
   Plug,
   Plus,
   ScrollText,
   Search,
   ShieldCheck,
-  ShoppingCart,
-  Store,
   Tags,
-  Target,
   TriangleAlert,
   Users,
-  Zap,
   type LucideIcon,
 } from "lucide-react";
 import { BRAND } from "@/lib/brand";
+import { PriceLookup } from "@/components/landing/price-lookup";
+import { ModuleExplorer } from "@/components/landing/module-explorer";
 import { cn } from "@/lib/utils";
+import {
+  Container,
+  H2,
+  Kicker,
+  LandingFooter,
+  LandingHeader,
+  Panel,
+  Serif,
+  btnOutline,
+  btnPrimary,
+} from "@/components/landing/chrome";
 import { HeroDemo } from "@/components/landing/hero-demo";
 import { CountUp } from "@/components/landing/count-up";
-import { LandingLogo, TGMark, Watermark, WhatsAppButton } from "@/components/landing/brand";
+import { TLogo, Watermark, WhatsAppButton } from "@/components/landing/brand";
 
 export const metadata = { title: `${BRAND.fullName} — The AI Business Operating System` };
 
 const AI = BRAND.fullName;
 
-const navLinks = [
-  { href: "#handles", label: "What she handles" },
-  { href: "#how", label: "How she works" },
-  { href: "#humans", label: "The humans" },
-  { href: "#pricing", label: "Pricing" },
-  { href: "#faq", label: "FAQ" },
-];
-
-const heroChecks = ["Live in five minutes", "No credit card", "No lock-in, cancel anytime", "A human when you want one"];
+const heroChecks = ["No credit card", "Live in five minutes", "Cancel anytime", "Get a local accountant whenever you want"];
 
 const compliance = [
-  { k: "KSA", v: "ZATCA e-invoicing" },
-  { k: "UAE", v: "FTA VAT & Corporate Tax" },
-  { k: "IND", v: "GST & e-invoice" },
-  { k: "GCC", v: "Multi-entity & VAT" },
   { k: "EU", v: "EU VAT & Peppol" },
+  { k: "AMERICA", v: "Retail sales, GST/HST" },
+  { k: "ASIA", v: "GST/VAT" },
+  { k: "AFRICA", v: "VAT" },
+  { k: "AUSTRALIA", v: "GST" },
+  { k: "GLOBAL", v: "Multi-entity & VAT" },
 ];
 
 const worries = [
-  ["Is the VAT filing actually right this quarter?", "Filed."],
-  ["Did we already pay that invoice once?", "Caught."],
-  ["Who owes us money right now — and how much?", "Chased."],
-  ["Did anyone follow up on that big lead?", "Replied."],
-  ["Are we about to run out of our best seller?", "Reordered."],
-  ["Can we make payroll next month?", "Forecast."],
-  ["Are the books ready if the auditor calls?", "Ready."],
-  ["What did we actually make this month?", "Closed."],
+  ["Is our VAT filing accurate?", "Checked."],
+  ["Have we paid that invoice twice?", "Detected."],
+  ["Who still owes us money?", "Followed up."],
+  ["Did we respond to that big sales lead?", "Replied."],
+  ["Are we running low on stock?", "Reordered."],
+  ["Can we afford next month's payroll?", "Forecasted."],
+  ["Are our books audit-ready?", "Prepared."],
+  ["How much profit did we actually make?", "Calculated."],
 ];
 
 const oldWays: { icon: LucideIcon; kicker: string; title: string; text: string }[] = [
   {
     icon: Users,
-    kicker: "Another salary",
+    kicker: "More salary to pay",
     title: "Hire more admin",
-    text: `A junior back-office hire costs 4–10× ${AI}, works eight hours, takes leave, needs managing — and eventually resigns with everything they know.`,
-  },
-  {
-    icon: Boxes,
-    kicker: "Another tool",
-    title: "Buy more software",
-    text: "Tally, Zoho, spreadsheets — they record the work; they don't do it. Six logins later, the typing, chasing and matching are still yours.",
+    text: `Hire several back-office staff at 5–10× the cost of ${AI} — who will eventually leave to join your competitors.`,
   },
   {
     icon: Hourglass,
-    kicker: "Another queue",
-    title: "Outsource the books",
-    text: "Your numbers sit in someone else's backlog. Answers arrive in days, strangers pass your books around — and you still chase the paperwork.",
+    kicker: "Someone else's schedule",
+    title: "Outsource",
+    text: "Your business shouldn't wait days for financial answers or depend on someone else's schedule. Stop chasing paperwork, waiting for reports, and sharing sensitive financial records unnecessarily.",
   },
 ];
 
 const stats = [
-  { n: "30–50%", count: true, t: "lower salary cost, from the day she takes over the busywork", extra: "Guaranteed." },
-  { n: "2×", t: "the output from the team you already have — they decide, she executes" },
-  { n: "24/7", count: true, t: "she works nights, weekends and month-end — and never resigns" },
+  { n: "25–50%", count: true, t: "Potential reduction in administrative and staffing costs through intelligent automation." },
+  { n: "Up to 5×", t: "Greater productivity by freeing your existing team from repetitive tasks." },
+  { n: "24/7", count: true, t: "She works around the clock — nights, weekends, and month-end. No overtime. No downtime for holidays." },
 ];
 
-const modules: { icon: LucideIcon; title: string; text: string; accent?: boolean }[] = [
-  { icon: Calculator, title: "Accounting", text: "GL, tax & compliance" },
-  { icon: BookOpen, title: "Quick Entry", text: "Daybook, expense & income" },
-  { icon: ShoppingCart, title: "Sales", text: "Quote-to-cash, invoicing & AR" },
-  { icon: PackageOpen, title: "Purchasing", text: "Procure-to-pay & bills" },
-  { icon: Package, title: "Inventory", text: "Products, stock & warehouses" },
-  { icon: Target, title: "CRM", text: "Leads, pipeline & activities" },
-  { icon: Store, title: "Operations", text: "POS, van sales & helpdesk" },
-  { icon: Cog, title: "Manufacturing", text: "Production & work orders" },
-  { icon: FolderOpen, title: "Projects", text: "Projects, tasks & timesheets" },
-  { icon: Users, title: "HR", text: "Employees, leave & attendance" },
-  { icon: Banknote, title: "Payroll", text: "Salary runs, claims & payslips" },
-  { icon: Landmark, title: "Finance", text: "Banking, loans & budgets" },
-  { icon: Heart, title: "Social Impact", text: "Zakat & charity tracking" },
-  { icon: ChartColumn, title: "Analytics", text: "Reports & live dashboards" },
-  { icon: Zap, title: `${AI}'s agents`, text: "Quiet automation across it all", accent: true },
-];
-
-const steps: { icon: LucideIcon; title: string; text: string }[] = [
+const steps: { icon: LucideIcon; title: string; text: string; tag: string }[] = [
   {
     icon: FileText,
-    title: "She reads everything.",
-    text: `Invoices, receipts, bank feeds, leads, emails, stock counts. Everything that enters your business, ${AI} takes in. Nothing is typed twice.`,
+    title: "She Captures Everything",
+    text: `Invoices, receipts, bank transactions, customer enquiries, emails, and inventory movements — ${AI} brings your business information together automatically.`,
+    tag: "No duplicate entries. No endless paperwork.",
   },
   {
     icon: Landmark,
-    title: "She does the work.",
-    text: "Posts the entries, chases the receivables, replies to the leads, runs the payroll, reorders the stock. Finished work on a true double-entry ledger — not suggestions.",
+    title: "She Gets the Work Done",
+    text: "From accounting entries and bank reconciliations to customer follow-ups, payroll processing, and inventory management, she handles routine operations across your business.",
+    tag: "Less manual work. Greater accuracy. Higher productivity.",
   },
   {
     icon: ShieldCheck,
-    title: "She brings you the decisions.",
-    text: "A judgement call, an odd amount, a deal worth your attention — the moments that need a human come to one. You decide. She carries it out.",
+    title: "She Brings You the Decisions",
+    text: `${AI} identifies unusual transactions, financial risks, business opportunities, and matters requiring your approval.`,
+    tag: "You make the important decisions. She handles the execution.",
   },
 ];
 
 const agents: { icon: LucideIcon; title: string; text: string }[] = [
-  { icon: Brain, title: "Virtual CFO", text: "Reads your numbers and raises what needs attention before it hurts cash." },
-  { icon: Calculator, title: "Virtual accountant", text: "Drafts entries, reconciles accounts and keeps your ledger close-ready." },
-  { icon: TriangleAlert, title: "Anomaly detection", text: "Catches duplicate bills, odd amounts and unusual activity as they appear." },
-  { icon: ChartLine, title: "Cash-flow forecasting", text: "Projects runway and upcoming crunches from your real transactions." },
-  { icon: Search, title: "Ask your business", text: "“What did we spend on travel in Q1?” — the answer arrives in plain language." },
-  { icon: Tags, title: "Auto-categorizer", text: "Tags every transaction to the right account and cost centre as it posts." },
-  { icon: MessageSquare, title: "In-app assistant", text: "Guides any screen and takes actions on your behalf, end to end." },
+  { icon: Brain, title: "Virtual CFO", text: "Monitors financial performance, identifies risks, and delivers insights to improve profitability and cash flow." },
+  { icon: Calculator, title: "Virtual Accountant", text: "Automates bookkeeping, reconciliations, financial reporting, and month-end processes." },
+  { icon: TriangleAlert, title: "Intelligent Anomaly Detection", text: "Flags duplicate invoices, unusual payments, suspicious transactions, and potential accounting errors." },
+  { icon: ChartLine, title: "Cash Flow Forecasting", text: "Predicts future cash requirements, highlights potential shortfalls, and supports smarter financial planning." },
+  { icon: Search, title: "Ask Your Business Anything", text: "Simply ask, “How much profit did we make last month?” and receive an instant, easy-to-understand answer from your business data." },
+  { icon: Tags, title: "Smart Transaction Categorization", text: "Automatically classifies transactions into the appropriate accounts and cost centres." },
+  { icon: MessageSquare, title: "AI Business Assistant", text: "Guides you through everyday tasks, automates workflows, and executes approved actions across your business." },
 ];
 
 const weekOne = [
   {
     day: "Day 1",
-    title: "Live in five minutes.",
-    text: "Pick your country. Your chart of accounts, taxes, currencies and e-invoicing exist before the kettle boils.",
+    title: "Get Started in Minutes",
+    text: `Select your country, and ${AI} prepares your accounting structure, tax settings, currencies, and applicable e-invoicing requirements.`,
+    tag: "One platform. Ready for business.",
   },
   {
     day: "Day 2",
-    title: "Your history arrives.",
-    text: "We move you off Tally, Zoho, QuickBooks or spreadsheets — accounts, contacts, stock and open invoices — free, and set up right.",
+    title: "Your Business Data Moves with You",
+    text: "Switch from QuickBooks, Tally, Zoho, or spreadsheets. We help migrate your accounts, customers, suppliers, inventory, and outstanding invoices.",
+    tag: "Your history stays. Your inefficiencies go.",
   },
   {
     day: "Day 3",
-    title: "Her first morning.",
-    text: "Overdue invoices chased, waiting leads answered, the day's entries posted. The first “Handled.” lands before your coffee.",
+    title: "Your AI Colleague Gets to Work",
+    text: `${AI} starts automating bookkeeping, identifying overdue payments, managing customer follow-ups, and monitoring daily transactions.`,
+    tag: "Less administration. More productivity.",
   },
   {
     day: "Day 30",
-    title: "The month closes itself.",
-    text: "Your first month-end where you review and approve instead of type and chase. It stays this way.",
+    title: "Experience a Smarter Month-End",
+    text: "Instead of spending days entering transactions, reconciling accounts, and preparing reports, your team focuses on reviewing exceptions and approving results.",
+    tag: `You make the decisions. ${AI} handles the routine work.`,
   },
 ];
 
 const humans: { icon: LucideIcon; title: string; text: string }[] = [
   {
     icon: Calculator,
-    title: "On-demand accountant",
-    text: "A qualified accountant to own your month-end, clean-ups and day-to-day books — inside your system.",
+    title: "On-Demand Accountant",
+    text: `Qualified accountants manage your bookkeeping, reconciliations, month-end closing, and financial reporting — directly within ${AI}.`,
   },
   {
     icon: Brain,
-    title: "Virtual & fractional CFO",
-    text: "Board-ready reporting, cash strategy, budgets and fundraising help from a real CFO, when you need one.",
+    title: "Virtual & Fractional CFO",
+    text: "Access experienced CFOs for financial strategy, cash-flow management, budgeting, forecasting, investor reporting, and fundraising support.",
   },
   {
     icon: ScrollText,
-    title: "Tax & compliance filing",
-    text: "Experts file your ZATCA e-invoices, VAT, GST and returns — accurately, on time, every period.",
+    title: "Tax & Regulatory Compliance",
+    text: "Professional assistance with Sales Tax, VAT, GST, e-invoicing, tax returns, and statutory compliance, tailored to your country's requirements.",
   },
   {
     icon: Banknote,
-    title: "Payroll, run for you",
-    text: "Hand salary runs, payslips and statutory payments to a specialist who knows your country's rules.",
+    title: "Managed Payroll Services",
+    text: "Payroll specialists handle salary processing, payslips, deductions, and statutory obligations while ensuring compliance with local regulations.",
   },
   {
     icon: ShieldCheck,
-    title: "Audit & assurance support",
-    text: "Audit-ready books and a human who speaks your auditor's language at year-end.",
+    title: "Audit & Assurance Support",
+    text: "Keep your financial records audit-ready with professional support for year-end accounts, audit preparation, and auditor enquiries.",
   },
   {
     icon: Plug,
-    title: "Setup & migration",
-    text: "We move you off Tally, Zoho, QuickBooks or spreadsheets and set your books up right from day one.",
+    title: "Setup & Data Migration",
+    text: `Move from Tally, Sage, Zoho, QuickBooks, or spreadsheets to ${AI} with expert assistance, ensuring your financial records are properly transferred and configured.`,
   },
 ];
 
-const regions = [
+// VAT / GST rates by region, as supplied in the marketing copy.
+const africaCountries = [
+  { name: "Nigeria", flag: "🇳🇬" },
+  { name: "South Africa", flag: "🇿🇦" },
+  { name: "Ghana", flag: "🇬🇭" },
+  { name: "Morocco", flag: "🇲🇦" },
+  { name: "Kenya", flag: "🇰🇪" },
+  { name: "Egypt", flag: "🇪🇬" },
+];
+
+// "One simple rule": the two task colours used across the product (ai-done / needs-human tokens).
+const rule = [
   {
-    k: "KSA",
-    name: "Saudi Arabia",
-    text: "ZATCA Phase 2 (Fatoora) e-invoicing, 15% VAT, Arabic invoices and Saudi-ready reporting — built in.",
+    tag: `Turquoise · Done by ${AI}`,
+    title: `${AI} executes`,
+    text: "Routine work is completed automatically, checked for accuracy and recorded in the audit trail.",
+    items: [
+      "Invoices, receipts and bills captured",
+      "Bank and card transactions reconciled",
+      "Journal entries and adjustments posted",
+      "Payment reminders sent and followed up",
+      "Payroll, VAT and reports prepared",
+    ],
+    icon: Check,
+    bar: "bg-ai-done",
+    chip: "bg-ai-done/10 text-ai-done",
+    tone: "text-ai-done",
   },
   {
-    k: "UAE",
-    name: "United Arab Emirates",
-    text: "FTA-compliant 5% VAT returns and UAE Corporate Tax, AED multi-currency books and free-zone invoicing.",
-  },
-  {
-    k: "IND",
-    name: "India",
-    text: "GST with e-invoice (IRN/QR), TDS, HSN/SAC codes and GSTR-ready reports for every state.",
-  },
-  {
-    k: "EU",
-    name: "Europe",
-    text: "EU VAT schemes, Peppol e-invoicing, EUR/GBP multi-currency and IFRS-friendly double-entry.",
+    tag: "Blue · Needs your approval",
+    title: "You decide",
+    text: "Anything unusual, sensitive or above your approval limits waits for a person before it goes ahead.",
+    items: [
+      "Payments released to suppliers and staff",
+      "Tax returns submitted to the authorities",
+      "Payroll runs approved",
+      "Unusual or flagged transactions reviewed",
+      "Disputes, write-offs and exceptions resolved",
+    ],
+    icon: ShieldCheck,
+    bar: "bg-needs-human",
+    chip: "bg-needs-human/10 text-needs-human",
+    tone: "text-needs-human",
   },
 ];
 
-const pricing = [
-  { region: "India", price: "₹1,00,000" },
-  { region: "United Arab Emirates", price: "AED 4,499" },
-  { region: "Saudi Arabia", price: "SAR 4,499" },
-  { region: "Europe", price: "€1,099" },
-  { region: "Rest of world", price: "$1,199" },
+const taxRegions: { name: string; rows: { country: string; rate: string; note?: string }[] }[] = [
+  {
+    name: "Southeast Asia",
+    rows: [
+      { country: "Philippines", rate: "12%", note: "standard VAT" },
+      { country: "Indonesia", rate: "12%", note: "standard VAT, increased from 11% in 2025" },
+      { country: "Vietnam", rate: "8%", note: "temporary reduced rate for most goods/services; standard is 10%" },
+      { country: "Cambodia", rate: "10%" },
+      { country: "Laos (Lao PDR)", rate: "10%" },
+      { country: "Singapore", rate: "9%", note: "GST" },
+      { country: "Thailand", rate: "7%", note: "reduced rate extended via royal decree; statutory code is 10%" },
+      { country: "Malaysia", rate: "No VAT/GST", note: "uses a 10% sales tax and 8% service tax system" },
+      { country: "Myanmar", rate: "No VAT", note: "uses a 5% commercial tax" },
+      { country: "Brunei / Timor-Leste", rate: "No VAT or GST" },
+    ],
+  },
+  {
+    name: "South & Central Asia / Middle East",
+    rows: [
+      { country: "India", rate: "18%", note: "GST standard structure" },
+      { country: "Pakistan", rate: "18%", note: "for goods; 15%–16% for services" },
+      { country: "Armenia / Azerbaijan", rate: "20% / 18%" },
+      { country: "Kazakhstan", rate: "16%" },
+      { country: "United Arab Emirates / Oman", rate: "5%" },
+      { country: "Saudi Arabia", rate: "15%" },
+    ],
+  },
 ];
 
 const included = [
@@ -252,87 +273,62 @@ const guarantees = [
 
 const faqs: [string, string][] = [
   [
-    `What exactly is ${AI}?`,
-    `An AI colleague that runs your back office. ${AI} sits on a full double-entry ledger with 15 module groups — accounting, sales, purchasing, stock, payroll, CRM and more — and does the work inside them: reading documents, posting entries, chasing payments and filing returns, while you make the decisions.`,
+    `What is ${AI}?`,
+    `${AI} is an AI-powered business platform that runs your back office. It brings 15 integrated modules — accounting, sales, purchasing, inventory, payroll, CRM, finance, reporting and more — onto one shared ledger, and does the routine work inside them: capturing documents, posting entries, reconciling accounts, chasing payments and preparing returns. You keep the decisions.`,
   ],
   [
-    `What if ${AI} gets something wrong?`,
-    "She drafts; a human approves. Anything unusual, uncertain or above your thresholds waits for sign-off, every action is in the audit trail, and any entry can be reversed. Nothing moves money or files with a tax authority without your approval.",
+    `How much could ${AI} save my business?`,
+    `Most businesses can expect a 25–50% reduction in administrative and staffing costs, depending on how much of your team's time goes on data entry, chasing payments, reconciliations and reports. Before you commit, we look at those hours with you and show you the estimate on your own numbers.`,
   ],
   [
-    "I'm already on Tally, Zoho or spreadsheets. How painful is switching?",
-    "Not at all — switching is the part we do for you. We migrate your accounts, contacts, stock and open invoices free of charge, and you're typically running in parallel within two days.",
+    `What does "up to 5× the productivity" mean?`,
+    `When ${AI} takes over the repetitive work, your existing team gets that time back for customers, decisions and growth. Teams that spent most of their week on admin can get several times more done — without hiring.`,
   ],
   [
-    "Is this just AI, or are there real accountants and CFOs?",
-    "Both. The AI does the heavy lifting; qualified accountants and CFOs stand behind her on demand for month-end, filings, payroll and audits. You pay only for the human time you use.",
+    `What happens if ${AI} gets something wrong?`,
+    `One simple rule: AI executes, humans decide. Anything unusual, uncertain or above your approval limits waits for a person. Turquoise means a task is done; blue means it needs your review. Every action is recorded in the audit trail, and entries can be reversed. Nothing moves money or is filed with a tax authority without your approval.`,
   ],
   [
-    "How is the 30–50% guarantee measured?",
-    "Before you sign, we count the hours your team spends typing, chasing, matching and filing, and price them at your real salary costs. We show you the math on your numbers — and if the saving isn't there, you don't pay.",
+    "Is it just AI, or are there real accountants and CFOs?",
+    `Both. ${AI} handles the routine work, and qualified accountants, tax professionals and CFOs are available on demand for month-end, tax filings, payroll, audits and financial strategy. You pay only for the expert services you use.`,
   ],
   [
-    "Is it an alternative to Tally, Zoho Books, QuickBooks or an ERP?",
-    `Yes. ${AI} replaces your accounting software and the ERP modules around it — and unlike them, she does the work rather than just recording it.`,
+    "Which countries and taxes does it support?",
+    `${AI} is built for global compliance: EU VAT and Peppol e-invoicing, retail sales tax and GST/HST in the Americas, GST and VAT across Asia and the Middle East, VAT across Africa, GST in Australia, and multi-entity VAT. When you pick your country, your chart of accounts, tax rates, currencies and e-invoicing requirements are set up for you.`,
   ],
   [
-    "Does it support ZATCA e-invoicing in Saudi Arabia?",
-    "Yes. ZATCA Phase 2 (Fatoora) integration, cryptographic stamps and QR codes, Arabic and bilingual invoices, and 15% VAT returns are built in.",
+    "Can I switch from QuickBooks, Tally, Sage, Zoho or spreadsheets?",
+    "Yes — switching is the part we handle. We help migrate your accounts, customers, suppliers, inventory and outstanding invoices, so your history comes with you. Migration assistance is included, subject to data compatibility and the scope of your business.",
   ],
   [
-    "Does it handle UAE VAT and Corporate Tax?",
-    "Yes — FTA-compliant 5% VAT returns, UAE Corporate Tax computations, free-zone invoicing and AED multi-currency books.",
+    "How quickly can I get started?",
+    `You can be set up in minutes: choose your country and ${AI} prepares your accounting structure. Your data typically follows within a couple of days, and by your first month-end your team is reviewing and approving instead of typing and chasing. Timelines vary with the size of your business.`,
   ],
   [
-    "Does it support GST and e-invoicing in India?",
-    "Yes — GST with IRN/QR e-invoicing, e-way bills, TDS, HSN/SAC codes and GSTR-ready reports for every state.",
+    `How much does ${AI} cost?`,
+    "One plan, priced per company in your local currency, with everything included. Pay monthly or save with annual billing. Users are unlimited — your team, your accountant and your auditor are all free. Type your country in the pricing section above to see your price.",
   ],
   [
-    "Is my data safe, and is it real accounting?",
-    "Your data is encrypted in transit and at rest, access is role-based, and every change is logged. Underneath is a true double-entry ledger with a full audit trail — and your data leaves with you whenever you want.",
+    "Can I manage several companies or countries?",
+    `Yes. ${AI} supports multiple entities, multiple currencies and your whole organisation structure, with consolidated reporting across them.`,
   ],
   [
-    "How fast can I get started?",
-    "Five minutes. Pick your country and your chart of accounts, taxes, currencies and e-invoicing are set up instantly. Your history follows within a couple of days.",
+    "Is my data safe — and do I keep control of it?",
+    "Your data is encrypted in transit and at rest, access is role-based, and every change is logged. It is a real double-entry ledger with a full audit trail. Your business, your data, your control — you can export everything and take it with you whenever you want.",
   ],
   [
-    `Why is it called ${AI}?`,
-    "Because tax and compliance are where back offices hurt most, and because she goes wherever you operate — Saudi Arabia, the UAE, India, Europe and beyond. Tell her, and it's handled.",
+    "Do I need accounting knowledge to use it?",
+    `No. Ask in plain language — "How much profit did we make last month?" — and get a clear answer from your own data. ${AI} guides you through everyday tasks, and an expert is there when you need one.`,
+  ],
+  [
+    "Can I cancel anytime?",
+    "Yes. There's no credit card to start and no lock-in. If you leave, your data leaves with you.",
+  ],
+  [
+    "What is the Cost vs. Efficiency Theory?",
+    `It's the idea ${AI} is built on: lasting success comes from working more efficiently, not just from spending less. Instead of cutting corners, you stop paying for repetitive processes and invest in productivity, innovation and growth.`,
   ],
 ];
-
-/* ---------- small building blocks ---------- */
-
-function Container({ className, children }: { className?: string; children: React.ReactNode }) {
-  return <div className={cn("mx-auto w-full max-w-[1148px] px-6", className)}>{children}</div>;
-}
-
-function Kicker({ className, children }: { className?: string; children: React.ReactNode }) {
-  return (
-    <p className={cn("text-[11px] font-semibold uppercase tracking-[0.28em] text-lp-body", className)}>{children}</p>
-  );
-}
-
-function H2({ className, children }: { className?: string; children: React.ReactNode }) {
-  return (
-    <h2 className={cn("mt-4 text-[32px] font-semibold leading-[1.15] tracking-[-0.045em] text-lp-ink sm:text-[40px]", className)}>
-      {children}
-    </h2>
-  );
-}
-
-function Serif({ className, children }: { className?: string; children: React.ReactNode }) {
-  return <span className={cn("font-serif font-semibold italic text-lp-blue", className)}>{children}</span>;
-}
-
-function Panel({ className, children }: { className?: string; children: React.ReactNode }) {
-  return <div className={cn("overflow-hidden rounded-2xl border border-lp-line bg-lp-card", className)}>{children}</div>;
-}
-
-const btnPrimary =
-  "inline-flex items-center justify-center gap-2.5 rounded-full bg-lp-blue px-[22px] py-[7px] text-[15px] font-medium text-lp-navy transition hover:brightness-110";
-const btnOutline =
-  "inline-flex items-center justify-center gap-2.5 rounded-full border border-lp-ink/25 bg-lp-card px-[26px] py-[7px] text-[15px] font-medium text-lp-ink transition hover:bg-white";
 
 /* ---------- page ---------- */
 
@@ -340,54 +336,38 @@ export default function LandingPage() {
   return (
     <div className="bg-lp-canvas text-lp-body">
       {/* nav */}
-      <header className="sticky top-0 z-30 border-b border-lp-line bg-lp-canvas/90 backdrop-blur">
-        <Container className="flex h-[50px] items-center justify-between gap-6">
-          <div className="flex items-center gap-[26px]">
-            <LandingLogo />
-            <nav className="hidden items-center gap-[22px] text-[14px] text-lp-body lg:flex">
-              {navLinks.map((l) => (
-                <a key={l.href} href={l.href} className="transition-colors hover:text-lp-ink">
-                  {l.label}
-                </a>
-              ))}
-            </nav>
-          </div>
-          <div className="flex items-center gap-5">
-            <Link href="/login" className="hidden text-[14px] font-medium text-lp-ink sm:block">
-              Sign in
-            </Link>
-            <Link href="/register" className="rounded-full bg-lp-blue px-3.5 py-[5px] text-[14px] font-medium text-lp-navy transition hover:brightness-110">
-              Hire {AI}
-            </Link>
-          </div>
-        </Container>
-      </header>
+      <LandingHeader />
 
       {/* hero */}
       <section className="relative overflow-hidden bg-[radial-gradient(ellipse_70%_90%_at_100%_0%,#dfe5ea_0%,#e9e9ea_45%,transparent_80%)]">
-        <Watermark
-          className="lp-turn right-[-60px] top-[60px] hidden rotate-[70deg] text-[300px] text-[#d9dcdf] lg:block"
-          dot="bg-[#cdd5de]"
-        />
+        <Watermark className="-right-20 top-5 hidden w-190 text-[#dcdfe2] lg:block" tile="opacity-55" />
         <Container className="relative pb-20 pt-20">
           <HeroDemo>
-            <p className="mt-9 max-w-[500px] text-[17px] leading-[1.72] text-lp-body">
-              You didn&rsquo;t start a company to run its admin. {AI} runs your sales, stock, invoices, payroll and books end to
-              end — and brings you only the decisions. Owners cut salary costs 30–50%, double their output, and get their
-              evenings back.
-            </p>
+            <div className="mt-9 max-w-130 space-y-3 text-[17px] leading-[1.65] text-lp-body">
+              <p className="text-[19px] font-semibold tracking-[-0.02em] text-lp-ink">{AI} — Work Smarter. Grow Faster.</p>
+              <p>You didn&rsquo;t start a business to manage paperwork.</p>
+              <p>
+                {AI} automates your sales, inventory, invoicing, payroll, and accounting, helping you cut administrative costs by
+                up to 50%, double productivity, and reclaim your time.
+              </p>
+              <p>
+                Built on our <b className="font-semibold text-lp-ink">Cost vs. Efficiency Theory:</b>{" "}
+                <Serif className="text-[18px]">&ldquo;Success is not a cost factor, but an efficiency factor.&rdquo;</Serif>
+              </p>
+              <p className="font-semibold text-lp-ink">{AI} — Less Cost. More Efficiency. Greater Success.</p>
+            </div>
             <div className="mt-7 flex flex-wrap gap-2.5">
               <Link href="/register" className={btnPrimary}>
-                Hire {AI} <ArrowRight className="h-3.5 w-3.5" />
+                Join {AI} <ArrowRight className="h-3.5 w-3.5" />
               </Link>
-              <Link href="/home" className={btnOutline}>
-                See her on your numbers <ArrowRight className="h-3.5 w-3.5" />
+              <Link href="/login" className={btnOutline}>
+                Check your numbers <ArrowRight className="h-3.5 w-3.5" />
               </Link>
             </div>
-            <ul className="mt-8 flex max-w-[480px] flex-wrap gap-x-4 gap-y-2.5 text-[14px] text-lp-muted">
+            <ul className="mt-8 flex max-w-120 flex-wrap gap-x-4 gap-y-2.5 text-[14px] text-lp-muted">
               {heroChecks.map((c) => (
                 <li key={c} className="flex items-center gap-1.5">
-                  <Check className="h-3.5 w-3.5 text-lp-blue" strokeWidth={2.25} /> {c}
+                  <Check className="h-3.5 w-3.5 text-lp-brand" strokeWidth={2.25} /> {c}
                 </li>
               ))}
             </ul>
@@ -395,13 +375,41 @@ export default function LandingPage() {
         </Container>
       </section>
 
+      {/* the Tax GO difference — follows the hero demo */}
+      <section className="border-t border-lp-line">
+        <Container className="py-16 text-center">
+          <Kicker>The {AI} difference</Kicker>
+          <H2 className="mx-auto max-w-3xl text-[28px] sm:text-[34px]">
+            You ask. {AI} analyzes, prepares and explains.
+            <br />
+            <span className="text-lp-brand">You stay in control.</span>
+          </H2>
+          <div className="mx-auto mt-5 max-w-170 space-y-3 text-[16px] leading-[1.65] text-lp-body">
+            <p>
+              Whether you are running payroll, preparing tax returns or forecasting cash flow, {AI} transforms your financial
+              data into actionable information.
+            </p>
+            <p>
+              It does more than calculate numbers. It identifies unusual transactions, explains financial risks, recommends next
+              steps and prepares the work for your review.
+            </p>
+            <p className="font-semibold text-lp-ink">Your AI does the groundwork. You make the decisions.</p>
+          </div>
+          <p className="mx-auto mt-8 max-w-160 text-[12.5px] italic leading-normal text-lp-muted">
+            These examples illustrate intended {AI} workflows. Actual automation, regulatory coverage, payment execution and tax
+            filing capabilities depend on the features and integrations enabled. Tax filings and payments require appropriate
+            authorization.
+          </p>
+        </Container>
+      </section>
+
       {/* compliance strip */}
       <section className="border-y border-lp-line">
-        <Container className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 py-[18px]">
-          <Kicker className="mr-3 tracking-[0.24em]">Compliant where you operate</Kicker>
+        <Container className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 py-4.5">
+          <Kicker className="mr-3 tracking-[0.24em]">Global compliant</Kicker>
           {compliance.map((c) => (
             <span key={c.k} className="flex items-center gap-2 text-[14px] text-lp-body">
-              <span className="rounded-full border border-lp-line bg-lp-card px-1.5 py-[2px] text-[10px] font-semibold text-lp-ink">
+              <span className="rounded-full border border-lp-line bg-lp-card px-1.5 py-0.5 text-[10px] font-semibold text-lp-ink">
                 {c.k}
               </span>
               {c.v}
@@ -410,38 +418,43 @@ export default function LandingPage() {
         </Container>
       </section>
 
-      {/* the 2 a.m. list */}
+      {/* the midnight checklist */}
       <section className="border-b border-lp-line">
         <Container className="pb-16 pt-24 text-center">
-          <Kicker>The 2 a.m. list</Kicker>
-          <H2>The questions that keep owners awake.</H2>
-          <p className="mx-auto mt-4 max-w-[640px] text-[16px] leading-[1.6] text-lp-body">
-            You know the list. It visits after midnight. {AI} works through it while you sleep.
+          <Kicker>The midnight checklist</Kicker>
+          <H2>Business worries shouldn&rsquo;t keep you awake.</H2>
+          <p className="mx-auto mt-4 max-w-160 text-[16px] leading-[1.6] text-lp-body">
+            Every business owner knows the questions that come after midnight.{" "}
+            <b className="font-semibold text-lp-ink">{AI} works on the answers while you sleep.</b>
           </p>
-          <Panel className="mx-auto mt-12 max-w-[768px] divide-y divide-lp-line text-left">
+          <Panel className="mx-auto mt-12 max-w-3xl divide-y divide-lp-line text-left">
             {worries.map(([q, a]) => (
-              <div key={q} className="flex items-center justify-between gap-4 px-6 py-[14px]">
-                <span className="text-[15px] text-lp-body">&ldquo;{q}&rdquo;</span>
+              <div key={q} className="flex items-center justify-between gap-4 px-6 py-3.5">
+                <span className="text-[15px] font-medium text-lp-ink">&ldquo;{q}&rdquo;</span>
                 <Serif className="shrink-0 text-[21px]">{a}</Serif>
               </div>
             ))}
           </Panel>
-          <p className="mt-14 font-serif text-[18px] italic text-lp-muted">Sleep. She&rsquo;s turning.</p>
+          <div className="mx-auto mt-14 max-w-160 space-y-2.5 text-[16px] leading-[1.6] text-lp-body">
+            <p className="text-[18px] font-semibold tracking-[-0.02em] text-lp-ink">{AI} — Your AI-powered business partner, working 24/7.</p>
+            <p className="font-semibold text-lp-ink">Less Worry. Greater Efficiency. Better Business.</p>
+          </div>
+          <p className="mt-10 font-serif text-[20px] italic text-lp-muted">Sleep genius. {AI}&rsquo;s got you covered.</p>
         </Container>
       </section>
 
       {/* the old ways */}
       <section className="border-b border-lp-line bg-lp-alt">
         <Container className="py-24 text-center">
-          <Kicker>The old ways</Kicker>
+          <Kicker>The old you</Kicker>
           <H2>
-            You&rsquo;ve had three options.
+            You&rsquo;ve had two options.
             <br />
             None of them worked.
           </H2>
-          <Panel className="mx-auto mt-10 grid max-w-[1024px] text-left md:grid-cols-3 md:divide-x divide-y md:divide-y-0 divide-lp-line">
+          <Panel className="mx-auto mt-10 grid max-w-3xl text-left md:grid-cols-2 md:divide-x divide-y md:divide-y-0 divide-lp-line">
             {oldWays.map((w) => (
-              <div key={w.title} className="px-[23px] pb-7 pt-6">
+              <div key={w.title} className="px-5.75 pb-7 pt-6">
                 <w.icon className="h-4 w-4 text-lp-body" strokeWidth={1.5} />
                 <Kicker className="mt-4 text-[10px] tracking-[0.3em]">{w.kicker}</Kicker>
                 <h3 className="mt-2 text-[18px] font-semibold tracking-[-0.035em] text-lp-ink">{w.title}</h3>
@@ -449,7 +462,16 @@ export default function LandingPage() {
               </div>
             ))}
           </Panel>
-          <Serif className="mt-12 block text-[26px] font-medium">Or tell {AI}.</Serif>
+          <div className="mx-auto mt-12 max-w-160 space-y-3 text-[16px] leading-[1.6]">
+            <p className="font-semibold text-lp-ink">
+              With {AI}, your numbers are at your fingertips — real-time insights, automated accounting, and smarter decisions,
+              whenever you need them.
+            </p>
+            <p className="font-semibold text-lp-ink">Your Business. Your Data. Your Control.</p>
+          </div>
+          <Link href="/register" className="mt-8 inline-block">
+            <Serif className="text-[26px] font-medium hover:underline">Or join {AI}.</Serif>
+          </Link>
         </Container>
       </section>
 
@@ -457,26 +479,32 @@ export default function LandingPage() {
       <section>
         <Container className="py-24 text-center">
           <Kicker>The math</Kicker>
-          <H2>Half the payroll. Twice the output.</H2>
-          <p className="mx-auto mt-4 max-w-[680px] text-[16px] leading-[1.6] text-lp-body">
-            {AI} isn&rsquo;t a tool your team uses. She&rsquo;s a colleague who does the work — across every corner of the
-            business, around the clock — while your people keep the judgement. The busywork stops needing salaries.
+          <H2>Half the Cost. Up to 5× the Productivity.</H2>
+          <p className="mx-auto mt-4 max-w-170 text-[17px] font-semibold leading-[1.6] text-lp-ink">
+            {AI} isn&rsquo;t just software. She&rsquo;s your AI-powered colleague.
           </p>
-          <Panel className="mx-auto mt-10 grid max-w-[896px] md:grid-cols-3 md:divide-x divide-y md:divide-y-0 divide-lp-line">
+          <p className="mx-auto mt-2 max-w-170 text-[16px] leading-[1.6] text-lp-body">
+            She manages the repetitive work across your business, 24/7, while your team focuses on decisions, customers, and
+            growth.
+          </p>
+          <Panel className="mx-auto mt-10 grid max-w-4xl md:grid-cols-3 md:divide-x divide-y md:divide-y-0 divide-lp-line">
             {stats.map((s) => (
               <div key={s.n} className="px-6 pb-8 pt-7">
-                <p className="text-[50px] font-semibold leading-none tracking-[-0.05em] text-lp-ink">{s.count ? <CountUp value={s.n} /> : s.n}</p>
-                <p className="mx-auto mt-5 max-w-[260px] text-[14px] leading-[1.6] text-lp-body">{s.t}</p>
-                {s.extra && <Serif className="mt-3 block text-[19px] font-medium">{s.extra}</Serif>}
+                <p className="text-[50px] font-semibold leading-none tracking-tighter text-lp-ink">{s.count ? <CountUp value={s.n} /> : s.n}</p>
+                <p className="mx-auto mt-5 max-w-65 text-[14px] leading-[1.6] text-lp-body">{s.t}</p>
               </div>
             ))}
           </Panel>
-          <p className="mx-auto mt-10 max-w-[560px] text-[16px] leading-[1.6] text-lp-body">
-            How can we guarantee it? Count the hours your team spends typing, chasing, matching and filing. {AI} does those
-            hours. The rest is arithmetic.
-          </p>
-          <Link href="/register" className={cn(btnOutline, "mt-6")}>
-            Do the math on your business <ArrowRight className="h-3.5 w-3.5" />
+          <div className="mx-auto mt-12 max-w-155 space-y-3 text-[16px] leading-[1.6] text-lp-body">
+            <h3 className="text-[20px] font-semibold tracking-[-0.03em] text-lp-ink">How Does the Math Work?</h3>
+            <p>
+              Calculate the hours your team spends entering data, chasing payments, reconciling accounts, and preparing reports.
+            </p>
+            <p className="font-semibold text-lp-ink">{AI} automates the busywork. Your people deliver the value.</p>
+            <p className="font-semibold text-lp-ink">{AI} — Reduce Costs. Multiply Efficiency. Accelerate Growth.</p>
+          </div>
+          <Link href="/register" className={cn(btnOutline, "mt-7")}>
+            Do the Math for Your Business <ArrowRight className="h-3.5 w-3.5" />
           </Link>
         </Container>
       </section>
@@ -484,45 +512,56 @@ export default function LandingPage() {
       {/* what she handles */}
       <section id="handles" className="scroll-mt-12">
         <Container className="pb-24 pt-14">
-          <Kicker>What she handles</Kicker>
-          <H2>One login in the morning. Not six.</H2>
-          <p className="mt-4 max-w-[660px] text-[16px] leading-[1.65] text-lp-body">
-            Fifteen module groups on one shared ledger — one version of the truth, and {AI} working inside every one of them.
-            Sell, buy, hire, pay and report from a single place, and retire the spreadsheet graveyard.
+          <Kicker>What {AI} handles</Kicker>
+          <H2>One Login. One Platform. Total Business Control.</H2>
+          <div className="mt-4 max-w-170 space-y-3 text-[16px] leading-[1.65] text-lp-body">
+            <p>Why juggle multiple systems when one intelligent platform can run your entire business?</p>
+            <p>
+              <b className="font-semibold text-lp-ink">{AI} brings 15 integrated business modules together</b>, powered by one
+              shared ledger and real-time data.
+            </p>
+            <p>
+              From sales and purchasing to inventory, payroll, accounting, and reporting, she automates your daily operations
+              while you focus on growth.
+            </p>
+            <p className="font-semibold text-lp-ink">No disconnected systems. No endless spreadsheets. No wasted time.</p>
+
+          </div>
+          <ModuleExplorer />
+          <p className="mx-auto mt-10 max-w-3xl text-center text-[18px] font-semibold leading-normal tracking-[-0.02em] text-lp-ink">
+            {AI} — One Intelligent Platform. 15 Integrated Modules.{" "}
+            <span className="text-lp-brand">Your Entire Business Working Together.</span>
           </p>
-          <Panel className="mt-11 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5">
-            {modules.map((m) => (
-              <div key={m.title} className="-mb-px -mr-px border-b border-r border-lp-line px-[17px] pb-[19px] pt-[17px]">
-                <m.icon className={cn("h-4 w-4", m.accent ? "text-lp-blue" : "text-lp-body")} strokeWidth={1.5} />
-                <h3 className="mt-3 text-[15px] font-semibold tracking-[-0.02em] text-lp-ink">{m.title}</h3>
-                <p className="mt-1 text-[12.5px] text-lp-muted">{m.text}</p>
-              </div>
-            ))}
-          </Panel>
         </Container>
       </section>
 
-      {/* how she works */}
+      {/* how Tax GO works */}
       <section id="how" className="scroll-mt-12 border-y border-lp-line bg-lp-alt">
         <Container className="py-24">
-          <Kicker>How she works</Kicker>
-          <H2>You speak plainly. She does the rest.</H2>
+          <Kicker>How {AI} works</Kicker>
+          <H2>You Ask. She Understands. She Delivers.</H2>
+          <p className="mt-4 max-w-170 text-[17px] font-semibold leading-[1.6] text-lp-ink">
+            {AI} isn&rsquo;t just another business software. She&rsquo;s your intelligent AI colleague, working 24/7 to make your
+            business more efficient.
+          </p>
           <Panel className="mt-10 grid md:grid-cols-3 md:divide-x divide-y md:divide-y-0 divide-lp-line">
             {steps.map((s, i) => (
-              <div key={s.title} className="px-[23px] pb-8 pt-7">
+              <div key={s.title} className="px-5.75 pb-8 pt-7">
                 <div className="flex items-start justify-between">
-                  <s.icon className="h-4 w-4 text-lp-blue" strokeWidth={1.75} />
+                  <s.icon className="h-4 w-4 text-lp-brand" strokeWidth={1.75} />
                   <span className="font-serif text-[26px] italic leading-none text-lp-muted/50">{i + 1}</span>
                 </div>
                 <h3 className="mt-7 text-[17px] font-semibold tracking-[-0.035em] text-lp-ink">{s.title}</h3>
                 <p className="mt-3 text-[14px] leading-[1.65] text-lp-body">{s.text}</p>
+                <p className="mt-3 text-[14px] font-semibold leading-[1.55] text-lp-ink">{s.tag}</p>
               </div>
             ))}
           </Panel>
-          <div className="mt-12 grid gap-x-10 gap-y-7 sm:grid-cols-2 lg:grid-cols-3">
+          <h3 className="mt-16 text-[24px] font-semibold tracking-[-0.04em] text-lp-ink">Your AI-Powered Business Team</h3>
+          <div className="mt-7 grid gap-x-10 gap-y-7 sm:grid-cols-2 lg:grid-cols-3">
             {agents.map((a) => (
               <div key={a.title} className="flex gap-3">
-                <a.icon className="mt-[3px] h-4 w-4 shrink-0 text-lp-body" strokeWidth={1.5} />
+                <a.icon className="mt-0.75 h-4 w-4 shrink-0 text-lp-body" strokeWidth={1.5} />
                 <div>
                   <h3 className="text-[15px] font-semibold tracking-[-0.02em] text-lp-ink">{a.title}</h3>
                   <p className="mt-1 text-[14px] leading-[1.6] text-lp-muted">{a.text}</p>
@@ -530,90 +569,178 @@ export default function LandingPage() {
               </div>
             ))}
           </div>
+          <Panel className="mx-auto mt-16 max-w-2xl px-8 pb-10 pt-10 text-center">
+            <Kicker className="tracking-[0.3em]">The {AI} Philosophy</Kicker>
+            <p className="mt-4 text-[16px] leading-[1.6] text-lp-body">
+              Stop paying for repetitive processes. Start investing in productivity, innovation, and growth.
+            </p>
+            <p className="mt-3 text-[16px] font-semibold leading-[1.6] text-lp-ink">
+              {AI} — Your Business. One Intelligent Platform. Unlimited Potential.
+            </p>
+            <Link href="/register" className={cn(btnPrimary, "mt-7")}>
+              Put {AI} to Work <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+          </Panel>
         </Container>
       </section>
 
-      {/* week one */}
+      {/* your first 30 days */}
       <section className="border-b border-lp-line">
         <Container className="py-24 text-center">
-          <Kicker>Week one</Kicker>
-          <H2>Switching is the part we do for you.</H2>
-          <p className="mx-auto mt-4 max-w-[640px] text-[16px] leading-[1.6] text-lp-body">
-            No implementation project, no consultants, no six-week migration. You sign up; we carry everything over — and she
-            gets to work.
+          <Kicker>Your first 30 days with {AI}</Kicker>
+          <H2>Switching Is Easy. We Handle the Hard Work.</H2>
+          <p className="mx-auto mt-4 max-w-160 text-[16px] leading-[1.6] text-lp-body">
+            No complicated implementation, expensive consultants, or weeks of disruption.{" "}
+            <b className="font-semibold text-lp-ink">Sign up, and let {AI} take care of the transition.</b>
           </p>
-          <Panel className="mx-auto mt-10 max-w-[768px] divide-y divide-lp-line text-left">
+          <Panel className="mx-auto mt-10 max-w-3xl divide-y divide-lp-line text-left">
             {weekOne.map((d) => (
-              <div key={d.day} className="grid grid-cols-[56px_1fr] gap-x-5 px-6 pb-[18px] pt-[22px] sm:grid-cols-[56px_1fr]">
-                <Kicker className="mt-[3px] text-[10px] tracking-[0.3em]">{d.day}</Kicker>
+              <div key={d.day} className="grid grid-cols-[56px_1fr] gap-x-5 px-6 pb-4.5 pt-5.5 sm:grid-cols-[56px_1fr]">
+                <Kicker className="mt-0.75 text-[10px] tracking-[0.3em]">{d.day}</Kicker>
                 <div>
                   <h3 className="text-[15.5px] font-semibold tracking-[-0.035em] text-lp-ink">{d.title}</h3>
                   <p className="mt-1.5 text-[14px] leading-[1.6] text-lp-muted">{d.text}</p>
+                  <p className="mt-2 text-[14px] font-semibold leading-normal text-lp-ink">{d.tag}</p>
                 </div>
               </div>
             ))}
           </Panel>
+          <p className="mx-auto mt-14 max-w-160 text-[16px] font-semibold leading-[1.6] text-lp-ink">
+            {AI} — Simple Transition. Intelligent Automation. Greater Business Efficiency.
+          </p>
           <Link href="/register" className={cn(btnPrimary, "mt-7")}>
-            Start day one <ArrowRight className="h-3.5 w-3.5" />
+            Start Your Journey with {AI} <ArrowRight className="h-3.5 w-3.5" />
           </Link>
-          <p className="mt-3 text-[14px] text-lp-muted">Migration is included. So is changing your mind.</p>
+          <p className="mx-auto mt-4 max-w-140 text-[13px] italic leading-[1.6] text-lp-muted">
+            Migration assistance is included, subject to data compatibility and the scope of your business requirements. Setup
+            and automation timelines may vary.
+          </p>
         </Container>
       </section>
 
-      {/* the humans */}
+      {/* the human expertise */}
       <section id="humans" className="scroll-mt-12 border-b border-lp-line">
         <Container className="py-24">
-          <Kicker>The humans behind her</Kicker>
+          <Kicker>The human expertise behind {AI}</Kicker>
           <H2>
-            When you want a human, <span className="text-lp-blue">a human steps in.</span>
+            AI Efficiency. Human Expertise. <span className="text-lp-brand">Complete Peace of Mind.</span>
           </H2>
-          <p className="mt-4 max-w-[680px] text-[16px] leading-[1.65] text-lp-body">
-            {AI} does the heavy lifting. Qualified accountants and CFOs stand behind her — on demand for month-end, filings,
-            payroll and audits. Pay only for what you use. No retainers, no minimums, no strangers to your books.
+          <p className="mt-4 max-w-175 text-[17px] font-semibold leading-[1.6] text-lp-ink">
+            {AI} handles the routine work. Our qualified accountants, tax professionals, and CFOs step in when you need expert
+            judgement.
+          </p>
+          <p className="mt-3 max-w-175 text-[16px] leading-[1.65] text-lp-body">
+            Get professional financial support on demand, without the cost of maintaining a full-time finance department. Pay
+            for the services you need, when you need them.
           </p>
           <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {humans.map((h) => (
               <Panel key={h.title} className="px-5 pb-7 pt-6">
-                <h.icon className="h-4 w-4 text-lp-blue" strokeWidth={1.75} />
+                <h.icon className="h-4 w-4 text-lp-brand" strokeWidth={1.75} />
                 <h3 className="mt-4 text-[16px] font-semibold tracking-[-0.035em] text-lp-ink">{h.title}</h3>
                 <p className="mt-2.5 text-[14px] leading-[1.65] text-lp-muted">{h.text}</p>
               </Panel>
             ))}
           </div>
 
-          <Panel className="mx-auto mt-12 max-w-[672px] px-8 pb-10 pt-11 text-center">
-            <Kicker className="tracking-[0.3em]">A note from the people building her</Kicker>
+          <Panel className="mx-auto mt-12 max-w-2xl px-8 pb-10 pt-11 text-center">
+            <Kicker className="tracking-[0.3em]">A message from the {AI} team</Kicker>
             <blockquote className="mt-6 font-serif text-[19px] font-medium italic leading-[1.55] text-lp-ink">
-              &ldquo;We spent ten years building ERPs and watching owners drown in their own back office. {AI} is everything we
-              know, folded into a colleague who never tires — she drafts, a human approves, and that rule is permanent.&rdquo;
+              &ldquo;For over a decade, we&rsquo;ve developed business management solutions and witnessed how administrative
+              complexity limits business growth. We built {AI} to change that — combining intelligent automation with human
+              expertise to make businesses more efficient, productive, and profitable. AI handles the repetitive work, while
+              humans retain control of critical decisions.&rdquo;
             </blockquote>
-            <p className="mt-6 text-[14px] text-lp-body">— the {AI} team, Bairuha Tech</p>
+            <p className="mt-6 text-[14px] font-semibold text-lp-ink">— The {AI} Team</p>
           </Panel>
 
-          <p className="mt-12 text-center text-[14px] text-lp-body">
-            The legend is simple, here and inside the product: <b className="font-medium text-lp-teal">turquoise</b> means
-            she&rsquo;s done it; <b className="font-medium text-lp-blue">blue</b> means it needs a human.
-          </p>
+          <div className="mt-14 text-center">
+            <h3 className="text-[24px] font-semibold tracking-[-0.04em] text-lp-ink">One Simple Rule: AI Executes. Humans Decide.</h3>
+            <p className="mx-auto mt-3 max-w-160 text-[16px] leading-[1.6] text-lp-body">
+              Every task in {AI} carries one of two colours, so you always know what has been done and what is waiting for you.
+            </p>
+            <div className="mx-auto mt-8 grid max-w-4xl gap-5 text-left md:grid-cols-2">
+              {rule.map((r) => (
+                <Panel key={r.title} className="relative px-6 pb-7 pt-6">
+                  <span aria-hidden className={cn("absolute inset-x-0 top-0 h-1", r.bar)} />
+                  <span className={cn("inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-[12px] font-semibold", r.chip)}>
+                    <span aria-hidden className={cn("h-2.5 w-2.5 rounded-full", r.bar)} />
+                    {r.tag}
+                  </span>
+                  <h4 className="mt-4 text-[19px] font-semibold tracking-[-0.03em] text-lp-ink">{r.title}</h4>
+                  <p className="mt-1.5 text-[14px] leading-[1.6] text-lp-body">{r.text}</p>
+                  <ul className="mt-4 space-y-2 text-[14px] text-lp-body">
+                    {r.items.map((item) => (
+                      <li key={item} className="flex items-start gap-2.5">
+                        <r.icon className={cn("mt-0.75 h-3.5 w-3.5 shrink-0", r.tone)} strokeWidth={2.25} />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </Panel>
+              ))}
+            </div>
+
+            <p className="mx-auto mt-14 max-w-160 text-[16px] font-semibold leading-[1.6] text-lp-ink">
+              {AI} — The Power of AI. The Confidence of Human Expertise.
+            </p>
+            <Link href="/register" className={cn(btnPrimary, "mt-7")}>
+              Get Started with {AI} <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+          </div>
         </Container>
       </section>
 
-      {/* compliance, in the box */}
+      {/* local compliance, global efficiency */}
       <section className="border-b border-lp-line bg-lp-alt">
         <Container className="py-20">
           <Kicker>Compliance, in the box</Kicker>
-          <H2>The local rules ship with her.</H2>
-          <div className="mt-10 grid gap-5 md:grid-cols-2">
-            {regions.map((r) => (
-              <Panel key={r.k} className="flex gap-4 px-5 py-5">
-                <span className="flex h-[31px] w-[38px] shrink-0 items-center justify-center rounded-full bg-lp-ink text-[11px] font-semibold text-white">
-                  {r.k}
-                </span>
-                <div>
-                  <h3 className="text-[16px] font-semibold tracking-[-0.035em] text-lp-ink">{r.name}</h3>
-                  <p className="mt-1.5 text-[14px] leading-[1.65] text-lp-muted">{r.text}</p>
-                </div>
+          <H2>Local Compliance. Global Efficiency.</H2>
+          <p className="mt-4 max-w-170 text-[16px] leading-[1.65] text-lp-body">
+            Whether you operate in one country or across multiple markets, {AI} helps automate financial processes, reduce
+            administrative costs, and simplify compliance.
+          </p>
+          <div className="mt-10 grid items-start gap-5 md:grid-cols-2">
+            {taxRegions.map((r) => (
+              <Panel key={r.name}>
+                <h3 className="border-b border-lp-line px-5 py-3.5 text-[15px] font-semibold tracking-[-0.03em] text-lp-ink">{r.name}</h3>
+                <dl className="divide-y divide-lp-line">
+                  {r.rows.map((row) => (
+                    <div key={row.country} className="px-5 py-3">
+                      <div className="flex items-baseline justify-between gap-4">
+                        <dt className="text-[14px] font-medium text-lp-ink">{row.country}</dt>
+                        <dd className="shrink-0 text-right text-[14px] font-semibold text-lp-brand">{row.rate}</dd>
+                      </div>
+                      {row.note && <p className="mt-0.5 text-[12.5px] leading-normal text-lp-muted">{row.note}</p>}
+                    </div>
+                  ))}
+                </dl>
               </Panel>
             ))}
+            <Panel className="md:col-span-2">
+              <h3 className="border-b border-lp-line px-5 py-3.5 text-[15px] font-semibold tracking-[-0.03em] text-lp-ink">Africa</h3>
+              <div className="px-5 py-4">
+                <p className="text-[14px] leading-[1.65] text-lp-body">
+                  {AI} simplifies VAT and GST calculations, invoicing, reporting, and tax preparation across Nigeria, South Africa,
+                  Ghana, Morocco, Kenya, Egypt, and many more African countries.
+                </p>
+                <ul className="mt-3.5 flex flex-wrap gap-2">
+                  {africaCountries.map((c) => (
+                    <li key={c.name} className="flex items-center gap-1.5 rounded-full border border-lp-line bg-lp-canvas px-3 py-1 text-[13px] text-lp-ink">
+                      <span aria-hidden>{c.flag}</span>
+                      {c.name}
+                    </li>
+                  ))}
+                  <li className="rounded-full px-1 py-1 text-[13px] text-lp-muted">and many more</li>
+                </ul>
+              </div>
+            </Panel>
+          </div>
+          <div className="mt-14 text-center">
+            <p className="text-[16px] font-semibold text-lp-ink">{AI} — One Platform. Multiple Countries. Smarter Compliance.</p>
+            <Link href="/register" className={cn(btnPrimary, "mt-7")}>
+              Start with {AI} <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
           </div>
         </Container>
       </section>
@@ -623,22 +750,13 @@ export default function LandingPage() {
         <Container className="py-24 text-center">
           <Kicker>Pricing</Kicker>
           <H2>One plan. Everything she does.</H2>
-          <p className="mx-auto mt-4 max-w-[680px] text-[16px] leading-[1.6] text-lp-body">
-            Per company, per year. Unlimited users — your team, your accountant, your auditor, all free. No per-seat math, no
-            surprise tiers, no feature you have to unlock later.
+          <p className="mx-auto mt-4 max-w-170 text-[16px] leading-[1.6] text-lp-body">
+            One price per company, in your own currency, billed monthly or annually. Unlimited users — your team, your
+            accountant, your auditor, all free. No per-seat math, no surprise tiers, no feature you have to unlock later.
           </p>
-          <Panel className="mx-auto mt-10 grid max-w-[896px] text-left md:grid-cols-[468px_1fr] md:divide-x divide-y md:divide-y-0 divide-lp-line">
-            <div className="px-[26px] pb-7 pt-7">
-              <dl className="space-y-[14px]">
-                {pricing.map((p) => (
-                  <div key={p.region} className="flex items-baseline justify-between gap-4">
-                    <dt className="text-[14px] text-lp-body">{p.region}</dt>
-                    <dd className="whitespace-nowrap text-[11px] text-lp-muted">
-                      <span className="text-[16px] font-semibold tracking-[-0.03em] text-lp-ink">{p.price}</span> / company / year
-                    </dd>
-                  </div>
-                ))}
-              </dl>
+          <Panel className="mx-auto mt-10 grid max-w-4xl text-left md:grid-cols-[468px_1fr] md:divide-x divide-y md:divide-y-0 divide-lp-line">
+            <div className="px-6.5 pb-7 pt-7">
+              <PriceLookup />
               <div className="mt-6 border-t border-lp-line pt-6">
                 <p className="text-[14px] leading-[1.65] text-lp-body">
                   A junior back-office hire costs 4–10× this. Works 8 hours. Takes leave. Eventually resigns.{" "}
@@ -650,21 +768,21 @@ export default function LandingPage() {
                 <p className="mt-3 text-center text-[12px] text-lp-muted">No credit card. Cancel anytime.</p>
               </div>
             </div>
-            <div className="px-[26px] pb-7 pt-[34px]">
+            <div className="px-6.5 pb-7 pt-8.5">
               <Kicker className="text-[10px] tracking-[0.3em]">Everything included</Kicker>
-              <ul className="mt-4 space-y-[11px]">
+              <ul className="mt-4 space-y-2.75">
                 {included.map((f) => (
                   <li key={f} className="flex items-start gap-3 text-[14px] text-lp-body">
-                    <Check className="mt-[3px] h-3.5 w-3.5 shrink-0 text-lp-blue" strokeWidth={2} /> {f}
+                    <Check className="mt-0.75 h-3.5 w-3.5 shrink-0 text-lp-brand" strokeWidth={2} /> {f}
                   </li>
                 ))}
               </ul>
             </div>
           </Panel>
-          <ul className="mx-auto mt-9 flex max-w-[900px] flex-wrap justify-center gap-x-5 gap-y-3 text-[14px] text-lp-body">
+          <ul className="mx-auto mt-9 flex max-w-225 flex-wrap justify-center gap-x-5 gap-y-3 text-[14px] text-lp-body">
             {guarantees.map((g) => (
               <li key={g} className="flex items-center gap-1.5">
-                <Check className="h-3.5 w-3.5 text-lp-blue" strokeWidth={2} /> {g}
+                <Check className="h-3.5 w-3.5 text-lp-brand" strokeWidth={2} /> {g}
               </li>
             ))}
           </ul>
@@ -673,13 +791,13 @@ export default function LandingPage() {
 
       {/* faq */}
       <section id="faq" className="scroll-mt-12">
-        <Container className="max-w-[766px] pb-20 pt-24">
-          <Kicker>Questions</Kicker>
-          <H2>Asked, answered.</H2>
+        <Container className="max-w-191.5 pb-20 pt-24">
+          <Kicker>Frequently asked questions</Kicker>
+          <H2>Everything you need to know.</H2>
           <div className="mt-8">
             {faqs.map(([q, a]) => (
               <details key={q} className="group border-b border-lp-line last:border-b-0">
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-6 py-[18px] text-[16px] font-semibold tracking-[-0.03em] text-lp-ink [&::-webkit-details-marker]:hidden">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-6 py-4.5 text-[16px] font-semibold tracking-[-0.03em] text-lp-ink [&::-webkit-details-marker]:hidden">
                   {q}
                   <Plus className="h-3 w-3 shrink-0 text-lp-muted transition-transform group-open:rotate-45" strokeWidth={2.5} />
                 </summary>
@@ -692,57 +810,53 @@ export default function LandingPage() {
 
       {/* final CTA + footer */}
       <div className="relative overflow-hidden bg-lp-navy text-white">
-        <Watermark
-          className="-bottom-[90px] left-[40px] hidden rotate-[160deg] text-[260px] text-white/[0.05] md:block"
-          dot="bg-[#3f5d7a]"
-        />
+        <Watermark className="-left-10 top-10 hidden w-155 text-white/5 md:block" tile="opacity-25" />
         <section className="relative">
           <Container className="py-28 text-center">
-            <TGMark className="text-[22px] text-white" />
+            <TLogo className="mx-auto h-12 w-12" />
             <h2 className="mt-12 text-[36px] font-semibold leading-[1.1] tracking-[-0.045em] sm:text-[46px]">
-              Stop running the back office.
+              Automate your back office, GO efficient.
               <br />
-              <span className="font-serif font-semibold italic tracking-[-0.02em] text-lp-sky">Tell {AI}.</span>
+              <span className="font-serif font-semibold italic tracking-[-0.02em] text-lp-sky">Say {AI}.</span>
             </h2>
-            <p className="mx-auto mt-6 max-w-[460px] text-[16px] leading-[1.6] text-white/75">
-              Five minutes from now, your chart of accounts exists and {AI} is reading her first invoice. Your evenings come
-              back.
+            <p className="mt-7 text-[18px] font-semibold tracking-[-0.02em]">In Just Five Minutes, Your Business Gets Smarter.</p>
+            <p className="mx-auto mt-3 max-w-130 text-[16px] leading-[1.6] text-white/75">
+              Your chart of accounts is ready, {AI} is processing her first invoice, and your business is moving towards
+              intelligent automation.
+            </p>
+            <p className="mx-auto mt-3 max-w-140 text-[15px] font-semibold leading-[1.6] text-white/90">
+              Less Administration. Greater Efficiency. More Time for What Matters.
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-2.5">
               <Link href="/register" className={btnPrimary}>
-                Hire {AI} <ArrowRight className="h-3.5 w-3.5" />
+                Join {AI} <ArrowRight className="h-3.5 w-3.5" />
               </Link>
               <a
                 href={BRAND.whatsapp}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2.5 rounded-full border border-white/40 px-[26px] py-[7px] text-[15px] font-medium text-white transition hover:bg-white/5"
+                className="inline-flex items-center gap-2.5 rounded-full border border-white/40 px-6.5 py-1.75 text-[15px] font-medium text-white transition hover:bg-white/5"
               >
                 Talk to a person <ArrowRight className="h-3.5 w-3.5" />
               </a>
             </div>
-            <p className="mt-7 text-[14px] text-white/55">Month-end is coming either way.</p>
-            <p className="mt-12 font-serif text-[15px] italic text-white/45">Sen söyle. {AI} halleder.</p>
+            <div className="mx-auto mt-12 max-w-130 border-t border-white/10 pt-10">
+              <p className="text-[17px] font-semibold tracking-[-0.02em]">Month-End Is Coming. Are You Ready?</p>
+              <p className="mt-2 text-[15px] leading-[1.6] text-white/65">
+                No more last-minute reconciliations, endless spreadsheets, or financial reporting stress.
+              </p>
+              <p className="mt-4 text-[15px] font-semibold text-white/90">You decide. {AI} gets it done.</p>
+            </div>
+            <p className="mt-10 font-serif text-[17px] italic text-lp-sky/80" lang="fr">
+              &laquo;&nbsp;Vous le dites. {AI} s&rsquo;occupe du reste.&nbsp;&raquo;
+            </p>
+            <p className="mt-3 text-[13px] font-semibold uppercase tracking-[0.18em] text-white/50">
+              Less Stress. Smarter Accounting. Greater Efficiency.
+            </p>
           </Container>
         </section>
 
-        <footer className="relative border-t border-white/10">
-          <Container className="flex flex-col items-center justify-between gap-4 py-7 sm:flex-row">
-            <LandingLogo dark />
-            <nav className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-[14px] text-white/65">
-              <Link href="/login" className="hover:text-white">
-                Sign in
-              </Link>
-              <Link href="/register" className="hover:text-white">
-                Create account
-              </Link>
-              <a href={BRAND.whatsapp} target="_blank" rel="noopener noreferrer" className="hover:text-white">
-                Partners
-              </a>
-              <span>© 2026 {AI}. All rights reserved.</span>
-            </nav>
-          </Container>
-        </footer>
+        <LandingFooter />
       </div>
 
       <WhatsAppButton />
