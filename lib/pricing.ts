@@ -1,8 +1,14 @@
 /**
  * Tax GO subscription pricing, per country, in local currency.
  *
- * Source: "New Country Prices.xlsx" (Product / Currency / Country / Symbol /
+ * Source: "New Country Prices (1).xlsx" (Product / Currency / Country / Symbol /
  * Amount / 1 = monthly, 12 = annual). Amounts are per company, unlimited users.
+ *
+ * The workbook has one sheet per package. Every sheet derives from the Complete
+ * Package column by a constant divisor, exactly and for all 166 rows, so the
+ * monthly/annual figures below are the Complete Package and PACKAGES carries the
+ * divisor. If sales ever decouples a package, give it its own figures and change
+ * amountFor — nothing else reads the divisor.
  *
  * Notes on the source data:
  *  - Bahrain, North Macedonia, Slovakia and Gabon carried currency codes that
@@ -132,6 +138,100 @@ export const FEATURED_PRICES: CountryPrice[] = FEATURED_CODES.map((c) => priceFo
   (p): p is CountryPrice => Boolean(p),
 );
 
+/* ---------- packages ---------- */
+
+export type PackageId = "complete" | "accounting" | "hr-payroll" | "retail" | "crm";
+
+export type Package = {
+  id: PackageId;
+  name: string;
+  blurb: string;
+  /** Complete Package price / divisor, as the workbook derives each sheet. */
+  divisor: number;
+  includes: string[];
+};
+
+export const PACKAGES: Package[] = [
+  {
+    id: "complete",
+    name: "Complete Package",
+    blurb: "The whole business, end to end.",
+    divisor: 1,
+    includes: [
+      "All 15 module groups",
+      "Accounting, finance & tax compliance",
+      "Sales, purchasing, inventory & manufacturing",
+      "HR, payroll, CRM, POS & projects",
+      "Every one of Tax GO's agents",
+      "Analytics, reporting & the full audit trail",
+    ],
+  },
+  {
+    id: "accounting",
+    name: "Accounting Only",
+    blurb: "The books, the bank and the filings.",
+    divisor: 2,
+    includes: [
+      "General ledger, tax & compliance",
+      "Banking, loans, budgets & reconciliations",
+      "Quick entry, daybook & Tally-style vouchers",
+      "Reports, statements & analytics",
+      "Real double-entry & full audit trail",
+    ],
+  },
+  {
+    id: "hr-payroll",
+    name: "HR & Payroll",
+    blurb: "Your people, paid and accounted for.",
+    divisor: 6,
+    includes: [
+      "Employees, leave & attendance",
+      "Salary structures & payroll runs",
+      "Payslips, claims & statutory payments",
+      "Payroll posting into the ledger",
+    ],
+  },
+  {
+    id: "retail",
+    name: "Retail",
+    blurb: "The counter, the stockroom and the van.",
+    divisor: 6,
+    includes: [
+      "Point of sale & van distribution",
+      "Products, stock & multi-warehouse",
+      "Order-to-cash: quotes, orders, invoices",
+      "Stock valuation & movement reports",
+    ],
+  },
+  {
+    id: "crm",
+    name: "CRM",
+    blurb: "Every lead, followed up.",
+    divisor: 6,
+    includes: [
+      "Leads, opportunities & pipeline",
+      "Activities, quotes & proposals",
+      "Campaigns, segments & web forms",
+      "Lead scoring & forecasts",
+    ],
+  },
+];
+
+export const DEFAULT_PACKAGE_ID: PackageId = "complete";
+
+export function packageFor(id: string): Package {
+  return PACKAGES.find((p) => p.id === id) ?? PACKAGES[0];
+}
+
+export type Cycle = "monthly" | "annual";
+
+/** The price of one package in a country, rounded to whole currency units. */
+export function amountFor(p: CountryPrice, pkg: Package, cycle: Cycle): number {
+  return Math.round((cycle === "annual" ? p.annual : p.monthly) / pkg.divisor);
+}
+
+/* ---------- formatting ---------- */
+
 const LETTERS_ONLY = /^\p{L}[\p{L}.]*$/u;
 /** Right-to-left scripts render badly inline, so those fall back to the ISO code. */
 const RTL = /[֐-׿؀-ۿ܀-ݏ]/;
@@ -144,15 +244,17 @@ export function formatMoney(p: CountryPrice, amount: number): string {
 }
 
 /** Percent saved by paying annually instead of 12 × monthly. 0 when there is none. */
-export function annualSavingPct(p: CountryPrice): number {
-  const full = p.monthly * 12;
-  if (full <= p.annual) return 0;
-  return Math.round(((full - p.annual) / full) * 100);
+export function annualSavingPct(p: CountryPrice, pkg: Package = PACKAGES[0]): number {
+  const monthly = amountFor(p, pkg, "monthly");
+  const annual = amountFor(p, pkg, "annual");
+  const full = monthly * 12;
+  if (full <= annual) return 0;
+  return Math.round(((full - annual) / full) * 100);
 }
 
 /** What the annual plan works out to per month. */
-export function annualPerMonth(p: CountryPrice): number {
-  return Math.round(p.annual / 12);
+export function annualPerMonth(p: CountryPrice, pkg: Package = PACKAGES[0]): number {
+  return Math.round(amountFor(p, pkg, "annual") / 12);
 }
 
 /** Other names people type for a country. */

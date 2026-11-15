@@ -8,12 +8,18 @@ import { BRAND } from "@/lib/brand";
 import {
   COUNTRY_PRICES,
   DEFAULT_CODE,
+  DEFAULT_PACKAGE_ID,
+  PACKAGES,
   REGIONS,
   type CountryPrice,
+  type Cycle,
+  type Package,
   type Region,
+  amountFor,
   annualPerMonth,
   annualSavingPct,
   formatMoney,
+  packageFor,
   priceFor,
   searchCountries,
 } from "@/lib/pricing";
@@ -22,17 +28,11 @@ import { Panel, btnOutline, btnPrimary } from "@/components/landing/chrome";
 
 const AI = BRAND.fullName;
 
-type Cycle = "monthly" | "annual";
-
-const included = [
+/** True of every package, whichever modules it carries. */
+const alwaysIncluded = [
   "Unlimited users — your whole team, free",
-  "All 15 module groups",
-  `All of ${AI}'s agents`,
   "Local tax, e-invoicing & statutory filings",
-  "Multi-currency & your whole org tree",
-  "Real double-entry & full audit trail",
   "Priority onboarding & free migration",
-  "On-demand accountants & CFOs available",
 ];
 
 /** The country to open on: an exact name match for `?country=`, else its first match, else the default. */
@@ -48,16 +48,38 @@ export function PricingExplorer() {
   const asked = useSearchParams().get("country") ?? "";
   const [code, setCode] = useState<string>(() => initialCode(asked));
   const [cycle, setCycle] = useState<Cycle>("annual");
+  const [pkgId, setPkgId] = useState<string>(DEFAULT_PACKAGE_ID);
   const [query, setQuery] = useState(asked);
   const [region, setRegion] = useState<Region | "All">("All");
 
   const selected = priceFor(code) ?? COUNTRY_PRICES[0];
+  const pkg = packageFor(pkgId);
   const results = useMemo(() => searchCountries(query, region), [query, region]);
 
   return (
     <>
+      {/* package */}
+      <div role="tablist" aria-label="Package" className="mt-8 flex flex-wrap justify-center gap-2">
+        {PACKAGES.map((o) => (
+          <button
+            key={o.id}
+            role="tab"
+            aria-selected={o.id === pkg.id}
+            onClick={() => setPkgId(o.id)}
+            className={cn(
+              "rounded-full border px-4 py-1.5 text-[14px] font-medium transition",
+              o.id === pkg.id
+                ? "border-lp-ink bg-lp-ink text-lp-canvas"
+                : "border-lp-line bg-lp-card text-lp-body hover:text-lp-ink",
+            )}
+          >
+            {o.name}
+          </button>
+        ))}
+      </div>
+
       {/* billing cycle */}
-      <div className="mt-9 flex justify-center">
+      <div className="mt-4 flex justify-center">
         <div
           role="tablist"
           aria-label="Billing cycle"
@@ -75,9 +97,9 @@ export function PricingExplorer() {
               )}
             >
               {c}
-              {c === "annual" && annualSavingPct(selected) > 0 ? (
+              {c === "annual" && annualSavingPct(selected, pkg) > 0 ? (
                 <span className={cn("ml-1.5 text-[12px]", cycle === c ? "text-lp-navy/70" : "text-lp-brand")}>
-                  save {annualSavingPct(selected)}%
+                  save {annualSavingPct(selected, pkg)}%
                 </span>
               ) : null}
             </button>
@@ -155,7 +177,7 @@ export function PricingExplorer() {
                       </span>
                       <span className="shrink-0 whitespace-nowrap text-[11px] text-lp-muted">
                         <span className="text-[14px] font-semibold tracking-[-0.02em] text-lp-ink">
-                          {formatMoney(p, cycle === "annual" ? p.annual : p.monthly)}
+                          {formatMoney(p, amountFor(p, pkg, cycle))}
                         </span>{" "}
                         / {cycle === "annual" ? "yr" : "mo"}
                       </span>
@@ -169,16 +191,27 @@ export function PricingExplorer() {
 
         {/* selected country */}
         <div className="order-1 lg:order-2 lg:sticky lg:top-17.5">
-          <SelectedCard price={selected} cycle={cycle} />
+          <SelectedCard price={selected} pkg={pkg} cycle={cycle} onPickPackage={setPkgId} />
         </div>
       </div>
     </>
   );
 }
 
-function SelectedCard({ price, cycle }: { price: CountryPrice; cycle: Cycle }) {
-  const amount = cycle === "annual" ? price.annual : price.monthly;
-  const saving = annualSavingPct(price);
+function SelectedCard({
+  price,
+  pkg,
+  cycle,
+  onPickPackage,
+}: {
+  price: CountryPrice;
+  pkg: Package;
+  cycle: Cycle;
+  onPickPackage: (id: string) => void;
+}) {
+  const amount = amountFor(price, pkg, cycle);
+  const saving = annualSavingPct(price, pkg);
+  const others = PACKAGES.filter((p) => p.id !== pkg.id);
 
   return (
     <Panel className="px-6.5 pb-7 pt-7 text-left">
@@ -192,7 +225,10 @@ function SelectedCard({ price, cycle }: { price: CountryPrice; cycle: Cycle }) {
         </span>
       </p>
 
-      <p className="mt-4 flex flex-wrap items-baseline gap-x-2">
+      <p className="mt-5 text-[15px] font-semibold tracking-[-0.03em] text-lp-ink">{pkg.name}</p>
+      <p className="text-[13px] text-lp-muted">{pkg.blurb}</p>
+
+      <p className="mt-3 flex flex-wrap items-baseline gap-x-2">
         <span className="text-[40px] font-semibold leading-[1.05] tracking-[-0.045em] text-lp-ink">
           {formatMoney(price, amount)}
         </span>
@@ -204,17 +240,17 @@ function SelectedCard({ price, cycle }: { price: CountryPrice; cycle: Cycle }) {
       <p className="mt-2 text-[13px] text-lp-muted">
         {cycle === "annual" ? (
           <>
-            Works out to {formatMoney(price, annualPerMonth(price))} a month
+            Works out to {formatMoney(price, annualPerMonth(price, pkg))} a month
             {saving > 0 ? <> — {saving}% below paying monthly</> : null}.
           </>
         ) : (
           <>
             {saving > 0 ? (
               <>
-                Pay annually at {formatMoney(price, price.annual)} and save {saving}%.
+                Pay annually at {formatMoney(price, amountFor(price, pkg, "annual"))} and save {saving}%.
               </>
             ) : (
-              <>Annual billing: {formatMoney(price, price.annual)}.</>
+              <>Annual billing: {formatMoney(price, amountFor(price, pkg, "annual"))}.</>
             )}
           </>
         )}
@@ -222,9 +258,32 @@ function SelectedCard({ price, cycle }: { price: CountryPrice; cycle: Cycle }) {
 
       <div className="mt-6 border-t border-lp-line pt-6">
         <ul className="space-y-2.75">
-          {included.map((f) => (
+          {[...pkg.includes, ...alwaysIncluded].map((f) => (
             <li key={f} className="flex items-start gap-3 text-[14px] text-lp-body">
               <Check className="mt-0.75 h-3.5 w-3.5 shrink-0 text-lp-brand" strokeWidth={2} /> {f}
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* the other packages, priced in the same currency and cycle */}
+      <div className="mt-6 border-t border-lp-line pt-5">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-lp-muted">Other packages</p>
+        <ul className="mt-2.5 -mx-2">
+          {others.map((o) => (
+            <li key={o.id}>
+              <button
+                onClick={() => onPickPackage(o.id)}
+                className="flex w-full items-baseline justify-between gap-4 rounded-lg px-2 py-1.5 text-left transition hover:bg-lp-canvas"
+              >
+                <span className="truncate text-[14px] text-lp-body">{o.name}</span>
+                <span className="shrink-0 whitespace-nowrap text-[11px] text-lp-muted">
+                  <span className="text-[14px] font-semibold tracking-[-0.02em] text-lp-ink">
+                    {formatMoney(price, amountFor(price, o, cycle))}
+                  </span>{" "}
+                  / {cycle === "annual" ? "yr" : "mo"}
+                </span>
+              </button>
             </li>
           ))}
         </ul>

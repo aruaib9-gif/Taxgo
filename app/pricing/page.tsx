@@ -19,7 +19,7 @@ const AI = BRAND.fullName;
 
 export const metadata = {
   title: `Pricing — ${BRAND.fullName}`,
-  description: `One plan, priced in your own currency across ${COUNTRY_PRICES.length} countries. Unlimited users, billed monthly or annually.`,
+  description: `Five packages, priced in your own currency across ${COUNTRY_PRICES.length} countries. Unlimited users, billed monthly or annually.`,
 };
 
 const guarantees = [
@@ -36,8 +36,12 @@ const faqs: [string, string][] = [
     "No. It's one price per company, and every user is free — your team, your accountant and your auditor included. Add people as you grow and nothing changes.",
   ],
   [
+    "What's the difference between the packages?",
+    "The Complete Package is the whole system — all 15 module groups. The others carve out one part of it: Accounting Only is the books, bank and filings at half the price; HR & Payroll, Retail and CRM are a sixth each. You can move up to Complete at any time.",
+  ],
+  [
     "Can I pay monthly instead of annually?",
-    "Yes. Both are shown above for every country. Annual is the cheaper of the two and is locked for as long as you stay.",
+    "Yes. Both are shown above for every package and country. Annual is the cheaper of the two and is locked for as long as you stay.",
   ],
   [
     "Which currency am I charged in?",
@@ -69,11 +73,11 @@ export default function PricingPage() {
           <div className="relative z-10 text-center">
             <Kicker>Pricing</Kicker>
             <H2>
-              One plan. <Serif className="text-[32px] sm:text-[40px]">Your currency.</Serif>
+              Five packages. <Serif className="text-[32px] sm:text-[40px]">Your currency.</Serif>
             </H2>
             <p className="mx-auto mt-4 max-w-160 text-[16px] leading-[1.6] text-lp-body">
-              Pick your country and see exactly what {AI} costs there — per company, unlimited users, billed monthly or
-              annually. {COUNTRY_PRICES.length} countries, priced locally.
+              Pick a package and your country, and see exactly what {AI} costs there — per company, unlimited users,
+              billed monthly or annually. {COUNTRY_PRICES.length} countries, priced locally.
             </p>
           </div>
           <Suspense>

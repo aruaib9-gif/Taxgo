@@ -306,7 +306,7 @@ const faqs: [string, string][] = [
   ],
   [
     `How much does ${AI} cost?`,
-    "One plan, priced per company in your local currency, with everything included. Pay monthly or save with annual billing. Users are unlimited — your team, your accountant and your auditor are all free. Type your country in the pricing section above to see your price.",
+    "One price per company in your local currency — never per user. The Complete Package covers every module; Accounting Only is half that, and HR & Payroll, Retail and CRM are a sixth each. Pay monthly or save with annual billing. Type your country in the pricing section above to see your price.",
   ],
   [
     "Can I manage several companies or countries?",
@@ -749,10 +749,11 @@ export default function LandingPage() {
       <section id="pricing" className="scroll-mt-12 border-b border-lp-line">
         <Container className="py-24 text-center">
           <Kicker>Pricing</Kicker>
-          <H2>One plan. Everything she does.</H2>
+          <H2>Five packages. One price per company.</H2>
           <p className="mx-auto mt-4 max-w-170 text-[16px] leading-[1.6] text-lp-body">
-            One price per company, in your own currency, billed monthly or annually. Unlimited users — your team, your
-            accountant, your auditor, all free. No per-seat math, no surprise tiers, no feature you have to unlock later.
+            Take the Complete Package — everything she does — or just the part you need: Accounting, HR &amp; Payroll,
+            Retail or CRM. Priced per company in your own currency, billed monthly or annually. Unlimited users — your
+            team, your accountant, your auditor, all free. No per-seat math.
           </p>
           <Panel className="mx-auto mt-10 grid max-w-4xl text-left md:grid-cols-[468px_1fr] md:divide-x divide-y md:divide-y-0 divide-lp-line">
             <div className="px-6.5 pb-7 pt-7">
@@ -769,7 +770,7 @@ export default function LandingPage() {
               </div>
             </div>
             <div className="px-6.5 pb-7 pt-8.5">
-              <Kicker className="text-[10px] tracking-[0.3em]">Everything included</Kicker>
+              <Kicker className="text-[10px] tracking-[0.3em]">Complete Package — all included</Kicker>
               <ul className="mt-4 space-y-2.75">
                 {included.map((f) => (
                   <li key={f} className="flex items-start gap-3 text-[14px] text-lp-body">
