@@ -19,7 +19,9 @@ import {
   X,
   type LucideIcon,
 } from "lucide-react";
+import Link from "next/link";
 import { useDismiss } from "@/lib/use-dismiss";
+import { INBOX_TYPES, sendToInbox } from "@/lib/attachments";
 import { cn } from "@/lib/utils";
 
 const SPECIALISTS: { name: string; icon: LucideIcon }[] = [
@@ -37,13 +39,14 @@ const SPECIALISTS: { name: string; icon: LucideIcon }[] = [
 // No AI backend is wired into this build yet; replies say so instead of inventing answers.
 const OFFLINE_REPLY = "I'm not connected to an AI service in this build yet, so I can't answer that here.";
 
-type Message = { role: "user" | "assistant"; text: string };
+type Message = { role: "user" | "assistant"; text: string; link?: { href: string; label: string } };
 
 type AssistantState = {
   open: boolean;
   setOpen: (open: boolean) => void;
   messages: Message[];
   ask: (question: string) => void; // opens the panel; a non-empty question is added to the conversation
+  attach: (files: File[]) => Promise<void>; // files go to the Document Inbox for review
   clear: () => void;
 };
 
@@ -66,9 +69,26 @@ export function AssistantProvider({ children }: { children: React.ReactNode }) {
     setMessages((m) => [...m, { role: "user", text }, { role: "assistant", text: OFFLINE_REPLY }]);
   }, []);
 
+  const attach = useCallback(async (files: File[]) => {
+    if (!files.length) return;
+    setOpen(true);
+    const docs = await Promise.all(files.map((f) => sendToInbox(f)));
+    const names = files.map((f) => f.name).join(", ");
+    const one = docs.length === 1;
+    setMessages((m) => [
+      ...m,
+      { role: "user", text: `📎 ${names}` },
+      {
+        role: "assistant",
+        text: `${one ? "I've added this file" : `I've added these ${docs.length} files`} to your Document Inbox and classified ${one ? "it" : "them"}. Review the proposed booking there before anything is posted.`,
+        link: one ? { href: `/documents/${docs[0].id}`, label: "Open in Document Inbox" } : { href: "/documents", label: "Open Document Inbox" },
+      },
+    ]);
+  }, []);
+
   const clear = useCallback(() => setMessages([]), []);
 
-  return <AssistantContext.Provider value={{ open, setOpen, messages, ask, clear }}>{children}</AssistantContext.Provider>;
+  return <AssistantContext.Provider value={{ open, setOpen, messages, ask, attach, clear }}>{children}</AssistantContext.Provider>;
 }
 
 export function AssistantButton() {
@@ -88,7 +108,7 @@ export function AssistantButton() {
 }
 
 export function AssistantPanel() {
-  const { open, setOpen, messages, ask, clear } = useAssistant();
+  const { open, setOpen, messages, ask, attach, clear } = useAssistant();
   const [specialist, setSpecialist] = useState(SPECIALISTS[0]);
   const [menuOpen, setMenuOpen] = useState(false);
   const [draft, setDraft] = useState("");
@@ -206,14 +226,19 @@ export function AssistantPanel() {
           <div className="space-y-3 p-4">
             {messages.map((m, i) => (
               <div key={i} className={cn("flex", m.role === "user" ? "justify-end" : "justify-start")}>
-                <p
+                <div
                   className={cn(
                     "max-w-[85%] rounded-xl px-3 py-2 text-sm",
                     m.role === "user" ? "rounded-br-sm bg-primary text-primary-foreground" : "rounded-bl-sm bg-muted text-foreground",
                   )}
                 >
-                  {m.text}
-                </p>
+                  <p>{m.text}</p>
+                  {m.link && (
+                    <Link href={m.link.href} className="mt-1.5 inline-block font-medium text-primary underline-offset-2 hover:underline">
+                      {m.link.label} →
+                    </Link>
+                  )}
+                </div>
               </div>
             ))}
             <div ref={endRef} />
@@ -223,11 +248,23 @@ export function AssistantPanel() {
 
       <div className="border-t border-border bg-background">
         <div className="flex items-end gap-2 p-3">
-          <input ref={fileRef} type="file" className="hidden" accept=".csv,.txt,.json,.xlsx,.xls,.pdf,.doc,.docx,.png,.jpg,.jpeg,.webp,.gif" />
+          <input
+            ref={fileRef}
+            type="file"
+            multiple
+            className="hidden"
+            accept={INBOX_TYPES}
+            onChange={(e) => {
+              const files = Array.from(e.target.files ?? []);
+              e.target.value = "";
+              void attach(files);
+            }}
+          />
           <button
             type="button"
             onClick={() => fileRef.current?.click()}
-            title="Attach a CSV, Excel, PDF, Word or image"
+            aria-label="Attach a file"
+            title="Attach a receipt, invoice, bill or statement (PDF, image, CSV or Excel)"
             className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md hover:bg-accent hover:text-accent-foreground"
           >
             <Paperclip className="h-4 w-4" />

@@ -5,6 +5,8 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { ChevronDown, Download, FileText, Plus, Sparkles, Trash2 } from "lucide-react";
 import { useAssistant } from "@/components/assistant";
+import { AttachButton, AttachmentList, RECEIPT_TYPES } from "@/components/attachments";
+import { sendToInbox, type Attachment } from "@/lib/attachments";
 import { deleteRecord, type Rec } from "@/lib/store";
 import { accountLabel, createJournal, isBalanced, linesOf, postJournal, reverseJournal, totalsOf, useAccounts, useFiscalPeriods, useJournals, type JournalLine } from "@/lib/ledger";
 import { useDismiss } from "@/lib/use-dismiss";
@@ -12,6 +14,7 @@ import { cn } from "@/lib/utils";
 import { AccountPicker, Badge, Card, CardTitle, DataTable, Dialog, Field, PageHeader, SearchInput, Select, SidePanel, btn, downloadFile, inputCls, longDate, money, textareaCls, toCSV, toExcelHTML, today, type Column , DateInput } from "./kit";
 
 const BASE = "/financial/journal-entries";
+const attachmentsOf = (r: Rec) => (Array.isArray(r.attachments) ? (r.attachments as Attachment[]) : []);
 const STATUSES = ["DRAFT", "POSTED", "REVERSED"];
 
 export const statusBadge = (s: unknown) =>
@@ -115,7 +118,19 @@ function ExportMenu({ onCSV, onExcel }: { onCSV: () => void; onExcel: () => void
 // No AI service is wired in this build, so the description goes to the assistant panel.
 function AiDraftDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
   const { ask } = useAssistant();
+  const router = useRouter();
   const [text, setText] = useState("");
+  const [files, setFiles] = useState<Attachment[]>([]);
+  async function create() {
+    if (text.trim()) ask(`Draft a journal entry: ${text}`);
+    // Attached receipts/invoices go to the Document Inbox, which proposes the booking for review.
+    const docs = await Promise.all(files.map((f) => sendToInbox(f)));
+    setText("");
+    setFiles([]);
+    onClose();
+    if (docs.length === 1) router.push(`/documents/${docs[0].id}`);
+    else if (docs.length > 1) router.push("/documents");
+  }
   return (
     <Dialog
       open={open}
@@ -132,28 +147,22 @@ function AiDraftDialog({ open, onClose }: { open: boolean; onClose: () => void }
         className={textareaCls}
       />
       <div className="flex items-center justify-between gap-2">
-        <label className={cn(btn.smOutline, "cursor-pointer")}>
+        <AttachButton className={btn.smOutline} accept={RECEIPT_TYPES} onAttach={(a) => setFiles((f) => [...f, ...a])}>
           <FileText /> Attach file
-          <input type="file" className="hidden" accept=".pdf,.png,.jpg,.jpeg,.webp" />
-        </label>
+        </AttachButton>
         <div className="flex gap-2">
           <button type="button" onClick={onClose} className={btn.outline}>
             Cancel
           </button>
-          <button
-            type="button"
-            disabled={!text.trim()}
-            onClick={() => {
-              ask(`Draft a journal entry: ${text}`);
-              setText("");
-              onClose();
-            }}
-            className={btn.primary}
-          >
+          <button type="button" disabled={!text.trim() && !files.length} onClick={create} className={btn.primary}>
             <Sparkles /> Create draft
           </button>
         </div>
       </div>
+      <AttachmentList items={files} onRemove={(id) => setFiles((f) => f.filter((x) => x.id !== id))} />
+      {files.length > 0 && (
+        <p className="text-xs text-muted-foreground">Attached files go to the Document Inbox, where the proposed entry is ready for your review.</p>
+      )}
     </Dialog>
   );
 }
@@ -212,6 +221,7 @@ function JournalForm({ onDone }: { onDone: () => void }) {
   const [periodId, setPeriodId] = useState("");
   const [description, setDescription] = useState("");
   const [lines, setLines] = useState<JournalLine[]>([emptyLine(), emptyLine()]);
+  const [attachments, setAttachments] = useState<Attachment[]>([]);
   const [error, setError] = useState("");
   const valid = description.trim() && isBalanced(lines) && lines.every((l) => !(l.debit || l.credit) || l.accountId);
 
@@ -219,7 +229,7 @@ function JournalForm({ onDone }: { onDone: () => void }) {
     e.preventDefault();
     const period = periods.find((p) => p.id === periodId);
     if (period?.isLocked) return setError(`${period.name} is closed. Reopen it or pick another period.`);
-    createJournal({ date, description: description.trim(), lines, fiscalPeriodId: periodId || undefined });
+    createJournal({ date, description: description.trim(), lines, fiscalPeriodId: periodId || undefined, attachments });
     onDone();
   }
 
@@ -236,11 +246,12 @@ function JournalForm({ onDone }: { onDone: () => void }) {
           <button type="button" disabled={!ai.trim()} onClick={() => ask(`Suggest a journal entry for: ${ai}`)} className={btn.smPrimary}>
             <Sparkles /> Suggest entry
           </button>
-          <label className={cn(btn.smOutline, "cursor-pointer")}>
+          <AttachButton className={btn.smOutline} accept={RECEIPT_TYPES} onAttach={(a) => setAttachments((x) => [...x, ...a])}>
             <FileText /> Attach receipt/invoice
-            <input type="file" className="hidden" accept=".pdf,.png,.jpg,.jpeg,.webp" />
-          </label>
+          </AttachButton>
         </div>
+        <AttachmentList items={attachments} onRemove={(id) => setAttachments((x) => x.filter((a) => a.id !== id))} />
+        {attachments.length > 0 && <p className="text-xs text-muted-foreground">Saved with this entry as supporting documents.</p>}
       </div>
       <Card>
         <div className="space-y-4 p-6">
@@ -297,6 +308,14 @@ function JournalDetail({ entry, accounts, onDone }: { entry: Rec; accounts: Rec[
           <p className="text-sm">{String(entry.description ?? "")}</p>
         </div>
       </Card>
+      {attachmentsOf(entry).length > 0 && (
+        <Card>
+          <div className="space-y-3 p-6">
+            <CardTitle>Attachments</CardTitle>
+            <AttachmentList items={attachmentsOf(entry)} />
+          </div>
+        </Card>
+      )}
       <Card>
         <div className="p-6">
           <CardTitle className="mb-3">Lines</CardTitle>

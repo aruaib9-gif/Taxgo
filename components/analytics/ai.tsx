@@ -15,6 +15,7 @@ import { budgetActuals } from "@/lib/finance";
 import { matchCandidates, matchTxn } from "@/lib/banking";
 import { balanceAsOf, daysAgo, daysBetween, lineNet, openItems, todayIso } from "@/lib/reports";
 import { cn } from "@/lib/utils";
+import { INBOX_TYPES, sendToInbox } from "@/lib/attachments";
 import { AccountPicker, Badge, Card, CardTitle, Dialog, btn, inputCls, money, num, textareaCls } from "@/components/accounting/kit";
 import { Select } from "@/components/accounting/pickers";
 import { ReportHeader, SimpleTable, useBooks } from "@/components/analytics/kit";
@@ -116,6 +117,20 @@ export function Chat() {
     logAction(P.persona, question);
     setText("");
   }
+  // There is no file-reading model here, so attachments go to the Document Inbox for classification and review.
+  async function attach(files: File[]) {
+    if (!files.length) return;
+    const docs = await Promise.all(files.map((f) => sendToInbox(f)));
+    const one = docs.length === 1;
+    const a: Answer = {
+      text: `Added ${one ? `**${files[0].name}**` : `**${docs.length} files**`} to the Document Inbox and classified ${one ? "it" : "them"}. Review the proposed booking there before anything is posted.`,
+      links: [one ? { label: "Open in Document Inbox", href: `/documents/${docs[0].id}` } : { label: "Open Document Inbox", href: "/documents" }],
+    };
+    const now = new Date().toISOString();
+    const add: Msg[] = [{ role: "user", text: `📎 ${files.map((f) => f.name).join(", ")}`, at: now }, { role: "assistant", text: a.text, answer: a, at: now }];
+    if (active) updateRecord("ai-chats", active.id, { messages: [...msgs, ...add], updatedAt: now });
+    else setActiveId(createRecord("ai-chats", { persona: P.persona, title: `Attachment: ${files[0].name}`.slice(0, 60), messages: add, updatedAt: now }).id);
+  }
   return (
     <div className="-m-2 flex h-[calc(100vh-9rem)] min-h-[32rem] overflow-hidden">
       <aside className="hidden w-52 shrink-0 flex-col border-r border-border pr-2 md:flex">
@@ -130,7 +145,10 @@ export function Chat() {
           </div> : <div className="mx-auto max-w-3xl space-y-4">{msgs.map((m, i) => m.role === "user" ? <div key={i} className="flex justify-end"><div className="max-w-[80%] rounded-2xl bg-primary px-4 py-2 text-sm text-primary-foreground">{m.text}</div></div> : <div key={i} className="flex gap-2"><span className="mt-1 flex size-7 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary"><P.icon className="size-3.5" /></span><div className="min-w-0 flex-1 rounded-2xl border border-border bg-card px-4 py-3">{m.answer ? <AnswerView a={m.answer} /> : m.text}</div></div>)}</div>}
         </div>
         <form className="flex items-center gap-2 border-t border-border p-3" onSubmit={(e) => { e.preventDefault(); ask(text); }}>
-          <button type="button" aria-label="Attach" title="Attachments aren't read by the rule-based assistant" className="text-muted-foreground" disabled><Paperclip className="size-4" /></button>
+          <label className="grid size-9 shrink-0 cursor-pointer place-items-center rounded-full text-muted-foreground hover:bg-accent hover:text-foreground" title="Attach a receipt, invoice, bill or statement">
+            <Paperclip className="size-4" />
+            <input type="file" multiple aria-label="Attach" className="sr-only" accept={INBOX_TYPES} onChange={(e) => { const f = Array.from(e.target.files ?? []); e.target.value = ""; void attach(f); }} />
+          </label>
           <input aria-label="Message" className={cn(inputCls, "h-10 flex-1 rounded-full")} placeholder={P.placeholder} value={text} onChange={(e) => setText(e.target.value)} />
           <button type="submit" aria-label="Send" className={cn(btn.primary, "size-10 rounded-full p-0")} disabled={!text.trim()}><Send /></button>
         </form>

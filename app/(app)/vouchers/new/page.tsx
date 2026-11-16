@@ -1,5 +1,6 @@
 import { Sparkles, Paperclip, Plus } from "lucide-react";
 import { Card, Button } from "@/components/ui";
+import { InboxAttachButton } from "@/components/attachments";
 
 export const metadata = { title: "Voucher Entry" };
 
@@ -34,9 +35,9 @@ export default function VoucherEntry() {
           <Button size="sm">
             <Sparkles className="h-4 w-4" /> Suggest entry
           </Button>
-          <Button variant="outline" size="sm">
+          <InboxAttachButton className="inline-flex h-8 items-center gap-1.5 rounded-md border border-input bg-background px-3 text-xs font-medium shadow-sm hover:bg-accent hover:text-accent-foreground">
             <Paperclip className="h-4 w-4" /> Attach receipt/invoice
-          </Button>
+          </InboxAttachButton>
         </div>
       </Card>
 

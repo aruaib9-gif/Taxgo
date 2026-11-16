@@ -56,7 +56,7 @@ function postsDirectly(source: string) {
   return !type || prefs?.[type] !== false;
 }
 
-export function createJournal(entry: { date: string; description: string; lines: JournalLine[]; status?: JournalStatus; source?: string; fiscalPeriodId?: string; reversalOf?: string }) {
+export function createJournal(entry: { date: string; description: string; lines: JournalLine[]; status?: JournalStatus; source?: string; fiscalPeriodId?: string; reversalOf?: string; attachments?: unknown[] }) {
   const status = entry.status === "POSTED" && !postsDirectly(entry.source ?? "Manual") ? "DRAFT" : entry.status;
   return createRecord("journal-entries", {
     number: nextNumber("journal-entries", "JE"),

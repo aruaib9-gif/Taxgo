@@ -10,6 +10,7 @@ import { createRecord, deleteRecord, readCollection, updateRecord, useCollection
 import { useAccounts, useBankAccounts } from "@/lib/ledger";
 import { DOC_KINDS, agentSettings, applyLine, autopilot, bookDocument, classify, createChequeBook, createDepositSlip, duplicateOf, issueCheque, recordReceivedCheque, saveAgentSettings, suggest, todayIso, unbookLine, type Action, type Suggestion } from "@/lib/banking";
 import { cn } from "@/lib/utils";
+import { INBOX_TYPES, sendToInbox } from "@/lib/attachments";
 import { AccountPicker, Badge, Card, CardTitle, Dialog, Field, PageHeader, btn, downloadFile, inputCls, money, num, textareaCls, toExcelHTML } from "@/components/accounting/kit";
 import { DateInput, Select } from "@/components/accounting/pickers";
 import { subOf } from "@/components/purchasing/kit";
@@ -386,12 +387,7 @@ export function Documents() {
   const shown = docs.filter((d) => (tab === "ALL" || d.state === tab) && (!q || String(d.fileName).toLowerCase().includes(q.toLowerCase()))).sort((a, b) => String(b.uploadedAt).localeCompare(String(a.uploadedAt)));
   async function upload(files: FileList | null) {
     if (!files?.length) return;
-    for (const fl of Array.from(files)) {
-      const dataUrl = fl.size <= 400_000 ? await new Promise<string>((res) => { const r = new FileReader(); r.onload = () => res(String(r.result)); r.readAsDataURL(fl); }) : null;
-      const d = createRecord("documents", { fileName: fl.name, size: fl.size, mime: fl.type, dataUrl, uploadedAt: new Date().toISOString(), state: "FOR_REVIEW", date: todayIso() });
-      const c = classify(d);
-      updateRecord("documents", d.id, { kind: c.kind, party: c.party, amount: c.amount || null, confidence: c.confidence, classified: true });
-    }
+    for (const fl of Array.from(files)) await sendToInbox(fl);
     flash("Each file is extracted and classified; review the proposals below when they're ready.");
   }
   function classifyPending() {
@@ -414,7 +410,7 @@ export function Documents() {
       <PageHeader title="Document Inbox" subtitle="Upload bills, invoices, receipts, photos or handwritten notes — review what the AI proposes, then book them into your accounts." actions={<>
         <button type="button" className={btn.outline} onClick={classifyPending}><Lightbulb /> Classify pending</button>
         <button type="button" className={btn.outline} title="Books only ≥95% known-party documents under your policy" onClick={autoBook}><Bot /> Auto-pilot</button>
-        <label className={cn(btn.primary, "cursor-pointer")}><Upload /> Upload documents<input type="file" multiple className="sr-only" aria-label="Upload documents" accept=".pdf,.png,.jpg,.jpeg,.webp,.heic,.csv,.xlsx,.txt" onChange={(e) => { upload(e.target.files); e.target.value = ""; }} /></label>
+        <label className={cn(btn.primary, "cursor-pointer")}><Upload /> Upload documents<input type="file" multiple className="sr-only" aria-label="Upload documents" accept={INBOX_TYPES} onChange={(e) => { upload(e.target.files); e.target.value = ""; }} /></label>
       </>} />
       <div className="flex flex-wrap items-end gap-3">
         <div className="flex gap-1 rounded-lg bg-muted p-1">{([["FOR_REVIEW", "For review"], ["BOOKED", "Booked"], ["EXCLUDED", "Excluded"], ["ALL", "All"]] as const).map(([v, l]) => <button key={v} type="button" onClick={() => setTab(v)} className={cn("rounded-md px-3 py-1 text-sm", tab === v ? "bg-background font-medium shadow" : "text-muted-foreground")}>{l} ({count(v)})</button>)}</div>
