@@ -43,7 +43,7 @@ export const metadata = { title: `${BRAND.fullName} — The AI Business Operatin
 
 const AI = BRAND.fullName;
 
-const heroChecks = ["No credit card", "Live in five minutes", "Cancel anytime", "Get a local accountant whenever you want"];
+const heroChecks = ["No credit card", "Live in five minutes", "Cancel anytime"];
 
 const compliance = [
   { k: "EU", v: "EU VAT & Peppol" },
@@ -340,21 +340,17 @@ export default function LandingPage() {
 
       {/* hero */}
       <section className="relative overflow-hidden bg-[radial-gradient(ellipse_70%_90%_at_100%_0%,#dfe5ea_0%,#e9e9ea_45%,transparent_80%)]">
-        <Watermark className="-right-20 top-5 hidden w-190 text-[#dcdfe2] lg:block" tile="opacity-55" />
+        {/* bare map; the logo sits apart from it, at the map's far right, above the result card */}
+        <Watermark showTile={false} className="-right-20 top-5 hidden w-190 text-[#dcdfe2] lg:block" />
+        <TLogo className="pointer-events-none absolute right-10 top-5 hidden h-21 w-21 opacity-60 drop-shadow-[0_14px_24px_rgba(15,36,56,0.16)] lg:block" />
         <Container className="relative pb-20 pt-20">
           <HeroDemo>
-            <div className="mt-9 max-w-130 space-y-3 text-[17px] leading-[1.65] text-lp-body">
-              <p className="text-[19px] font-semibold tracking-[-0.02em] text-lp-ink">{AI} — Work Smarter. Grow Faster.</p>
+            <div className="mt-8 max-w-125 space-y-3 text-[17px] leading-[1.65] text-lp-body">
               <p>You didn&rsquo;t start a business to manage paperwork.</p>
               <p>
                 {AI} automates your sales, inventory, invoicing, payroll, and accounting, helping you cut administrative costs by
                 up to 50%, double productivity, and reclaim your time.
               </p>
-              <p>
-                Built on our <b className="font-semibold text-lp-ink">Cost vs. Efficiency Theory:</b>{" "}
-                <Serif className="text-[18px]">&ldquo;Success is not a cost factor, but an efficiency factor.&rdquo;</Serif>
-              </p>
-              <p className="font-semibold text-lp-ink">{AI} — Less Cost. More Efficiency. Greater Success.</p>
             </div>
             <div className="mt-7 flex flex-wrap gap-2.5">
               <Link href="/register" className={btnPrimary}>
@@ -364,7 +360,7 @@ export default function LandingPage() {
                 Check your numbers <ArrowRight className="h-3.5 w-3.5" />
               </Link>
             </div>
-            <ul className="mt-8 flex max-w-120 flex-wrap gap-x-4 gap-y-2.5 text-[14px] text-lp-muted">
+            <ul className="mt-7 flex max-w-120 flex-wrap gap-x-5 gap-y-2.5 text-[14px] text-lp-muted">
               {heroChecks.map((c) => (
                 <li key={c} className="flex items-center gap-1.5">
                   <Check className="h-3.5 w-3.5 text-lp-brand" strokeWidth={2.25} /> {c}
@@ -375,8 +371,24 @@ export default function LandingPage() {
         </Container>
       </section>
 
+      {/* the theory — moved out of the hero so it reads as a statement, not a paragraph */}
+      <section className="border-t border-lp-line bg-lp-alt">
+        <Container className="py-14 text-center">
+          <Kicker>{AI} — Work Smarter. Grow Faster.</Kicker>
+          <p className="mx-auto mt-5 max-w-3xl text-[22px] leading-[1.4] sm:text-[26px]">
+            Built on our <b className="font-semibold text-lp-ink">Cost vs. Efficiency Theory:</b>{" "}
+            <Serif className="text-[23px] sm:text-[27px]">
+              &ldquo;Success is not a cost factor, but an efficiency factor.&rdquo;
+            </Serif>
+          </p>
+          <p className="mt-5 text-[15px] font-semibold text-lp-ink">
+            {AI} — Less Cost. More Efficiency. Greater Success.
+          </p>
+        </Container>
+      </section>
+
       {/* the Tax GO difference — follows the hero demo */}
-      <section className="border-t border-lp-line">
+      <section>
         <Container className="py-16 text-center">
           <Kicker>The {AI} difference</Kicker>
           <H2 className="mx-auto max-w-3xl text-[28px] sm:text-[34px]">

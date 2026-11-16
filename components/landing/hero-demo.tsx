@@ -196,7 +196,7 @@ export function HeroDemo({ children }: { children?: React.ReactNode }) {
     <div className="grid items-center gap-12 lg:grid-cols-[minmax(0,1fr)_476px] lg:gap-16">
       <div className="min-w-0">
         <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-lp-body">
-          Your trusted AI assistant that runs your business. While you make the deals
+          Your trusted AI assistant that runs your business
         </p>
         <h1 className="mt-6 text-[44px] font-semibold leading-[1.08] tracking-[-0.045em] text-lp-ink sm:text-[62px]">
           Say
@@ -211,7 +211,7 @@ export function HeroDemo({ children }: { children?: React.ReactNode }) {
           type="button"
           onClick={next}
           aria-label={`Show ${BRAND.fullName} handling the next example task`}
-          className="mt-7 flex w-full max-w-xl items-center gap-3 rounded-2xl border border-lp-line bg-lp-card px-4 py-3.75 text-left shadow-[0_1px_0_rgba(22,35,58,0.05),0_20px_48px_-32px_rgba(22,35,58,0.4)] transition-shadow hover:shadow-[0_1px_0_rgba(22,35,58,0.05),0_20px_48px_-24px_rgba(22,35,58,0.45)]"
+          className="mt-8 flex w-full max-w-xl items-center gap-3 rounded-2xl border border-lp-line bg-lp-card px-4 py-3.75 text-left shadow-[0_1px_0_rgba(22,35,58,0.05),0_20px_48px_-32px_rgba(22,35,58,0.4)] transition-shadow hover:shadow-[0_1px_0_rgba(22,35,58,0.05),0_20px_48px_-24px_rgba(22,35,58,0.45)]"
         >
           <TLogo className="h-6 w-6" />
           <span className="min-w-0 flex-1 truncate text-[17px]">
