@@ -126,9 +126,9 @@ export const COUNTRY_PRICES: CountryPrice[] = [
 ];
 
 /** The five shown on the landing page. Edit this list to change them. */
-export const FEATURED_CODES = ["US", "CA", "GB", "NG", "IN"] as const;
+export const FEATURED_CODES = ["US", "CA", "GB", "AU", "NG", "IN"] as const;
 
-export const DEFAULT_CODE = "IN";
+export const DEFAULT_CODE = "US";
 
 export function priceFor(code: string): CountryPrice | undefined {
   return COUNTRY_PRICES.find((p) => p.code === code);

@@ -1,12 +1,13 @@
 "use client";
 
-// Landing-page price list: the featured countries, plus a search that opens the pricing page on the visitor's country.
+// Landing-page pricing card: the featured countries and a country search, both opening the pricing page
+// on that country. Prices themselves are shown only on the pricing page.
 
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowRight, Search } from "lucide-react";
-import { COUNTRY_PRICES, FEATURED_PRICES, formatMoney } from "@/lib/pricing";
+import { COUNTRY_PRICES, FEATURED_PRICES } from "@/lib/pricing";
 
 export function PriceLookup() {
   const router = useRouter();
@@ -20,23 +21,25 @@ export function PriceLookup() {
 
   return (
     <div>
-      <dl className="space-y-3.5">
+      <p className="text-[13px] font-medium text-lp-ink">Popular countries</p>
+      <ul className="mt-3 flex flex-wrap gap-2">
         {FEATURED_PRICES.map((p) => (
-          <div key={p.code} className="flex items-baseline justify-between gap-4">
-            <dt className="flex min-w-0 items-center gap-2 text-[14px] text-lp-body">
-              <span aria-hidden className="text-[15px] leading-none">
+          <li key={p.code}>
+            <Link
+              href={`/pricing?country=${encodeURIComponent(p.country)}#explore`}
+              title={`${p.country} pricing`}
+              className="inline-flex items-center gap-2 rounded-full border border-lp-line bg-lp-canvas py-1.5 pl-2.5 pr-3.5 text-[14px] text-lp-ink transition hover:border-lp-brand/50 hover:bg-lp-brand/6"
+            >
+              <span aria-hidden className="text-[16px] leading-none">
                 {p.flag}
               </span>
-              <span className="truncate">{p.country}</span>
-            </dt>
-            <dd className="whitespace-nowrap text-[11px] text-lp-muted">
-              <span className="text-[16px] font-semibold tracking-[-0.03em] text-lp-ink">{formatMoney(p, p.annual)}</span> / year
-            </dd>
-          </div>
+              {p.country}
+            </Link>
+          </li>
         ))}
-      </dl>
+      </ul>
 
-      <form onSubmit={submit} className="mt-6 border-t border-lp-line pt-5">
+      <form onSubmit={submit} className="mt-5 border-t border-lp-line pt-5">
         <label htmlFor="price-country" className="text-[13px] font-medium text-lp-ink">
           Not listed? Find your country&rsquo;s price
         </label>
@@ -50,12 +53,12 @@ export function PriceLookup() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="e.g. Kenya, Ireland, Japan…"
-              className="h-11 w-full rounded-full border border-lp-line bg-white/70 pl-10 pr-4 text-[15px] text-lp-ink outline-none placeholder:text-lp-muted/70 focus:border-lp-brand/60 focus:ring-2 focus:ring-lp-brand/20"
+              className="h-11 w-full rounded-full border border-lp-line bg-lp-card pl-10 pr-4 text-[15px] text-lp-ink outline-none placeholder:text-lp-muted/70 focus:border-lp-brand/60 focus:ring-2 focus:ring-lp-brand/20"
             />
           </div>
           <button
             type="submit"
-            className="inline-flex h-11 shrink-0 items-center gap-1.5 rounded-full border border-lp-ink/25 bg-lp-card px-4 text-[14px] font-medium text-lp-ink transition hover:bg-white"
+            className="inline-flex h-11 shrink-0 items-center gap-1.5 rounded-full border border-lp-ink/25 bg-lp-card px-4 text-[14px] font-medium text-lp-ink transition hover:bg-lp-alt"
           >
             See price <ArrowRight className="h-3.5 w-3.5" />
           </button>

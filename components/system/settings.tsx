@@ -3,10 +3,10 @@
 // System › settings pages: home, organization, users, roles, templates, posting preferences,
 // purchase charges, document numbering, configurations, custom fields and the audit log.
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { AlertTriangle, Building2, ChevronDown, ChevronRight, Copy, Eye, EyeOff, Fingerprint, GitBranch, Keyboard, MessageSquare, Plus, Search, Trash2, Upload, X } from "lucide-react";
+import { AlertTriangle, BookOpen, Building2, ChevronDown, ChevronRight, Copy, Eye, EyeOff, Fingerprint, GitBranch, Keyboard, MessageSquare, Package, Plus, Search, Trash2, Upload, X } from "lucide-react";
 import { createRecord, deleteRecord, readCollection, updateRecord, useCollection, type Rec } from "@/lib/store";
 import { SEED_ACCOUNTS } from "@/lib/accounting-seed";
 import { useAccounts } from "@/lib/ledger";
@@ -17,6 +17,8 @@ import { Badge, Card, CardTitle, DataTable, Dialog, Field, PageHeader, SidePanel
 import { Select } from "@/components/accounting/pickers";
 import { subOf } from "@/components/purchasing/kit";
 import { Th, useFlash } from "@/components/hr/people";
+import { activeCompanyId, DEFAULT_COMPANY } from "@/lib/store";
+import { switchCompany, useCompanies, useCompanyName } from "@/lib/companies";
 
 const omitId = (r: Record<string, unknown>) => Object.fromEntries(Object.entries(r).filter(([k]) => k !== "id" && k !== "createdAt"));
 const fmtWhen = (iso: unknown) => (iso ? new Date(String(iso)).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" }) : "—");
@@ -28,13 +30,17 @@ const Row = ({ icon: Icon, title, text, href, onClick }: { icon: typeof Building
 /* ---------- settings home ---------- */
 
 type Profile = { legalName: string; tradeName: string; companyType: string; taxType: string; taxNumber: string; address: string; city: string; country: string; email: string; phone: string };
-const BLANK_PROFILE: Profile = { legalName: BRAND.org, tradeName: BRAND.org, companyType: "LLC", taxType: "TRN", taxNumber: "", address: "", city: "", country: "UAE", email: "", phone: "" };
+const REGION_CURRENCY: Record<string, string> = { "UAE / GCC": "AED", India: "INR", "United States": "USD", "United Kingdom": "GBP", International: "USD" };
+const noSubscribe = () => () => {};
+const BLANK_PROFILE: Profile = { legalName: "", tradeName: "", companyType: "LLC", taxType: "TRN", taxNumber: "", address: "", city: "", country: "UAE", email: "", phone: "" };
 
 export function SettingsHome() {
-  const profile = useSetting<Profile>("company-profile", BLANK_PROFILE);
+  const companies = useCompanies();
+  const activeCo = useSyncExternalStore(noSubscribe, activeCompanyId, () => DEFAULT_COMPANY);
+  const companyName = useCompanyName();
+  const profile = useSetting<Profile>("company-profile", { ...BLANK_PROFILE, legalName: companyName, tradeName: companyName });
   const keyboard = useSetting("keyboard", { tally: false });
   const logo = useSetting("company-logo", { dataUrl: "" });
-  const companies = useCollection("companies");
   const accounts = useAccounts();
   const rules = useCollection("posting-rules");
   useEffect(() => { const t = setTimeout(seedPostingRules, 0); return () => clearTimeout(t); }, []);
@@ -63,10 +69,10 @@ export function SettingsHome() {
           {sample.length ? <button type="button" className={btn.smOutline} onClick={() => run(clearSample, (n) => `Removed ${n} sample record(s)`)}>Clear Sample Data</button> : <button type="button" className={btn.smPrimary} onClick={() => run(loadSample, (n) => `Loaded ${n} sample record(s)`)}>Load Sample Data</button>}</div>
       </div></Card>
       <Card><div className="space-y-3 p-5"><CardTitle>Company Management</CardTitle><p className="text-sm text-muted-foreground">Create new companies and manage your company access.</p>
-        <div className="flex flex-wrap items-end gap-2"><Field label="Company Name" className="flex-1"><input aria-label="Company Name" className={inputCls} value={co.name} onChange={(e) => setCo({ ...co, name: e.target.value })} /></Field><Field label="Select Country / Region"><Select ariaLabel="Country / Region" className="w-48" value={co.region} onChange={(v) => setCo({ ...co, region: v })} options={["UAE / GCC", "India", "United States", "United Kingdom", "International"]} /></Field><button type="button" className={btn.primary} disabled={!co.name.trim()} onClick={() => { createRecord("companies", { name: co.name.trim(), region: co.region, role: "owner", status: "Active" }); setCo({ name: "", region: co.region }); flash("Company created — switch to it from the company selector once multi-company books are enabled"); }}>Create Company</button></div>
+        <div className="flex flex-wrap items-end gap-2"><Field label="Company Name" className="flex-1"><input aria-label="Company Name" className={inputCls} value={co.name} onChange={(e) => setCo({ ...co, name: e.target.value })} /></Field><Field label="Select Country / Region"><Select ariaLabel="Country / Region" className="w-48" value={co.region} onChange={(v) => setCo({ ...co, region: v })} options={["UAE / GCC", "India", "United States", "United Kingdom", "International"]} /></Field><button type="button" className={btn.primary} disabled={!co.name.trim()} onClick={() => { createRecord("companies", { name: co.name.trim(), region: co.region, country: co.region === "UAE / GCC" ? "UAE" : co.region, currency: REGION_CURRENCY[co.region] ?? "USD", role: "Owner", status: "Active" }); setCo({ name: "", region: co.region }); flash("Company created — switch to it from the company selector once multi-company books are enabled"); }}>Create Company</button></div>
         <div className="flex items-center gap-3">{logo.dataUrl ? <img src={logo.dataUrl} alt="Company logo" className="size-12 rounded border border-border object-contain" /> : null}<label className={cn(btn.smOutline, "cursor-pointer")}><Upload /> Upload Logo<input type="file" accept="image/*" className="sr-only" aria-label="Upload Logo" onChange={(e) => { const f = e.target.files?.[0]; if (!f) return; if (f.size > 300_000) return flash("Use an image under 300 KB", true); const r = new FileReader(); r.onload = () => { saveSetting("company-logo", { dataUrl: String(r.result) }); flash("Logo saved"); }; r.readAsDataURL(f); }} /></label>{logo.dataUrl && <button type="button" className="text-xs text-destructive underline" onClick={() => saveSetting("company-logo", { dataUrl: "" })}>Remove</button>}</div>
         <p className="text-sm font-medium">Your Companies</p>
-        <div className="space-y-1 text-sm">{[{ id: "main", name: BRAND.org, role: "owner", status: "Active" }, ...companies].map((c) => <div key={String(c.id)} className="flex items-center justify-between rounded-md border border-border px-3 py-2"><span>{String(c.name)} <span className="text-muted-foreground">({String(c.role)})</span></span><Badge tone="success">{String(c.status)}</Badge></div>)}</div>
+        <div className="space-y-1 text-sm">{companies.map((c) => <div key={String(c.id)} className="flex items-center justify-between gap-2 rounded-md border border-border px-3 py-2"><span>{String(c.name)} <span className="text-muted-foreground">({String(c.role ?? "Owner")})</span></span>{c.id === activeCo ? <Badge tone="success">Current</Badge> : <button type="button" className={btn.smOutline} onClick={() => switchCompany(c.id, "/settings")}>Switch</button>}</div>)}</div>
       </div></Card>
       <Card className="border-destructive/40"><div className="space-y-3 p-5"><CardTitle className="text-destructive">Danger Zone</CardTitle><p className="text-sm text-muted-foreground">Irreversible actions. Be certain before you proceed.</p>
         <div className="flex items-center justify-between gap-4 rounded-md border border-destructive/30 p-3"><div><p className="font-medium">Clear all entered data</p><p className="text-xs text-muted-foreground">Permanently deletes every transaction and master record you entered (invoices, journal entries, payments, POS sales, customers, vendors, products, employees, …). Your chart of accounts, currencies, fiscal periods, taxes, posting rules, org units, users, templates and settings are kept — a fresh start.</p></div><button type="button" className={cn(btn.smOutline, "border-destructive/40 text-destructive")} onClick={() => setDanger({ open: true, text: "" })}>Clear data…</button></div>
@@ -95,6 +101,7 @@ export function SettingsHome() {
 /* ---------- organization ---------- */
 
 export function Organization() {
+  const companyName = useCompanyName();
   const stored = useCollection("org-units");
   const levelsSet = useSetting("org-levels", { list: ["Head office"] });
   const units = [...(stored.some((u) => u.id === "HEAD_OFFICE") ? [] : [HEAD_OFFICE as unknown as Rec]), ...stored];
@@ -111,7 +118,7 @@ export function Organization() {
     <div>
       <div className="flex items-center gap-2" style={{ paddingLeft: depth * 24 }}>
         <button type="button" onClick={() => setSel(u.id)} className={cn("flex min-w-56 items-center justify-between gap-3 rounded-lg border bg-card px-3 py-2 text-left shadow-sm", sel === u.id ? "border-primary ring-1 ring-primary" : "border-border hover:border-primary/40")}>
-          <span><span className="block text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">{String(u.level ?? "")}</span><span className="font-medium">{String(u.name)}</span>{u.code ? <span className="ml-2 font-mono text-xs text-muted-foreground">{String(u.code)}</span> : null}</span>
+          <span><span className="block text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">{String(u.level ?? "")}</span><span className="font-medium">{String(u.name)}</span>{u.code ? <span className="ml-2 font-mono text-xs text-muted-foreground">{String(u.code)}</span> : null}</span><span className="flex gap-1">{u.ownBooks ? <BookOpen aria-label="Own books" className="size-3.5 text-primary" /> : null}{u.ownInventory && !u.ownBooks ? <Package aria-label="Own inventory" className="size-3.5 text-warning" /> : null}</span>
         </button>
         <button type="button" aria-label={`Add unit under ${u.name}`} className={btn.icon} onClick={() => addUnit(u.id)}><Plus /></button>
       </div>
@@ -124,7 +131,7 @@ export function Organization() {
       <PageHeader title="Organization" subtitle="Your org structure — any shape, any depth. Add the levels your business actually uses; everything in finance, HR and inventory is reported against this tree." />
       <div className="grid gap-4 lg:grid-cols-[1fr_20rem]">
         <Card><div className="space-y-2 overflow-x-auto p-5">
-          <div className="mb-2 flex items-center gap-2 text-xs text-muted-foreground"><Badge tone="info">COMPANY</Badge>{BRAND.org}<span>·</span>{units.length} unit(s)</div>
+          <div className="mb-2 flex items-center gap-2 text-xs text-muted-foreground"><Badge tone="info">COMPANY</Badge>{companyName}<span>·</span>{units.length} unit(s)</div>
           <Node u={units.find((u) => u.id === "HEAD_OFFICE")!} depth={0} />
           {children(null).map((u) => <Node key={u.id} u={u} depth={0} />)}
           {bp && <div className="mt-4 rounded-md border border-dashed border-primary/40 p-3 text-sm"><p className="mb-1 font-medium text-primary">Preview: {bp.name}</p>{bp.units.map(([n, l, p]) => <p key={n} className="text-muted-foreground" style={{ paddingLeft: p ? 24 : 0 }}>+ {n} <span className="text-xs">({l})</span></p>)}</div>}
@@ -137,6 +144,10 @@ export function Organization() {
               <Field label="Code"><input aria-label="Unit code" className={inputCls} value={String(unit.code ?? "")} onChange={(e) => updateRecord("org-units", unit.id, { code: e.target.value.toUpperCase() })} /></Field>
               <Field label="Level"><Select ariaLabel="Unit level" value={String(unit.level ?? "")} onChange={(v) => updateRecord("org-units", unit.id, { level: v })} options={levelsSet.list} /></Field>
               {unit.id !== "HEAD_OFFICE" && <Field label="Parent"><Select ariaLabel="Parent unit" value={String(unit.parentId ?? "")} onChange={(v) => updateRecord("org-units", unit.id, { parentId: v || null })} options={[{ value: "", label: "— Top level —" }, ...units.filter((u) => u.id !== unit.id && !descendants(unit.id).includes(u.id)).map((u) => ({ value: u.id, label: String(u.name) }))]} /></Field>}
+              {unit.id !== "HEAD_OFFICE" && <div className="space-y-2 rounded-md border border-border p-3">
+                <label className="flex items-start gap-2 text-sm"><input type="checkbox" className="mt-0.5" checked={!!unit.ownBooks} onChange={(e) => updateRecord("org-units", unit.id, { ownBooks: e.target.checked })} /><span><span className="flex items-center gap-1 font-medium"><BookOpen className="size-3.5 text-primary" /> Keeps its own books</span><span className="block text-xs text-muted-foreground">Its own ledger, customers, invoices, bank and reports. Otherwise it records into the books above it.</span></span></label>
+                <label className="flex items-start gap-2 text-sm"><input type="checkbox" className="mt-0.5" checked={!!unit.ownInventory} disabled={!!unit.ownBooks} onChange={(e) => updateRecord("org-units", unit.id, { ownInventory: e.target.checked })} /><span><span className="flex items-center gap-1 font-medium"><Package className="size-3.5 text-warning" /> Keeps its own inventory</span><span className="block text-xs text-muted-foreground">{unit.ownBooks ? "Included — a unit with its own books has its own stock too." : "Separate products, warehouses and stock; books stay shared."}</span></span></label>
+              </div>}
               {unit.id !== "HEAD_OFFICE" && <button type="button" className={cn(btn.smOutline, "text-destructive")} onClick={() => { if (children(unit.id).length) return flash("Move or delete its sub-units first", true); if (inUse(unit.id)) return flash("Employees, tills or warehouses still use this unit", true); deleteRecord("org-units", unit.id); setSel(null); }}><Trash2 /> Delete unit</button>}
             </>}
           </div></Card>
@@ -163,6 +174,7 @@ function useRoles() {
 }
 
 export function Users() {
+  const companyName = useCompanyName();
   const users = useCollection("users");
   const roles = useRoles();
   const [inv, setInv] = useState<{ open: boolean; name: string; email: string; role: string }>({ open: false, name: "", email: "", role: "user" });
@@ -177,7 +189,7 @@ export function Users() {
           <td className="px-2 py-2"><Badge tone={u.status === "Active" ? "success" : u.status === "Invited" ? "info" : "muted"}>{String(u.status)}</Badge></td><td className="px-2 py-2">{u.lastLogin ? fmtWhen(u.lastLogin) : "—"}</td>
           <td className="px-2 py-2 text-right">{!u.you && <span className="inline-flex gap-2">{u.status === "Invited" && <button type="button" className="text-xs text-primary underline" onClick={() => { navigator.clipboard?.writeText(`${location.origin}/signup?invite=${u.token}`); flash("Invite link copied"); }}>Copy invite link</button>}<button type="button" className="text-xs underline" onClick={() => updateRecord("users", u.id, { status: u.status === "Deactivated" ? "Active" : "Deactivated" })}>{u.status === "Deactivated" ? "Reactivate" : "Deactivate"}</button><button type="button" className="text-xs text-destructive underline" onClick={() => confirm(`Remove ${u.email}?`) && deleteRecord("users", u.id)}>Remove</button></span>}</td></tr>
       ))}</tbody></table></Card>
-      <Dialog open={inv.open} onClose={() => setInv({ ...inv, open: false })} title="Invite user" description={`They get access to ${BRAND.org} with the role you pick.`}>
+      <Dialog open={inv.open} onClose={() => setInv({ ...inv, open: false })} title="Invite user" description={`They get access to ${companyName} with the role you pick.`}>
         <div className="grid gap-3"><Field label="Name"><input aria-label="Invitee name" className={inputCls} value={inv.name} onChange={(e) => setInv({ ...inv, name: e.target.value })} /></Field><Field label="Email"><input aria-label="Invitee email" type="email" className={inputCls} value={inv.email} onChange={(e) => setInv({ ...inv, email: e.target.value })} /></Field><Field label="Role"><Select ariaLabel="Invitee role" value={inv.role} onChange={(v) => setInv({ ...inv, role: v })} options={roles.filter((r) => r.key !== "owner").map((r) => ({ value: String(r.key), label: String(r.name) }))} /></Field></div>
         <div className="flex justify-end gap-2"><button type="button" className={btn.outline} onClick={() => setInv({ ...inv, open: false })}>Cancel</button><button type="button" className={btn.primary} onClick={() => { const email = inv.email.trim().toLowerCase(); if (!/^\S+@\S+\.\S+$/.test(email)) return flash("Enter a valid email", true); if (all.some((u) => String(u.email).toLowerCase() === email)) return flash("That person already has access", true); createRecord("users", { name: inv.name.trim() || email.split("@")[0], email, role: inv.role, status: "Invited", token: crypto.randomUUID() }); setInv({ open: false, name: "", email: "", role: "user" }); flash(`Invitation created for ${email} — copy the invite link to send it`); }}>Send invite</button></div>
       </Dialog>

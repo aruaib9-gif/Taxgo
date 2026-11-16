@@ -57,9 +57,9 @@ const raw: [string, string, string][] = [
 export const COUNTRIES: Country[] = raw.map(([iso, name, dial]) => ({ iso, name, dial: `+${dial}` }));
 
 // Shown first in the picker, in this order, above the A–Z list.
-export const PINNED_COUNTRIES = ["IN", "AE", "SA", "US", "GB", "SG"];
+export const PINNED_COUNTRIES = ["US", "GB", "CA", "NG", "IN", "AE", "SA", "SG"];
 
-export const DEFAULT_COUNTRY = "IN";
+export const DEFAULT_COUNTRY = "US";
 
 // Regional-indicator emoji flag from an ISO code, e.g. "IN" → 🇮🇳.
 export function flag(iso: string) {

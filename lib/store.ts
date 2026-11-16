@@ -7,7 +7,124 @@ import { useEffect, useState } from "react";
 
 export type Rec = Record<string, unknown> & { id: string };
 
-const key = (c: string) => `taxgo:${c}`;
+/* ---------- companies and organisation units ----------
+   A login can work in several companies (the "Choose a company" screen); each company's data is fully
+   separate. Inside a company, the top-bar switcher picks the active unit (per browser tab): a unit that
+   keeps its own books gets its own copy of every collection, one that keeps its own inventory gets its
+   own stock collections, and anything else records into the nearest unit above it that does.
+   The default company and its head office use the plain keys, so existing data stays where it was. */
+
+export const DEFAULT_COMPANY = "main";
+export const ROOT_UNIT = "HEAD_OFFICE";
+const ACTIVE_COMPANY_KEY = "taxgo:active-company";
+/** Belong to the login, not to a company. */
+const ACCOUNT = new Set(["companies", "active-company"]);
+/** Shared by every unit of a company: who can sign in, the org chart itself and system-wide settings. */
+const GLOBAL = new Set(["org-units", "users", "roles", "system-settings", "audit-log", "welcomed"]);
+/** Isolated by a unit that keeps its own inventory. */
+const INVENTORY = new Set(["products", "product-batches", "product-attributes", "product-categories", "warehouses", "bins", "bin-moves", "stock-moves", "stock-transfers", "stock-journals", "stock-counts", "stock-change-requests", "serial-numbers", "reorder-rules", "scrap-orders"]);
+
+const pinned = (k: string) => {
+  try {
+    return window.sessionStorage.getItem(k) ?? window.localStorage.getItem(k);
+  } catch {
+    return null;
+  }
+};
+const pin = (k: string, v: string) => {
+  try {
+    window.sessionStorage.setItem(k, v);
+    window.localStorage.setItem(k, v);
+  } catch {}
+};
+
+export function activeCompanyId(): string {
+  if (typeof window === "undefined") return DEFAULT_COMPANY;
+  return pinned(ACTIVE_COMPANY_KEY) ?? DEFAULT_COMPANY;
+}
+
+/** Storage prefix for the active company's data. */
+const companyBase = () => {
+  const id = activeCompanyId();
+  return id === DEFAULT_COMPANY ? "taxgo:" : `taxgo:co:${id}:`;
+};
+const activeUnitKey = () => `${companyBase()}active-unit`;
+
+if (typeof window !== "undefined") {
+  // ?company= / ?unit= (the switchers' "open in new tab") pin that tab to a company and unit.
+  try {
+    const q = new URLSearchParams(window.location.search);
+    const co = q.get("company");
+    if (co) window.sessionStorage.setItem(ACTIVE_COMPANY_KEY, co);
+    const unit = q.get("unit");
+    if (unit) window.sessionStorage.setItem(activeUnitKey(), unit);
+  } catch {}
+}
+
+/** Switches this tab (and new tabs) to a company, starting at its head office. Callers reload. */
+export function setActiveCompany(id: string) {
+  pin(ACTIVE_COMPANY_KEY, id);
+}
+
+export function activeUnitId(): string {
+  if (typeof window === "undefined") return ROOT_UNIT;
+  return pinned(activeUnitKey()) ?? ROOT_UNIT;
+}
+
+/** Switches this tab (and new tabs) to a unit. Callers reload so every screen re-reads its data. */
+export function setActiveUnit(id: string) {
+  pin(activeUnitKey(), id);
+}
+
+let scopeCache: { raw: string | null; base: string; active: string; books: string; stock: string } | null = null;
+
+/** The units whose books and inventory the active unit works in. */
+export function activeScope(): { unit: string; books: string; stock: string } {
+  const active = activeUnitId();
+  const base = companyBase();
+  let raw: string | null = null;
+  try {
+    raw = window.localStorage.getItem(`${base}org-units`);
+  } catch {}
+  if (!scopeCache || scopeCache.raw !== raw || scopeCache.base !== base || scopeCache.active !== active) {
+    const units = new Map<string, Rec>((raw ? (JSON.parse(raw) as Rec[]) : []).map((u) => [u.id, u]));
+    let books = ROOT_UNIT;
+    let stock = "";
+    // Walk up from the active unit to the first one that keeps its own books (and inventory).
+    for (let id: string | null = active, hops = 0; id && id !== ROOT_UNIT && hops < 50; hops++) {
+      const u = units.get(id);
+      if (!u) break;
+      if (!stock && u.ownInventory) stock = id;
+      if (u.ownBooks) {
+        books = id;
+        break;
+      }
+      id = (u.parentId as string | null) ?? null;
+    }
+    scopeCache = { raw, base, active, books, stock: stock || books };
+  }
+  return { unit: active, books: scopeCache.books, stock: scopeCache.stock };
+}
+
+const key = (c: string) => {
+  if (ACCOUNT.has(c) || typeof window === "undefined") return `taxgo:${c}`;
+  const base = companyBase();
+  if (GLOBAL.has(c)) return `${base}${c}`;
+  const s = activeScope();
+  const owner = INVENTORY.has(c) ? s.stock : s.books;
+  return owner === ROOT_UNIT ? `${base}${c}` : `${base}u:${owner}:${c}`;
+};
+
+/** The collection a raw storage key holds for the active company and unit, or null if it belongs elsewhere. */
+export function collectionOfKey(k: string): string | null {
+  const base = companyBase();
+  if (!k.startsWith(base) || (base === "taxgo:" && k.startsWith("taxgo:co:"))) return null;
+  const rest = k.slice(base.length);
+  const m = /^u:[^:]+:(.+)$/.exec(rest);
+  const c = m ? m[1] : rest;
+  return ACCOUNT.has(c) ? null : key(c) === k ? c : null;
+}
+
 const listeners = new Map<string, Set<() => void>>();
 
 function emit(c: string) {

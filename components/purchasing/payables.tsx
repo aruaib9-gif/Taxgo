@@ -8,12 +8,12 @@ import { createRecord, deleteRecord, nextNumber, readCollection, updateRecord, u
 import { addInterval, docTotals, type DiscountType } from "@/lib/sales";
 import { billOpen, billOutstanding, billOverdue, billStatus, createBill, issueDebitNote, payVendor, poProgress, type BillLine, type GrnLine, type PoLine } from "@/lib/purchases";
 import { useAccounts, useBankAccounts, useTaxRates } from "@/lib/ledger";
-import { BRAND } from "@/lib/brand";
 import { cn } from "@/lib/utils";
 import { Card, DataTable, DateInput, Dialog, Field, PageHeader, Select, SidePanel, StatCard, btn, downloadFile, inputCls, longDate, money, num, toCSV, today, type Column } from "@/components/accounting/kit";
 import { DISCOUNT_TYPES, LineItems, NumberBanner, Opt, Req, Section, StatusBadge, ToggleRow, blankLine, validLines } from "@/components/sales/doc-kit";
 import { CURRENCIES, FREQUENCIES } from "@/components/sales/invoices";
 import { CountedTextarea, EmptyCard, ListToolbar, StatusFilter, VendorPicker, WarehousePicker, plusDays, subOf } from "./kit";
+import { useCompanyName } from "@/lib/companies";
 
 const byDateDesc = (a: Rec, b: Rec) => String(b.date).localeCompare(String(a.date)) || String(b.createdAt).localeCompare(String(a.createdAt));
 const textMatch = (q: string, ...vals: unknown[]) => !q.trim() || vals.join(" ").toLowerCase().includes(q.trim().toLowerCase());
@@ -211,13 +211,14 @@ function BillForm({ onDone, onCreated }: { onDone: () => void; onCreated: (id: s
 }
 
 function BillPaper({ number, vendor, date, dueDate, lines, totals }: { number: string; vendor: string; date: string; dueDate: string; lines: BillLine[]; totals: ReturnType<typeof docTotals> }) {
+  const companyName = useCompanyName();
   return (
     <div className="rounded-xl border border-border bg-white p-8 text-sm text-neutral-900 shadow-sm">
       <div className="flex items-start justify-between">
         <div><p className="text-xs uppercase text-neutral-500">From</p><p className="text-lg font-bold">{vendor}</p></div>
         <div className="text-right"><p className="text-2xl font-semibold tracking-tight">BILL</p><p className="font-mono">{number}</p></div>
       </div>
-      <div className="mt-4 flex justify-between text-xs"><p>To: {BRAND.org}</p><p>Date {longDate(date)} · Due {longDate(dueDate)}</p></div>
+      <div className="mt-4 flex justify-between text-xs"><p>To: {companyName}</p><p>Date {longDate(date)} · Due {longDate(dueDate)}</p></div>
       <table className="mt-4 w-full">
         <thead><tr className="border-b border-neutral-300 text-left text-xs uppercase text-neutral-500"><th className="py-1.5">Item</th><th className="py-1.5 text-right">Qty</th><th className="py-1.5 text-right">Price</th><th className="py-1.5 text-right">Amount</th></tr></thead>
         <tbody>

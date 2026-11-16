@@ -7,9 +7,9 @@ import Link from "next/link";
 import { Delete } from "lucide-react";
 import { readCollection, type Rec } from "@/lib/store";
 import { PAY_LABEL, RECEIPT_DEFAULT, checkPin, getSetting } from "@/lib/pos";
-import { BRAND } from "@/lib/brand";
 import { cn } from "@/lib/utils";
 import { Dialog, Label, btn, inputCls, money, num } from "@/components/accounting/kit";
+import { activeCompanyName } from "@/lib/companies";
 
 /* ---------- receipt ---------- */
 
@@ -27,7 +27,7 @@ export function receiptFromSale(sale: Rec): ReceiptData {
   const s = getSetting("receipt", RECEIPT_DEFAULT);
   const created = new Date(String(sale.createdAt ?? Date.now()));
   return {
-    company: { name: BRAND.org, address: s.address || undefined, header: s.header || undefined, footer: [s.footer, s.returnPolicy].filter(Boolean).join("\n\n") || undefined, logoUrl: s.logoUrl || undefined },
+    company: { name: activeCompanyName(), address: s.address || undefined, header: s.header || undefined, footer: [s.footer, s.returnPolicy].filter(Boolean).join("\n\n") || undefined, logoUrl: s.logoUrl || undefined },
     sale: { saleNumber: String(sale.saleNumber), saleDate: String(sale.saleDate), saleTime: created.toTimeString().slice(0, 5), cashierName: (sale.cashierName as string) ?? null, customerName: (sale.customerName as string) ?? null, status: String(sale.status), tokenNumber: sale.tokenNumber as number },
     lines: ((sale.lines as Rec[]) ?? []).map((l) => ({ description: String(l.description), quantity: num(l.quantity), unitPrice: num(l.unitPrice), discountAmount: num(l.discountAmount), taxRate: num(l.taxRate), taxAmount: num(l.taxAmount), lineTotal: num(l.lineTotal) })),
     totals: { subtotal: num(sale.subtotal), discount: num(sale.discountAmount), tax: num(sale.taxAmount), total: num(sale.totalAmount), amountPaid: num(sale.amountPaid), changeGiven: num(sale.changeGiven), serviceCharge: num(sale.serviceCharge), tip: num(sale.tip) },

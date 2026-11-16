@@ -72,7 +72,7 @@ const rest = COUNTRIES.filter((c) => !PINNED_COUNTRIES.includes(c.iso));
 export function PhoneInput({
   id,
   name = "phone",
-  placeholder = "9876543210",
+  placeholder = "2015550123",
 }: {
   id: string;
   name?: string;

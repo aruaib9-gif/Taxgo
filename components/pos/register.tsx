@@ -18,6 +18,7 @@ import { AccountPicker, Card, Dialog, Label, btn, inputCls, money, num } from "@
 import { Select } from "@/components/accounting/pickers";
 import { RecordPicker } from "@/components/sales/doc-kit";
 import { ApprovalDialog, DenominationCounter, Keypad, countTotal, printReceipt } from "@/components/pos/kit";
+import { activeCompanyName } from "@/lib/companies";
 
 type Line = {
   lineId: string; productId: string; name: string; sku: string; unitPrice: number; baseUnitPrice?: number; quantity: number; taxRate: number;
@@ -185,7 +186,7 @@ function Till({ shift }: { shift: Rec }) {
 
   // Mirror the cart on the customer-facing display.
   useEffect(() => {
-    pushDisplay({ shopName: BRAND.org, lines: cart.map((l) => ({ name: l.modifiersLabel ? `${l.name} (${l.modifiersLabel})` : l.name, quantity: l.quantity, unitPrice: l.unitPrice, lineTotal: l.unitPrice * l.quantity - lineDisc(l) })), subtotal: t.subtotal, discount: t.discount, tax: t.tax, total: grand, completed: null });
+    pushDisplay({ shopName: activeCompanyName(), lines: cart.map((l) => ({ name: l.modifiersLabel ? `${l.name} (${l.modifiersLabel})` : l.name, quantity: l.quantity, unitPrice: l.unitPrice, lineTotal: l.unitPrice * l.quantity - lineDisc(l) })), subtotal: t.subtotal, discount: t.discount, tax: t.tax, total: grand, completed: null });
   }, [cart, grand, t.subtotal, t.discount, t.tax]);
 
   function reset() {
@@ -201,7 +202,7 @@ function Till({ shift }: { shift: Rec }) {
       });
       if (tabId) closeTab(tabId, sale.id);
       reset();
-      pushDisplay({ shopName: BRAND.org, lines: [], subtotal: 0, discount: 0, tax: 0, total: 0, completed: { saleNumber: String(sale.saleNumber), change: num(sale.changeGiven), paidTotal: num(sale.amountPaid) } });
+      pushDisplay({ shopName: activeCompanyName(), lines: [], subtotal: 0, discount: 0, tax: 0, total: 0, completed: { saleNumber: String(sale.saleNumber), change: num(sale.changeGiven), paidTotal: num(sale.amountPaid) } });
       setDialog({ kind: "done", sale });
       printReceipt(sale);
     } catch (e) {

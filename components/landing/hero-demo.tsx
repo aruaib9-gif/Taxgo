@@ -184,6 +184,28 @@ function useHeroLoop() {
   return { view, reduced, select, next };
 }
 
+// Headline ending: starts on "sorted." and cycles through what Tax GO finishes, each word underlined as it lands.
+const HEADLINE_WORDS = ["sorted.", "filed.", "reconciled.", "paid.", "closed."];
+
+function RotatingWord() {
+  const [i, setI] = useState(0);
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const id = setInterval(() => setI((n) => (n + 1) % HEADLINE_WORDS.length), 2600);
+    return () => clearInterval(id);
+  }, []);
+  return (
+    <span className="relative inline-block whitespace-nowrap">
+      <span key={i} className="lp-word-in inline-block">
+        {HEADLINE_WORDS[i]}
+      </span>
+      <svg key={`u${i}`} aria-hidden viewBox="0 0 300 18" preserveAspectRatio="none" className="pointer-events-none absolute -bottom-[0.12em] left-0 h-[0.22em] w-[calc(100%-0.25em)] overflow-visible text-lp-brand/70">
+        <path className="lp-underline" d="M3 12 C 60 4, 140 3, 200 7 S 280 14, 297 6" fill="none" stroke="currentColor" strokeWidth="5" strokeLinecap="round" pathLength={1} />
+      </svg>
+    </span>
+  );
+}
+
 export function HeroDemo({ children }: { children?: React.ReactNode }) {
   const { view, reduced, select, next } = useHeroLoop();
   const s = scenarios[view.index];
@@ -195,15 +217,24 @@ export function HeroDemo({ children }: { children?: React.ReactNode }) {
   return (
     <div className="grid items-center gap-12 lg:grid-cols-[minmax(0,1fr)_476px] lg:gap-16">
       <div className="min-w-0">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-lp-body">
+        <p className="inline-flex items-center gap-2.5 rounded-full border border-lp-line bg-lp-card/80 py-1.5 pl-2.5 pr-3.5 text-[10.5px] font-semibold uppercase tracking-[0.22em] text-lp-body shadow-[0_1px_0_rgba(22,35,58,0.04)] backdrop-blur">
+          <span aria-hidden className="relative flex h-2 w-2">
+            <span className="absolute inset-0 animate-ping rounded-full bg-ai-done/60 motion-reduce:hidden" />
+            <span className="relative h-2 w-2 rounded-full bg-ai-done" />
+          </span>
           Your trusted AI assistant that runs your business
         </p>
-        <h1 className="mt-6 text-[44px] font-semibold leading-[1.08] tracking-[-0.045em] text-lp-ink sm:text-[62px]">
-          Say
+        <h1
+          aria-label={`Say ${BRAND.fullName} and it's sorted.`}
+          className="mt-7 text-[46px] font-semibold leading-[1.04] tracking-[-0.045em] text-lp-ink sm:text-[66px]"
+        >
+          <span aria-hidden>
+            Say <span className="lp-shimmer bg-[linear-gradient(100deg,#EC8A35_0%,#D9682A_35%,#F2A65A_50%,#D9682A_65%,#B9531B_100%)] bg-clip-text text-transparent">{BRAND.fullName}</span>
+          </span>
           <br />
-          {BRAND.fullName}
-          <br />
-          <span className="font-serif font-semibold italic tracking-[-0.02em] text-lp-brand">and it&rsquo;s sorted.</span>
+          <span aria-hidden className="font-serif font-semibold italic tracking-[-0.02em] text-lp-brand">
+            and it&rsquo;s <RotatingWord />
+          </span>
         </h1>
 
         {/* prompt box — clicking it runs the next example */}
@@ -216,7 +247,7 @@ export function HeroDemo({ children }: { children?: React.ReactNode }) {
           <TLogo className="h-6 w-6" />
           <span className="min-w-0 flex-1 truncate text-[17px]">
             {typedText ? (
-              <span className={cn("text-lp-navy", view.phase === "typing" && !reduced && "lp-caret")}>{typedText}</span>
+              <span className={cn("text-lp-ink", view.phase === "typing" && !reduced && "lp-caret")}>{typedText}</span>
             ) : (
               <span className={cn("text-lp-muted/80", !reduced && "lp-caret")}>Tell {BRAND.fullName}…</span>
             )}

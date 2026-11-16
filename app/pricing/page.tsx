@@ -14,6 +14,7 @@ import {
 import { TLogo, Watermark, WhatsAppButton } from "@/components/landing/brand";
 import { Suspense } from "react";
 import { PricingExplorer } from "@/components/landing/pricing-explorer";
+import { BackToTop } from "@/components/landing/back-to-top";
 
 const AI = BRAND.fullName;
 
@@ -59,15 +60,15 @@ const faqs: [string, string][] = [
 
 export default function PricingPage() {
   return (
-    <div className="bg-lp-canvas text-lp-body">
+    <div className="lp-site bg-lp-canvas text-lp-body">
       <LandingHeader hrefPrefix="/" />
 
       {/* heading + explorer */}
-      <section className="relative overflow-hidden bg-[radial-gradient(ellipse_70%_90%_at_100%_0%,#dfe5ea_0%,#e9e9ea_45%,transparent_80%)]">
+      <section className="relative overflow-hidden bg-[radial-gradient(ellipse_70%_90%_at_100%_0%,var(--lp-glow-a)_0%,var(--lp-glow-b)_45%,transparent_80%)]">
         {/* bare map, centred behind the heading — the T tile would land on the headline */}
         <Watermark
           showTile={false}
-          className="left-1/2 top-0 hidden w-320 -translate-x-1/2 text-[#dcdfe2] lg:block"
+          className="left-1/2 top-0 hidden w-320 -translate-x-1/2 text-[var(--lp-map)] lg:block"
         />
         <Container className="relative pb-24 pt-16">
           <div className="relative z-10 text-center">
@@ -160,6 +161,7 @@ export default function PricingPage() {
       </div>
 
       <WhatsAppButton />
+      <BackToTop />
     </div>
   );
 }

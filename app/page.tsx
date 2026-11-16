@@ -23,6 +23,7 @@ import {
 import { BRAND } from "@/lib/brand";
 import { PriceLookup } from "@/components/landing/price-lookup";
 import { ModuleExplorer } from "@/components/landing/module-explorer";
+import { TaxCoverage } from "@/components/landing/tax-coverage";
 import { cn } from "@/lib/utils";
 import {
   Container,
@@ -38,6 +39,7 @@ import {
 import { HeroDemo } from "@/components/landing/hero-demo";
 import { CountUp } from "@/components/landing/count-up";
 import { TLogo, Watermark, WhatsAppButton } from "@/components/landing/brand";
+import { BackToTop } from "@/components/landing/back-to-top";
 
 export const metadata = { title: `${BRAND.fullName} — The AI Business Operating System` };
 
@@ -178,15 +180,6 @@ const humans: { icon: LucideIcon; title: string; text: string }[] = [
 ];
 
 // VAT / GST rates by region, as supplied in the marketing copy.
-const africaCountries = [
-  { name: "Nigeria", flag: "🇳🇬" },
-  { name: "South Africa", flag: "🇿🇦" },
-  { name: "Ghana", flag: "🇬🇭" },
-  { name: "Morocco", flag: "🇲🇦" },
-  { name: "Kenya", flag: "🇰🇪" },
-  { name: "Egypt", flag: "🇪🇬" },
-];
-
 // "One simple rule": the two task colours used across the product (ai-done / needs-human tokens).
 const rule = [
   {
@@ -220,35 +213,6 @@ const rule = [
     bar: "bg-needs-human",
     chip: "bg-needs-human/10 text-needs-human",
     tone: "text-needs-human",
-  },
-];
-
-const taxRegions: { name: string; rows: { country: string; rate: string; note?: string }[] }[] = [
-  {
-    name: "Southeast Asia",
-    rows: [
-      { country: "Philippines", rate: "12%", note: "standard VAT" },
-      { country: "Indonesia", rate: "12%", note: "standard VAT, increased from 11% in 2025" },
-      { country: "Vietnam", rate: "8%", note: "temporary reduced rate for most goods/services; standard is 10%" },
-      { country: "Cambodia", rate: "10%" },
-      { country: "Laos (Lao PDR)", rate: "10%" },
-      { country: "Singapore", rate: "9%", note: "GST" },
-      { country: "Thailand", rate: "7%", note: "reduced rate extended via royal decree; statutory code is 10%" },
-      { country: "Malaysia", rate: "No VAT/GST", note: "uses a 10% sales tax and 8% service tax system" },
-      { country: "Myanmar", rate: "No VAT", note: "uses a 5% commercial tax" },
-      { country: "Brunei / Timor-Leste", rate: "No VAT or GST" },
-    ],
-  },
-  {
-    name: "South & Central Asia / Middle East",
-    rows: [
-      { country: "India", rate: "18%", note: "GST standard structure" },
-      { country: "Pakistan", rate: "18%", note: "for goods; 15%–16% for services" },
-      { country: "Armenia / Azerbaijan", rate: "20% / 18%" },
-      { country: "Kazakhstan", rate: "16%" },
-      { country: "United Arab Emirates / Oman", rate: "5%" },
-      { country: "Saudi Arabia", rate: "15%" },
-    ],
   },
 ];
 
@@ -334,14 +298,14 @@ const faqs: [string, string][] = [
 
 export default function LandingPage() {
   return (
-    <div className="bg-lp-canvas text-lp-body">
+    <div className="lp-site bg-lp-canvas text-lp-body">
       {/* nav */}
       <LandingHeader />
 
       {/* hero */}
-      <section className="relative overflow-hidden bg-[radial-gradient(ellipse_70%_90%_at_100%_0%,#dfe5ea_0%,#e9e9ea_45%,transparent_80%)]">
+      <section className="relative overflow-hidden bg-[radial-gradient(ellipse_70%_90%_at_100%_0%,var(--lp-glow-a)_0%,var(--lp-glow-b)_45%,transparent_80%)]">
         {/* bare map; the logo sits apart from it, at the map's far right, above the result card */}
-        <Watermark showTile={false} className="-right-20 top-5 hidden w-190 text-[#dcdfe2] lg:block" />
+        <Watermark showTile={false} className="-right-20 top-5 hidden w-190 text-[var(--lp-map)] lg:block" />
         <TLogo className="pointer-events-none absolute right-10 top-5 hidden h-21 w-21 opacity-60 drop-shadow-[0_14px_24px_rgba(15,36,56,0.16)] lg:block" />
         <Container className="relative pb-20 pt-20">
           <HeroDemo>
@@ -502,7 +466,7 @@ export default function LandingPage() {
           <Panel className="mx-auto mt-10 grid max-w-4xl md:grid-cols-3 md:divide-x divide-y md:divide-y-0 divide-lp-line">
             {stats.map((s) => (
               <div key={s.n} className="px-6 pb-8 pt-7">
-                <p className="text-[50px] font-semibold leading-none tracking-tighter text-lp-ink">{s.count ? <CountUp value={s.n} /> : s.n}</p>
+                <p className="font-display text-[50px] font-semibold leading-none tracking-tighter text-lp-ink">{s.count ? <CountUp value={s.n} /> : s.n}</p>
                 <p className="mx-auto mt-5 max-w-65 text-[14px] leading-[1.6] text-lp-body">{s.t}</p>
               </div>
             ))}
@@ -540,6 +504,11 @@ export default function LandingPage() {
 
           </div>
           <ModuleExplorer />
+          <div className="mt-7 flex justify-center">
+            <Link href="/handles" className={btnOutline}>
+              See everything she handles <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+          </div>
           <p className="mx-auto mt-10 max-w-3xl text-center text-[18px] font-semibold leading-normal tracking-[-0.02em] text-lp-ink">
             {AI} — One Intelligent Platform. 15 Integrated Modules.{" "}
             <span className="text-lp-brand">Your Entire Business Working Together.</span>
@@ -589,9 +558,14 @@ export default function LandingPage() {
             <p className="mt-3 text-[16px] font-semibold leading-[1.6] text-lp-ink">
               {AI} — Your Business. One Intelligent Platform. Unlimited Potential.
             </p>
-            <Link href="/register" className={cn(btnPrimary, "mt-7")}>
-              Put {AI} to Work <ArrowRight className="h-3.5 w-3.5" />
-            </Link>
+            <div className="mt-7 flex flex-wrap justify-center gap-2.5">
+              <Link href="/register" className={btnPrimary}>
+                Put {AI} to Work <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+              <Link href="/how" className={btnOutline}>
+                How to talk to her <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            </div>
           </Panel>
         </Container>
       </section>
@@ -696,9 +670,14 @@ export default function LandingPage() {
             <p className="mx-auto mt-14 max-w-160 text-[16px] font-semibold leading-[1.6] text-lp-ink">
               {AI} — The Power of AI. The Confidence of Human Expertise.
             </p>
-            <Link href="/register" className={cn(btnPrimary, "mt-7")}>
-              Get Started with {AI} <ArrowRight className="h-3.5 w-3.5" />
-            </Link>
+            <div className="mt-7 flex flex-wrap justify-center gap-2.5">
+              <Link href="/register" className={btnPrimary}>
+                Get Started with {AI} <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+              <Link href="/humans" className={btnOutline}>
+                Meet the humans <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            </div>
           </div>
         </Container>
       </section>
@@ -712,42 +691,7 @@ export default function LandingPage() {
             Whether you operate in one country or across multiple markets, {AI} helps automate financial processes, reduce
             administrative costs, and simplify compliance.
           </p>
-          <div className="mt-10 grid items-start gap-5 md:grid-cols-2">
-            {taxRegions.map((r) => (
-              <Panel key={r.name}>
-                <h3 className="border-b border-lp-line px-5 py-3.5 text-[15px] font-semibold tracking-[-0.03em] text-lp-ink">{r.name}</h3>
-                <dl className="divide-y divide-lp-line">
-                  {r.rows.map((row) => (
-                    <div key={row.country} className="px-5 py-3">
-                      <div className="flex items-baseline justify-between gap-4">
-                        <dt className="text-[14px] font-medium text-lp-ink">{row.country}</dt>
-                        <dd className="shrink-0 text-right text-[14px] font-semibold text-lp-brand">{row.rate}</dd>
-                      </div>
-                      {row.note && <p className="mt-0.5 text-[12.5px] leading-normal text-lp-muted">{row.note}</p>}
-                    </div>
-                  ))}
-                </dl>
-              </Panel>
-            ))}
-            <Panel className="md:col-span-2">
-              <h3 className="border-b border-lp-line px-5 py-3.5 text-[15px] font-semibold tracking-[-0.03em] text-lp-ink">Africa</h3>
-              <div className="px-5 py-4">
-                <p className="text-[14px] leading-[1.65] text-lp-body">
-                  {AI} simplifies VAT and GST calculations, invoicing, reporting, and tax preparation across Nigeria, South Africa,
-                  Ghana, Morocco, Kenya, Egypt, and many more African countries.
-                </p>
-                <ul className="mt-3.5 flex flex-wrap gap-2">
-                  {africaCountries.map((c) => (
-                    <li key={c.name} className="flex items-center gap-1.5 rounded-full border border-lp-line bg-lp-canvas px-3 py-1 text-[13px] text-lp-ink">
-                      <span aria-hidden>{c.flag}</span>
-                      {c.name}
-                    </li>
-                  ))}
-                  <li className="rounded-full px-1 py-1 text-[13px] text-lp-muted">and many more</li>
-                </ul>
-              </div>
-            </Panel>
-          </div>
+          <TaxCoverage />
           <div className="mt-14 text-center">
             <p className="text-[16px] font-semibold text-lp-ink">{AI} — One Platform. Multiple Countries. Smarter Compliance.</p>
             <Link href="/register" className={cn(btnPrimary, "mt-7")}>
@@ -772,7 +716,7 @@ export default function LandingPage() {
               <PriceLookup />
               <div className="mt-6 border-t border-lp-line pt-6">
                 <p className="text-[14px] leading-[1.65] text-lp-body">
-                  A junior back-office hire costs 4–10× this. Works 8 hours. Takes leave. Eventually resigns.{" "}
+                  A junior back-office hire costs 4–10× more than {AI}. Works 8 hours. Takes leave. Eventually resigns.{" "}
                   <Serif className="text-[15px] font-medium">{AI} doesn&rsquo;t.</Serif>
                 </p>
                 <Link href="/register" className={cn(btnPrimary, "mt-5 w-full")}>
@@ -873,6 +817,7 @@ export default function LandingPage() {
       </div>
 
       <WhatsAppButton />
+      <BackToTop />
     </div>
   );
 }

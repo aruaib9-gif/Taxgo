@@ -1,7 +1,6 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
 import {
   Check,
   ArrowRight,
@@ -28,6 +27,9 @@ import {
 } from "lucide-react";
 import { BrandMark } from "@/components/brand-mark";
 import { BRAND } from "@/lib/brand";
+import { createRecord, setActiveCompany } from "@/lib/store";
+import { loadSample as loadSampleData, saveSetting } from "@/lib/system";
+import { ensureCompanies } from "@/lib/companies";
 
 const COUNTRIES = [
   { label: "UAE / GCC — AED, 5% VAT", country: "United Arab Emirates", currency: "AED", tax: "UAE VAT" },
@@ -64,10 +66,9 @@ const PHASE_OF = [0, 0, 1, 1, 2, 2, 3, 4];
 const TOTAL = 8;
 
 export default function OnboardingPage() {
-  const router = useRouter();
   const [step, setStep] = useState(0);
   const [company, setCompany] = useState("");
-  const [ci, setCi] = useState(0);
+  const [ci, setCi] = useState(Math.max(0, COUNTRIES.findIndex((x) => x.country === "United States")));
   const [biz, setBiz] = useState<string[]>([]);
   const [units, setUnits] = useState<string[]>(["Head Office"]);
   const [unitInput, setUnitInput] = useState("");
@@ -92,7 +93,34 @@ export default function OnboardingPage() {
 
   function next() {
     if (step < TOTAL - 1) setStep(step + 1);
-    else router.push("/home");
+    else finish();
+  }
+
+  // Creates the company, switches into it, and sets up what was entered: profile, units, levels, invites.
+  function finish() {
+    const companyName = company.trim() || "My company";
+    ensureCompanies();
+    const rec = createRecord("companies", { name: companyName, country: c.country, currency: c.currency, taxRegime: c.tax, role: "Owner", status: "Active" });
+    setActiveCompany(rec.id); // everything below is written into the new company
+    saveSetting("company-profile", { legalName: companyName, tradeName: displayName.trim() || companyName, taxNumber: taxId.trim(), registrationNumber: reg.trim(), country: c.country, brandColor: color });
+    const levels = units.filter((u) => UNIT_TYPES.includes(u) && u !== "Head office").map((u) => (u.endsWith("ies") ? `${u.slice(0, -3)}y` : u.replace(/s$/, "")));
+    saveSetting("org-levels", { list: ["Head office", ...new Set(levels)] });
+    for (const u of units.filter((x) => x !== "Head Office" && !UNIT_TYPES.includes(x))) {
+      createRecord("org-units", { name: u, code: u.replace(/[^A-Za-z0-9]/g, "").slice(0, 4).toUpperCase(), level: levels[0] ?? "Branch", parentId: "HEAD_OFFICE" });
+    }
+    for (const p of people.filter((x) => /\S+@\S+/.test(x.email))) {
+      createRecord("users", { name: p.email.split("@")[0], email: p.email.trim(), role: p.role, status: "Invited", token: crypto.randomUUID() });
+    }
+    if (loadSample) {
+      try {
+        loadSampleData();
+      } catch {
+        /* already loaded */
+      }
+    }
+    // A full load, not router.push: every screen has to re-read its data from the new company.
+    // eslint-disable-next-line @next/next/no-location-assign-relative-destination
+    window.location.assign("/home");
   }
   function back() {
     if (step > 0) setStep(step - 1);

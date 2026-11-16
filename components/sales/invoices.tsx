@@ -11,6 +11,7 @@ import { BRAND } from "@/lib/brand";
 import { cn } from "@/lib/utils";
 import { Card, CardTitle, DataTable, DateInput, Field, PageHeader, SearchInput, Select, SidePanel, StatCard, btn, inputCls, longDate, money, num, textareaCls, today, type Column } from "@/components/accounting/kit";
 import { CustomerPicker, DISCOUNT_TYPES, LineItems, NumberBanner, Opt, Req, Section, StatusBadge, ToggleRow, blankLine, validLines } from "./doc-kit";
+import { useCompanyName } from "@/lib/companies";
 
 const subOf = (pathname: string, base: string) => pathname.slice(base.length).replace(/^\//, "");
 const plusDays = (iso: string, days: number) => {
@@ -279,11 +280,12 @@ function OptionCard({ checked, onChange, label, children }: { checked: boolean; 
 
 // Printable invoice layout used by the live preview and the invoice view.
 function InvoicePaper({ number, customer, date, dueDate, lines, totals, notes, template }: { number: string; customer: string; date: string; dueDate: string; lines: DocLine[]; totals: ReturnType<typeof docTotals>; notes?: string; template?: string }) {
+  const companyName = useCompanyName();
   return (
     <div className="print-area rounded-xl border border-border bg-white p-8 text-sm text-neutral-900 shadow-sm">
       <div className="flex items-start justify-between">
         <div>
-          <p className="text-lg font-bold">{BRAND.org}</p>
+          <p className="text-lg font-bold">{companyName}</p>
           <p className="text-xs text-neutral-500">{template}</p>
         </div>
         <div className="text-right">

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { BRAND } from "@/lib/brand";
 import { cn } from "@/lib/utils";
 import { LandingLogo } from "@/components/landing/brand";
+import { ThemeMenu } from "@/components/theme-toggle";
 
 const AI = BRAND.fullName;
 
@@ -36,15 +37,15 @@ export function Panel({ className, children }: { className?: string; children: R
 export const btnPrimary =
   "inline-flex items-center justify-center gap-2.5 rounded-full bg-lp-brand px-5.5 py-1.75 text-[15px] font-medium text-lp-navy transition hover:brightness-110";
 export const btnOutline =
-  "inline-flex items-center justify-center gap-2.5 rounded-full border border-lp-ink/25 bg-lp-card px-6.5 py-1.75 text-[15px] font-medium text-lp-ink transition hover:bg-white";
+  "inline-flex items-center justify-center gap-2.5 rounded-full border border-lp-ink/25 bg-lp-card px-6.5 py-1.75 text-[15px] font-medium text-lp-ink transition hover:bg-lp-alt";
 
 /* ---------- nav ---------- */
 
-export const navLinks = [
-  { href: "#handles", label: `What ${AI} handles` },
-  { href: "#how", label: `How ${AI} works` },
-  { href: "#humans", label: "The humans" },
-  { href: "#pricing", label: "Pricing" },
+export const navLinks: { href: string; label: string; page?: boolean }[] = [
+  { href: "/handles", label: `What ${AI} handles`, page: true },
+  { href: "/how", label: `How ${AI} works`, page: true },
+  { href: "/humans", label: "The humans", page: true },
+  { href: "/pricing", label: "Pricing", page: true },
   { href: "#faq", label: "FAQ" },
 ];
 
@@ -59,14 +60,23 @@ export function LandingHeader({ hrefPrefix = "" }: { hrefPrefix?: string }) {
         <div className="flex items-center gap-6.5">
           <LandingLogo />
           <nav className="hidden items-center gap-5.5 text-[14px] text-lp-body lg:flex">
-            {navLinks.map((l) => (
-              <a key={l.href} href={`${hrefPrefix}${l.href}`} className="transition-colors hover:text-lp-ink">
-                {l.label}
-              </a>
-            ))}
+            {navLinks.map((l) =>
+              l.page ? (
+                <Link key={l.href} href={l.href} className="transition-colors hover:text-lp-ink">
+                  {l.label}
+                </Link>
+              ) : (
+                <a key={l.href} href={`${hrefPrefix}${l.href}`} className="transition-colors hover:text-lp-ink">
+                  {l.label}
+                </a>
+              ),
+            )}
           </nav>
         </div>
-        <div className="flex items-center gap-5">
+        <div className="flex items-center gap-3 sm:gap-5">
+          <div className="text-lp-body [&_button[aria-haspopup]]:hover:bg-lp-alt [&_button[aria-haspopup]]:hover:text-lp-ink">
+            <ThemeMenu />
+          </div>
           <Link href="/login" className="hidden text-[14px] font-medium text-lp-ink sm:block">
             Sign in
           </Link>
@@ -90,6 +100,15 @@ export function LandingFooter() {
       <Container className="flex flex-col items-center justify-between gap-4 py-7 sm:flex-row">
         <LandingLogo dark />
         <nav className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-[14px] text-white/65">
+          <Link href="/handles" className="hover:text-white">
+            What {AI} handles
+          </Link>
+          <Link href="/how" className="hover:text-white">
+            How {AI} works
+          </Link>
+          <Link href="/humans" className="hover:text-white">
+            The humans
+          </Link>
           <Link href="/pricing" className="hover:text-white">
             Pricing
           </Link>

@@ -4,7 +4,7 @@
 // preferences, org units, roles, sample data (loaded through the real posting code and removable
 // again), "clear all data", Tally XML import, webhook test deliveries and API keys.
 
-import { createRecord, deleteRecord, readCollection, updateRecord, useCollection, type Rec } from "@/lib/store";
+import { collectionOfKey, createRecord, deleteRecord, readCollection, type Rec, updateRecord, useCollection } from "@/lib/store";
 import { moduleGroups } from "@/lib/nav";
 import { createJournal, findAccountByCode } from "@/lib/ledger";
 import { createInvoice, recordPayment } from "@/lib/sales";
@@ -107,7 +107,7 @@ export const permCount = (p: unknown) => Object.values((p as Record<string, stri
 const KEEP = new Set(["accounts", "currencies", "exchange-rates", "fiscal-periods", "tax-types", "tax-rates", "tax-categories", "tax-settings", "posting-rules", "org-units", "users", "roles", "doc-templates", "system-settings", "doc-numbering", "bank-accounts", "cash-accounts", "transaction-categories", "warehouses", "units", "product-categories", "leave-types", "holiday-calendars", "designations", "salary-components", "salary-structures", "custom-fields", "approval-policies", "webhooks", "integration-clients", "cost-categories", "cost-centres", "purchase-charges", "pipeline-stages", "scoring-rules", "segments", "web-forms", "welcomed", "audit-log"]);
 
 
-const snapshot = () => { const m = new Map<string, Set<string>>(); for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i)!; if (!k.startsWith("taxgo:")) continue; try { const v = JSON.parse(localStorage.getItem(k) ?? "null"); if (Array.isArray(v)) m.set(k.slice(6), new Set(v.map((r: Rec) => r.id))); } catch { /* not a collection */ } } return m; };
+const snapshot = () => { const m = new Map<string, Set<string>>(); for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i)!; const c = collectionOfKey(k); if (!c) continue; try { const v = JSON.parse(localStorage.getItem(k) ?? "null"); if (Array.isArray(v)) m.set(c, new Set(v.map((r: Rec) => r.id))); } catch { /* not a collection */ } } return m; };
 
 export function loadSample() {
   if (readCollection("sample-index").length) throw new Error("Sample data is already loaded");
@@ -144,7 +144,7 @@ export function clearSample() {
 
 export function clearAllData() {
   const keys: string[] = [];
-  for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i)!; if (k.startsWith("taxgo:") && !KEEP.has(k.slice(6)) && !/settings|prefs|agent|theme|sidebar|welcomed/.test(k)) keys.push(k); }
+  for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i)!; const c = collectionOfKey(k); if (c && !KEEP.has(c) && !/settings|prefs|agent|theme|sidebar|welcomed|active-unit/.test(k)) keys.push(k); }
   keys.forEach((k) => localStorage.removeItem(k));
   createRecord("audit-log", { at: new Date().toISOString(), action: "DELETE", table: "all data", recordId: "", by: "Udu Arua", summary: `Cleared ${keys.length} collections` });
   return keys.length;

@@ -163,7 +163,7 @@ export function PricingExplorer() {
                       aria-current={p.code === selected.code}
                       className={cn(
                         "flex w-full items-center justify-between gap-4 px-5 py-2.75 text-left transition",
-                        p.code === selected.code ? "bg-lp-brand/[0.07]" : "hover:bg-lp-canvas",
+                        p.code === selected.code ? "bg-lp-brand/7" : "hover:bg-lp-canvas",
                       )}
                     >
                       <span className="flex min-w-0 items-center gap-2.5">
@@ -229,7 +229,7 @@ function SelectedCard({
       <p className="text-[13px] text-lp-muted">{pkg.blurb}</p>
 
       <p className="mt-3 flex flex-wrap items-baseline gap-x-2">
-        <span className="text-[40px] font-semibold leading-[1.05] tracking-[-0.045em] text-lp-ink">
+        <span className="font-display text-[40px] font-semibold leading-[1.05] tracking-[-0.045em] text-lp-ink">
           {formatMoney(price, amount)}
         </span>
         <span className="text-[14px] text-lp-muted">

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Newsreader, Outfit } from "next/font/google";
+import { Bricolage_Grotesque, Fraunces, Newsreader, Outfit } from "next/font/google";
 import "./globals.css";
 import { BRAND } from "@/lib/brand";
 
@@ -14,6 +14,21 @@ const newsreader = Newsreader({
   variable: "--font-newsreader",
   subsets: ["latin"],
   style: ["normal", "italic"],
+  display: "swap",
+});
+
+// Public website only (.lp-site): Bricolage Grotesque headlines and Fraunces italic accents.
+const bricolage = Bricolage_Grotesque({
+  variable: "--font-bricolage",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const fraunces = Fraunces({
+  variable: "--font-fraunces",
+  subsets: ["latin"],
+  style: ["normal", "italic"],
+  axes: ["SOFT", "WONK"],
   display: "swap",
 });
 
@@ -36,7 +51,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${outfit.variable} ${newsreader.variable} h-full`} suppressHydrationWarning>
+    <html lang="en" className={`${outfit.variable} ${newsreader.variable} ${bricolage.variable} ${fraunces.variable} h-full`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>

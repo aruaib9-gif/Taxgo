@@ -270,13 +270,13 @@ function AddressFields({ value, onChange, required }: { value: Address; onChange
       </Field>
       <div className="grid gap-3 sm:grid-cols-3">
         <Field label={<>City{required ? <Req /> : <Opt />}</>}>
-          <input aria-label="City" value={value.city} onChange={(e) => set({ city: e.target.value })} placeholder="e.g. Muscat" className={inputCls} />
+          <input aria-label="City" value={value.city} onChange={(e) => set({ city: e.target.value })} placeholder="e.g. Austin" className={inputCls} />
         </Field>
         <Field label={<>State / Region<Opt /></>}>
-          <input aria-label="State / Region" value={value.state} onChange={(e) => set({ state: e.target.value })} placeholder="e.g. Dhofar" className={inputCls} />
+          <input aria-label="State / Region" value={value.state} onChange={(e) => set({ state: e.target.value })} placeholder="e.g. Texas" className={inputCls} />
         </Field>
         <Field label={<>Postal code<Opt /></>}>
-          <input aria-label="Postal code" value={value.postal} onChange={(e) => set({ postal: e.target.value })} placeholder="e.g. 112" className={inputCls} />
+          <input aria-label="Postal code" value={value.postal} onChange={(e) => set({ postal: e.target.value })} placeholder="e.g. 73301" className={inputCls} />
         </Field>
       </div>
     </div>
@@ -336,10 +336,10 @@ function CustomerForm({ record, onDone }: { record?: Rec; onDone: () => void }) 
             <input id="c-email" type="email" value={f.email} onChange={(e) => set({ email: e.target.value })} placeholder="e.g. billing@acme.com" className={inputCls} />
           </Field>
           <Field label={<>Phone<Opt /></>} htmlFor="c-phone">
-            <input id="c-phone" value={f.phone} onChange={(e) => set({ phone: e.target.value })} placeholder="e.g. +91 484 123 4567" className={inputCls} />
+            <input id="c-phone" value={f.phone} onChange={(e) => set({ phone: e.target.value })} placeholder="e.g. +1 201 555 0123" className={inputCls} />
           </Field>
           <Field label={<>Mobile Number<Opt /></>} htmlFor="c-mobile">
-            <input id="c-mobile" value={f.mobile} onChange={(e) => set({ mobile: e.target.value })} placeholder="e.g. +91 98765 43210" className={inputCls} />
+            <input id="c-mobile" value={f.mobile} onChange={(e) => set({ mobile: e.target.value })} placeholder="e.g. +1 201 555 0198" className={inputCls} />
           </Field>
         </div>
         <div className="space-y-3 rounded-lg border border-border p-4">

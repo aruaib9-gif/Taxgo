@@ -182,24 +182,26 @@
   --font-serif: var(--font-newsreader), ui-serif, Georgia, serif;
 }
 
-/* Marketing landing palette — fixed light values sampled from the design (used by app/page.tsx). */
-@theme {
-  --color-lp-canvas: #f3eeea;
-  --color-lp-alt: #efe9e5;
-  --color-lp-card: #fbf8f5;
-  --color-lp-line: #e3ddd7;
-  --color-lp-ink: #1a1714;
-  --color-lp-body: #393531;
-  --color-lp-muted: #6a645f;
-  --color-lp-brand: #d9682a;
-  --color-lp-teal: #1f7fa3;
-  --color-lp-navy: #0f2438;
-  --color-lp-sky: #f7b15a;
-  --color-lp-amber: #cd7b2e;
-  --color-lp-mint: #4fa590;
-  --color-lp-chip: #f6e4d5;
-  --color-lp-whatsapp: #5fcf6f;
+/* Marketing site palette: tokens resolve per theme (Warm default, Light, Dark) — see the --lp-* values below. */
+@theme inline {
+  --color-lp-canvas: var(--lp-canvas);
+  --color-lp-alt: var(--lp-alt);
+  --color-lp-card: var(--lp-card);
+  --color-lp-line: var(--lp-line);
+  --color-lp-ink: var(--lp-ink);
+  --color-lp-body: var(--lp-body);
+  --color-lp-muted: var(--lp-muted);
+  --color-lp-brand: var(--lp-brand);
+  --color-lp-teal: var(--lp-teal);
+  --color-lp-navy: var(--lp-navy);
+  --color-lp-sky: var(--lp-sky);
+  --color-lp-amber: var(--lp-amber);
+  --color-lp-mint: var(--lp-mint);
+  --color-lp-chip: var(--lp-chip);
+  --color-lp-whatsapp: var(--lp-whatsapp);
+}
 
+@theme {
   --animate-lp-rise: lp-rise 0.45s ease-out both;
 
   @keyframes lp-rise {
@@ -278,4 +280,128 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .lp-caret::after, .lp-thinking, .lp-write { animation: none; }
   .lp-thinking { color: var(--color-lp-muted); background: none; }
+}
+
+/* Public website typography: characterful headlines and italic accents; body text stays Outfit. */
+.lp-site :is(h1, h2, h3, h4),
+.lp-site .font-display {
+  font-family: var(--font-bricolage), var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
+  font-optical-sizing: auto;
+}
+.lp-site .font-serif {
+  font-family: var(--font-fraunces), var(--font-newsreader), ui-serif, Georgia, serif;
+  font-variation-settings: "SOFT" 100, "WONK" 1;
+}
+
+/* Landing hero: shimmering brand name, rotating last word, hand-drawn underline. */
+@keyframes lp-shimmer {
+  from { background-position: 100% 50%; }
+  to { background-position: -100% 50%; }
+}
+.lp-shimmer {
+  background-size: 200% 100%;
+  animation: lp-shimmer 6s ease-in-out infinite alternate;
+}
+@keyframes lp-word-in {
+  from { opacity: 0; transform: translateY(0.35em); filter: blur(6px); }
+  to { opacity: 1; transform: none; filter: none; }
+}
+.lp-word-in {
+  animation: lp-word-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes lp-draw {
+  from { stroke-dashoffset: 1; }
+  to { stroke-dashoffset: 0; }
+}
+.lp-underline {
+  stroke-dasharray: 1;
+  animation: lp-draw 0.7s 0.25s cubic-bezier(0.65, 0, 0.35, 1) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .lp-shimmer, .lp-word-in, .lp-underline { animation: none; }
+}
+
+/* Marketing site themes. Warm is the default; Light and Dark follow the theme menu (data-theme),
+   and Dark also applies when the system prefers it and no theme was picked — same rule as the app. */
+:root {
+  --lp-canvas: #f3eeea;
+  --lp-alt: #efe9e5;
+  --lp-card: #fbf8f5;
+  --lp-line: #e3ddd7;
+  --lp-ink: #1a1714;
+  --lp-body: #393531;
+  --lp-muted: #6a645f;
+  --lp-brand: #d9682a;
+  --lp-teal: #1f7fa3;
+  --lp-navy: #0f2438;
+  --lp-sky: #f7b15a;
+  --lp-amber: #cd7b2e;
+  --lp-mint: #4fa590;
+  --lp-chip: #f6e4d5;
+  --lp-whatsapp: #5fcf6f;
+  --lp-glow-a: #dfe5ea;
+  --lp-glow-b: #e9e9ea;
+  --lp-map: #dcdfe2;
+}
+:root[data-theme="light"] {
+  --lp-canvas: #ffffff;
+  --lp-alt: #f6f7f9;
+  --lp-card: #ffffff;
+  --lp-line: #e5e7eb;
+  --lp-ink: #111827;
+  --lp-body: #374151;
+  --lp-muted: #6b7280;
+  --lp-brand: #d9682a;
+  --lp-teal: #1f7fa3;
+  --lp-navy: #0f2438;
+  --lp-sky: #f7b15a;
+  --lp-amber: #cd7b2e;
+  --lp-mint: #4fa590;
+  --lp-chip: #fdeee3;
+  --lp-whatsapp: #5fcf6f;
+  --lp-glow-a: #eef2f6;
+  --lp-glow-b: #f4f6f8;
+  --lp-map: #e8ebef;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]):not([data-theme="blue"]) {
+    --lp-canvas: #0d1420;
+    --lp-alt: #111a29;
+    --lp-card: #162131;
+    --lp-line: #26344a;
+    --lp-ink: #f3efe9;
+    --lp-body: #c8ced8;
+    --lp-muted: #8e99aa;
+    --lp-brand: #e57a3a;
+    --lp-teal: #4fb3d1;
+    --lp-navy: #081019;
+    --lp-sky: #f7b15a;
+    --lp-amber: #cd7b2e;
+    --lp-mint: #4fa590;
+    --lp-chip: #3a2416;
+    --lp-whatsapp: #5fcf6f;
+    --lp-glow-a: #16233a;
+    --lp-glow-b: #111b2c;
+    --lp-map: #1b2838;
+  }
+}
+:root[data-theme="dark"] {
+  --lp-canvas: #0d1420;
+  --lp-alt: #111a29;
+  --lp-card: #162131;
+  --lp-line: #26344a;
+  --lp-ink: #f3efe9;
+  --lp-body: #c8ced8;
+  --lp-muted: #8e99aa;
+  --lp-brand: #e57a3a;
+  --lp-teal: #4fb3d1;
+  --lp-navy: #081019;
+  --lp-sky: #f7b15a;
+  --lp-amber: #cd7b2e;
+  --lp-mint: #4fa590;
+  --lp-chip: #3a2416;
+  --lp-whatsapp: #5fcf6f;
+  --lp-glow-a: #16233a;
+  --lp-glow-b: #111b2c;
+  --lp-map: #1b2838;
 }
