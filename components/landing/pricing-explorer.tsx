@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { ArrowRight, Check, Globe, Search, X } from "lucide-react";
+import { ArrowRight, Check, Globe, Minus, Plus, Search, X } from "lucide-react";
 import { BRAND } from "@/lib/brand";
 import {
   COUNTRY_PRICES,
@@ -11,6 +11,8 @@ import {
   DEFAULT_PACKAGE_ID,
   PACKAGES,
   REGIONS,
+  USERS_INCLUDED,
+  USER_BLOCK_PCT,
   type CountryPrice,
   type Cycle,
   type Package,
@@ -21,6 +23,7 @@ import {
   formatMoney,
   packageFor,
   priceFor,
+  quoteMultiplier,
   searchCountries,
 } from "@/lib/pricing";
 import { cn } from "@/lib/utils";
@@ -30,7 +33,7 @@ const AI = BRAND.fullName;
 
 /** True of every package, whichever modules it carries. */
 const alwaysIncluded = [
-  "Unlimited users — your whole team, free",
+  "Up to 5 users included — each extra 5 adds 25%",
   "Local tax, e-invoicing & statutory filings",
   "Priority onboarding & free migration",
 ];
@@ -51,6 +54,8 @@ export function PricingExplorer() {
   const [pkgId, setPkgId] = useState<string>(DEFAULT_PACKAGE_ID);
   const [query, setQuery] = useState(asked);
   const [region, setRegion] = useState<Region | "All">("All");
+  const [companies, setCompanies] = useState(1);
+  const [users, setUsers] = useState(USERS_INCLUDED);
 
   const selected = priceFor(code) ?? COUNTRY_PRICES[0];
   const pkg = packageFor(pkgId);
@@ -171,7 +176,7 @@ export function PricingExplorer() {
                           {p.flag}
                         </span>
                         <span className="truncate text-[14px] text-lp-ink">{p.country}</span>
-                        <span className="shrink-0 rounded-full border border-lp-line px-1.5 py-0.25 text-[10px] font-semibold text-lp-muted">
+                        <span className="shrink-0 rounded-full border border-lp-line px-1.5 py-px text-[10px] font-semibold text-lp-muted">
                           {p.currency}
                         </span>
                       </span>
@@ -191,7 +196,16 @@ export function PricingExplorer() {
 
         {/* selected country */}
         <div className="order-1 lg:order-2 lg:sticky lg:top-17.5">
-          <SelectedCard price={selected} pkg={pkg} cycle={cycle} onPickPackage={setPkgId} />
+          <SelectedCard
+            price={selected}
+            pkg={pkg}
+            cycle={cycle}
+            onPickPackage={setPkgId}
+            companies={companies}
+            onCompanies={setCompanies}
+            users={users}
+            onUsers={setUsers}
+          />
         </div>
       </div>
     </>
@@ -203,13 +217,24 @@ function SelectedCard({
   pkg,
   cycle,
   onPickPackage,
+  companies,
+  onCompanies,
+  users,
+  onUsers,
 }: {
   price: CountryPrice;
   pkg: Package;
   cycle: Cycle;
   onPickPackage: (id: string) => void;
+  companies: number;
+  onCompanies: (n: number) => void;
+  users: number;
+  onUsers: (n: number) => void;
 }) {
-  const amount = amountFor(price, pkg, cycle);
+  const unit = amountFor(price, pkg, cycle);
+  const multiplier = quoteMultiplier(companies, users);
+  const amount = Math.round(unit * multiplier);
+  const extraBlocks = Math.ceil(Math.max(0, users - USERS_INCLUDED) / USERS_INCLUDED);
   const saving = annualSavingPct(price, pkg);
   const others = PACKAGES.filter((p) => p.id !== pkg.id);
 
@@ -220,7 +245,7 @@ function SelectedCard({
           {price.flag}
         </span>
         <span className="font-medium text-lp-ink">{price.country}</span>
-        <span className="rounded-full border border-lp-line px-1.5 py-0.25 text-[10px] font-semibold text-lp-muted">
+        <span className="rounded-full border border-lp-line px-1.5 py-px text-[10px] font-semibold text-lp-muted">
           {price.currency}
         </span>
       </p>
@@ -233,24 +258,39 @@ function SelectedCard({
           {formatMoney(price, amount)}
         </span>
         <span className="text-[14px] text-lp-muted">
-          / company / {cycle === "annual" ? "year" : "month"}
+          / {companies === 1 ? "company" : `${companies} companies`} / {cycle === "annual" ? "year" : "month"}
         </span>
+      </p>
+      {multiplier !== 1 ? (
+        <p className="mt-1 text-[12px] text-lp-muted">
+          {formatMoney(price, unit)} base
+          {extraBlocks > 0 ? <> + {extraBlocks * USER_BLOCK_PCT}% for {users} users</> : null}
+          {companies > 1 ? <> × {companies} companies</> : null}
+        </p>
+      ) : null}
+
+      <div className="mt-5 grid grid-cols-2 gap-3">
+        <Stepper label="Companies" value={companies} min={1} step={1} onChange={onCompanies} />
+        <Stepper label="Users per company" value={users} min={1} step={USERS_INCLUDED} onChange={onUsers} />
+      </div>
+      <p className="mt-2 text-[12px] text-lp-muted">
+        Priced per company. Up to {USERS_INCLUDED} users included; each extra {USERS_INCLUDED} adds {USER_BLOCK_PCT}%.
       </p>
 
       <p className="mt-2 text-[13px] text-lp-muted">
         {cycle === "annual" ? (
           <>
-            Works out to {formatMoney(price, annualPerMonth(price, pkg))} a month
+            Works out to {formatMoney(price, Math.round(annualPerMonth(price, pkg) * multiplier))} a month
             {saving > 0 ? <> — {saving}% below paying monthly</> : null}.
           </>
         ) : (
           <>
             {saving > 0 ? (
               <>
-                Pay annually at {formatMoney(price, amountFor(price, pkg, "annual"))} and save {saving}%.
+                Pay annually at {formatMoney(price, Math.round(amountFor(price, pkg, "annual") * multiplier))} and save {saving}%.
               </>
             ) : (
-              <>Annual billing: {formatMoney(price, amountFor(price, pkg, "annual"))}.</>
+              <>Annual billing: {formatMoney(price, Math.round(amountFor(price, pkg, "annual") * multiplier))}.</>
             )}
           </>
         )}
@@ -279,7 +319,7 @@ function SelectedCard({
                 <span className="truncate text-[14px] text-lp-body">{o.name}</span>
                 <span className="shrink-0 whitespace-nowrap text-[11px] text-lp-muted">
                   <span className="text-[14px] font-semibold tracking-[-0.02em] text-lp-ink">
-                    {formatMoney(price, amountFor(price, o, cycle))}
+                    {formatMoney(price, Math.round(amountFor(price, o, cycle) * multiplier))}
                   </span>{" "}
                   / {cycle === "annual" ? "yr" : "mo"}
                 </span>
@@ -301,5 +341,48 @@ function SelectedCard({
         </p>
       </div>
     </Panel>
+  );
+}
+
+/** A small − value + counter. Step snaps to multiples (users go 5, 10, 15…), never below `min`. */
+function Stepper({
+  label,
+  value,
+  min,
+  step,
+  onChange,
+}: {
+  label: string;
+  value: number;
+  min: number;
+  step: number;
+  onChange: (n: number) => void;
+}) {
+  const down = Math.max(min, step === 1 ? value - 1 : Math.ceil(value / step) * step - step);
+  const up = step === 1 ? value + 1 : Math.floor(value / step) * step + step;
+  const btn =
+    "grid h-8 w-8 place-items-center rounded-full text-lp-body transition hover:bg-lp-alt hover:text-lp-ink disabled:opacity-40 disabled:hover:bg-transparent";
+  return (
+    <div>
+      <p className="text-[12px] font-medium text-lp-muted">{label}</p>
+      <div className="mt-1 flex items-center justify-between rounded-full border border-lp-line bg-lp-canvas p-0.5">
+        <button type="button" onClick={() => onChange(down)} disabled={value <= min} aria-label={`Fewer ${label.toLowerCase()}`} className={btn}>
+          <Minus className="h-3.5 w-3.5" strokeWidth={2} />
+        </button>
+        <input
+          type="number"
+          inputMode="numeric"
+          min={min}
+          max={999}
+          value={value}
+          onChange={(e) => onChange(Math.min(999, Math.max(min, Math.floor(Number(e.target.value)) || min)))}
+          aria-label={label}
+          className="w-12 bg-transparent text-center text-[15px] font-semibold text-lp-ink outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none"
+        />
+        <button type="button" onClick={() => onChange(Math.min(999, up))} aria-label={`More ${label.toLowerCase()}`} className={btn}>
+          <Plus className="h-3.5 w-3.5" strokeWidth={2} />
+        </button>
+      </div>
+    </div>
   );
 }

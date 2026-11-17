@@ -217,7 +217,7 @@ const rule = [
 ];
 
 const included = [
-  "Unlimited users — your whole team, free",
+  "Up to 5 users included — each extra 5 adds 25%",
   "All 15 module groups",
   `All of ${AI}'s agents`,
   "ZATCA · UAE VAT · India GST · EU Peppol",
@@ -270,11 +270,11 @@ const faqs: [string, string][] = [
   ],
   [
     `How much does ${AI} cost?`,
-    "One price per company in your local currency — never per user. The Complete Package covers every module; Accounting Only is half that, and HR & Payroll, Retail and CRM are a sixth each. Pay monthly or save with annual billing. Type your country in the pricing section above to see your price.",
+    "One price per company in your local currency, covering up to 5 users; each additional 5 users adds 25% of that price. The Complete Package covers every module; Accounting Only is half that, and HR & Payroll, Retail and CRM are a sixth each. Pay monthly or save with annual billing. Type your country in the pricing section above to see your price.",
   ],
   [
     "Can I manage several companies or countries?",
-    `Yes. ${AI} supports multiple entities, multiple currencies and your whole organisation structure, with consolidated reporting across them.`,
+    `Yes. ${AI} supports multiple companies, multiple currencies and your whole organisation structure, with consolidated reporting across them. Pricing is per company: each company is priced on its own, so two companies cost twice the price, three companies three times, and so on.`,
   ],
   [
     "Is my data safe — and do I keep control of it?",
@@ -526,12 +526,9 @@ export default function LandingPage() {
             business more efficient.
           </p>
           <Panel className="mt-10 grid md:grid-cols-3 md:divide-x divide-y md:divide-y-0 divide-lp-line">
-            {steps.map((s, i) => (
+            {steps.map((s) => (
               <div key={s.title} className="px-5.75 pb-8 pt-7">
-                <div className="flex items-start justify-between">
-                  <s.icon className="h-4 w-4 text-lp-brand" strokeWidth={1.75} />
-                  <span className="font-serif text-[26px] italic leading-none text-lp-muted/50">{i + 1}</span>
-                </div>
+                <s.icon className="h-4 w-4 text-lp-brand" strokeWidth={1.75} />
                 <h3 className="mt-7 text-[17px] font-semibold tracking-[-0.035em] text-lp-ink">{s.title}</h3>
                 <p className="mt-3 text-[14px] leading-[1.65] text-lp-body">{s.text}</p>
                 <p className="mt-3 text-[14px] font-semibold leading-[1.55] text-lp-ink">{s.tag}</p>
@@ -708,8 +705,8 @@ export default function LandingPage() {
           <H2>Five packages. One price per company.</H2>
           <p className="mx-auto mt-4 max-w-170 text-[16px] leading-[1.6] text-lp-body">
             Take the Complete Package — everything she does — or just the part you need: Accounting, HR &amp; Payroll,
-            Retail or CRM. Priced per company in your own currency, billed monthly or annually. Unlimited users — your
-            team, your accountant, your auditor, all free. No per-seat math.
+            Retail or CRM. Priced per company in your own currency, billed monthly or annually. Up to 5 users included,
+            and each additional 5 users adds just 25% of the price.
           </p>
           <Panel className="mx-auto mt-10 grid max-w-4xl text-left md:grid-cols-[468px_1fr] md:divide-x divide-y md:divide-y-0 divide-lp-line">
             <div className="px-6.5 pb-7 pt-7">

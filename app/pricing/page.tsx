@@ -20,7 +20,7 @@ const AI = BRAND.fullName;
 
 export const metadata = {
   title: `Pricing — ${BRAND.fullName}`,
-  description: `Five packages, priced in your own currency across ${COUNTRY_PRICES.length} countries. Unlimited users, billed monthly or annually.`,
+  description: `Five packages, priced in your own currency across ${COUNTRY_PRICES.length} countries. Up to 5 users included, billed monthly or annually.`,
 };
 
 const guarantees = [
@@ -34,7 +34,11 @@ const guarantees = [
 const faqs: [string, string][] = [
   [
     "Is the price per user?",
-    "No. It's one price per company, and every user is free — your team, your accountant and your auditor included. Add people as you grow and nothing changes.",
+    "No. It's one price per company, covering up to 5 users. Each additional 5 users adds 25% of your package price, so a team of 6–10 pays 125%, 11–15 pays 150%, and so on.",
+  ],
+  [
+    "What if I have more than one company?",
+    "Each price covers one company. Two companies cost twice the price, three companies three times, and so on. Set the number of companies on the price card above to see your total.",
   ],
   [
     "What's the difference between the packages?",
@@ -77,7 +81,7 @@ export default function PricingPage() {
               Five packages. <Serif className="text-[32px] sm:text-[40px]">Your currency.</Serif>
             </H2>
             <p className="mx-auto mt-4 max-w-160 text-[16px] leading-[1.6] text-lp-body">
-              Pick a package and your country, and see exactly what {AI} costs there — per company, unlimited users,
+              Pick a package and your country, and see exactly what {AI} costs there — per company, up to 5 users included,
               billed monthly or annually. {COUNTRY_PRICES.length} countries, priced locally.
             </p>
           </div>

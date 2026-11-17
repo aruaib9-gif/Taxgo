@@ -2,7 +2,7 @@
  * Tax GO subscription pricing, per country, in local currency.
  *
  * Source: "New Country Prices (1).xlsx" (Product / Currency / Country / Symbol /
- * Amount / 1 = monthly, 12 = annual). Amounts are per company, unlimited users.
+ * Amount / 1 = monthly, 12 = annual). Amounts are per company for up to 5 users; each further 5 users adds 25%.
  *
  * The workbook has one sheet per package. Every sheet derives from the Complete
  * Package column by a constant divisor, exactly and for all 166 rows, so the
@@ -255,6 +255,18 @@ export function annualSavingPct(p: CountryPrice, pkg: Package = PACKAGES[0]): nu
 /** What the annual plan works out to per month. */
 export function annualPerMonth(p: CountryPrice, pkg: Package = PACKAGES[0]): number {
   return Math.round(amountFor(p, pkg, "annual") / 12);
+}
+
+/* ---------- team size ---------- */
+
+/** Users covered by one company's price; each further block of this many adds USER_BLOCK_PCT. */
+export const USERS_INCLUDED = 5;
+export const USER_BLOCK_PCT = 25;
+
+/** Price multiplier for a quote: per company, plus 25% per extra block of 5 users in each company. */
+export function quoteMultiplier(companies: number, usersPerCompany: number): number {
+  const extraBlocks = Math.ceil(Math.max(0, usersPerCompany - USERS_INCLUDED) / USERS_INCLUDED);
+  return companies * (1 + (extraBlocks * USER_BLOCK_PCT) / 100);
 }
 
 /** Other names people type for a country. */
