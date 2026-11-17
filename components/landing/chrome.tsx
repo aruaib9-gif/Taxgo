@@ -3,6 +3,7 @@ import { BRAND } from "@/lib/brand";
 import { cn } from "@/lib/utils";
 import { LandingLogo } from "@/components/landing/brand";
 import { ThemeMenu } from "@/components/theme-toggle";
+import { ThemeIntro } from "@/components/landing/theme-intro";
 
 const AI = BRAND.fullName;
 
@@ -55,40 +56,43 @@ export const navLinks: { href: string; label: string; page?: boolean }[] = [
  */
 export function LandingHeader({ hrefPrefix = "" }: { hrefPrefix?: string }) {
   return (
-    <header className="sticky top-0 z-30 border-b border-lp-line bg-lp-canvas/90 backdrop-blur">
-      <Container className="flex h-12.5 items-center justify-between gap-6">
-        <div className="flex items-center gap-6.5">
-          <LandingLogo />
-          <nav className="hidden items-center gap-5.5 text-[14px] text-lp-body lg:flex">
-            {navLinks.map((l) =>
-              l.page ? (
-                <Link key={l.href} href={l.href} className="transition-colors hover:text-lp-ink">
-                  {l.label}
-                </Link>
-              ) : (
-                <a key={l.href} href={`${hrefPrefix}${l.href}`} className="transition-colors hover:text-lp-ink">
-                  {l.label}
-                </a>
-              ),
-            )}
-          </nav>
-        </div>
-        <div className="flex items-center gap-3 sm:gap-5">
-          <div className="text-lp-body [&_button[aria-haspopup]]:hover:bg-lp-alt [&_button[aria-haspopup]]:hover:text-lp-ink">
-            <ThemeMenu />
+    <>
+      <header className="sticky top-0 z-30 border-b border-lp-line bg-lp-canvas/90 backdrop-blur">
+        <Container className="flex h-12.5 items-center justify-between gap-6">
+          <div className="flex items-center gap-6.5">
+            <LandingLogo />
+            <nav className="hidden items-center gap-5.5 text-[14px] text-lp-body lg:flex">
+              {navLinks.map((l) =>
+                l.page ? (
+                  <Link key={l.href} href={l.href} className="transition-colors hover:text-lp-ink">
+                    {l.label}
+                  </Link>
+                ) : (
+                  <a key={l.href} href={`${hrefPrefix}${l.href}`} className="transition-colors hover:text-lp-ink">
+                    {l.label}
+                  </a>
+                ),
+              )}
+            </nav>
           </div>
-          <Link href="/login" className="hidden text-[14px] font-medium text-lp-ink sm:block">
-            Sign in
-          </Link>
-          <Link
-            href="/register"
-            className="rounded-full bg-lp-brand px-3.5 py-1.25 text-[14px] font-medium text-lp-on-brand transition hover:brightness-110"
-          >
-            Hire {AI}
-          </Link>
-        </div>
-      </Container>
-    </header>
+          <div className="flex items-center gap-3 sm:gap-5">
+            <div className="text-lp-body [&_button[aria-haspopup]]:hover:bg-lp-alt [&_button[aria-haspopup]]:hover:text-lp-ink">
+              <ThemeMenu />
+            </div>
+            <Link href="/login" className="hidden text-[14px] font-medium text-lp-ink sm:block">
+              Sign in
+            </Link>
+            <Link
+              href="/register"
+              className="rounded-full bg-lp-brand px-3.5 py-1.25 text-[14px] font-medium text-lp-on-brand transition hover:brightness-110"
+            >
+              Hire {AI}
+            </Link>
+          </div>
+        </Container>
+      </header>
+      <ThemeIntro />
+    </>
   );
 }
 

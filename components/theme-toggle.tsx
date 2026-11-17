@@ -1,22 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { Droplet, Moon, Sun, type LucideIcon } from "lucide-react";
+import { Moon, Sun } from "lucide-react";
 import { useDismiss } from "@/lib/use-dismiss";
+import { THEMES, applyTheme, currentTheme, type Theme } from "@/lib/theme";
 import { cn } from "@/lib/utils";
-
-type Theme = "blue" | "light" | "dark";
-
-const THEMES: { value: Theme; label: string; icon: LucideIcon }[] = [
-  { value: "blue", label: "Default", icon: Droplet },
-  { value: "light", label: "Light", icon: Sun },
-  { value: "dark", label: "Dark", icon: Moon },
-];
-
-function currentTheme(): Theme {
-  const t = document.documentElement.getAttribute("data-theme");
-  return t === "light" || t === "dark" ? t : "blue";
-}
 
 export function ThemeMenu() {
   const [open, setOpen] = useState(false);
@@ -26,10 +14,7 @@ export function ThemeMenu() {
   function choose(next: Theme) {
     setTheme(next);
     setOpen(false);
-    document.documentElement.setAttribute("data-theme", next);
-    try {
-      localStorage.setItem("theme", next);
-    } catch {}
+    applyTheme(next);
   }
 
   return (

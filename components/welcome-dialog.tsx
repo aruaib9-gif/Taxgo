@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Calculator, Sparkles, Wallet, X } from "lucide-react";
 import { BRAND } from "@/lib/brand";
+import { ThemeChoices } from "@/components/theme-choices";
 
 const SEEN_KEY = "taxgo:welcomed";
 
@@ -12,7 +13,7 @@ const POINTS = [
   { icon: Sparkles, text: "Get AI-powered insights and anomaly detection" },
 ];
 
-// First-visit welcome. Shown once per browser.
+// First-visit welcome, with a theme picker. Shown once per browser.
 export function WelcomeDialog() {
   const [open, setOpen] = useState(false);
 
@@ -65,6 +66,13 @@ export function WelcomeDialog() {
             </li>
           ))}
         </ul>
+        <div className="mt-6 border-t border-border pt-5">
+          <p className="text-sm font-medium">Choose your look</p>
+          <p className="mt-0.5 text-xs text-muted-foreground">You can change it any time from the sun/moon button in the top bar.</p>
+          <div className="mt-3">
+            <ThemeChoices />
+          </div>
+        </div>
         <div className="mt-6 flex justify-end">
           <button
             type="button"
