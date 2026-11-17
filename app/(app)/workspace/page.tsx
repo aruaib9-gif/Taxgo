@@ -21,7 +21,7 @@ export default function WorkspacePage() {
 
   return (
     <div>
-      <PageHeader title={`Good morning, ${BRAND.user.name}`} subtitle="Here's what needs your attention today." />
+      <PageHeader title="Good morning" subtitle="Here's what needs your attention today." />
       <div className="mb-6 grid grid-cols-2 gap-3 md:grid-cols-4">
         <StatCard label="Pending approvals" value="0" />
         <StatCard label="Overdue invoices" value={String(counts.openInvoices)} />

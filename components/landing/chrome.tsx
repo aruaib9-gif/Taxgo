@@ -35,7 +35,7 @@ export function Panel({ className, children }: { className?: string; children: R
 }
 
 export const btnPrimary =
-  "inline-flex items-center justify-center gap-2.5 rounded-full bg-lp-brand px-5.5 py-1.75 text-[15px] font-medium text-lp-navy transition hover:brightness-110";
+  "inline-flex items-center justify-center gap-2.5 rounded-full bg-lp-brand px-5.5 py-1.75 text-[15px] font-medium text-lp-on-brand transition hover:brightness-110";
 export const btnOutline =
   "inline-flex items-center justify-center gap-2.5 rounded-full border border-lp-ink/25 bg-lp-card px-6.5 py-1.75 text-[15px] font-medium text-lp-ink transition hover:bg-lp-alt";
 
@@ -82,7 +82,7 @@ export function LandingHeader({ hrefPrefix = "" }: { hrefPrefix?: string }) {
           </Link>
           <Link
             href="/register"
-            className="rounded-full bg-lp-brand px-3.5 py-1.25 text-[14px] font-medium text-lp-navy transition hover:brightness-110"
+            className="rounded-full bg-lp-brand px-3.5 py-1.25 text-[14px] font-medium text-lp-on-brand transition hover:brightness-110"
           >
             Hire {AI}
           </Link>

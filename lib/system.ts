@@ -253,7 +253,7 @@ const STYLES: Record<string, string> = {
   Lumiere: "font-family:Georgia,serif;color:#312e81", Meridian: "font-family:Arial,sans-serif;color:#134e4a", Onyx: "font-family:'Times New Roman',serif;color:#111",
 };
 export function baseTemplate(style: string, type: string) {
-  const accent = { Standard: "#d9682a", Aurora: "#7c3aed", Noir: "#111111", Vertex: "#059669", Lumiere: "#6366f1", Meridian: "#0f766e", Onyx: "#b45309" }[style] ?? "#d9682a";
+  const accent = { Standard: "#15803d", Aurora: "#7c3aed", Noir: "#111111", Vertex: "#059669", Lumiere: "#6366f1", Meridian: "#0f766e", Onyx: "#b45309" }[style] ?? "#15803d";
   const party = /Purchase|Bill/.test(type) ? "vendor" : "customer";
   return `<div style="${STYLES[style] ?? STYLES.Standard};padding:32px;max-width:800px">
   <div style="display:flex;justify-content:space-between;border-bottom:3px solid ${accent};padding-bottom:12px">

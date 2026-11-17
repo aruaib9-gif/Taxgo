@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { ArrowRight, Check, Globe, Minus, Plus, Search, X } from "lucide-react";
@@ -46,7 +46,23 @@ function initialCode(query: string): string {
   return (matches.find((m) => m.country.toLowerCase() === q) ?? matches[0])?.code ?? DEFAULT_CODE;
 }
 
-/** Reads `?country=` (sent by the landing-page search), so render it inside <Suspense>. */
+/** The visitor's country code: the host's geolocation header first, else a public IP lookup. Null if neither knows. */
+async function detectCountry(): Promise<string | null> {
+  try {
+    const own = (await (await fetch("/api/geo")).json()) as { country: string | null };
+    if (own.country) return own.country;
+  } catch {}
+  try {
+    const res = await fetch("https://api.country.is/");
+    const ip = (await res.json()) as { country?: string };
+    return ip.country ?? null;
+  } catch {
+    return null;
+  }
+}
+
+/** Reads `?country=` (sent by the landing-page search), so render it inside <Suspense>. Without one, it
+ *  opens on the visitor's country (by IP) when we price there, until they pick a country themselves. */
 export function PricingExplorer() {
   const asked = useSearchParams().get("country") ?? "";
   const [code, setCode] = useState<string>(() => initialCode(asked));
@@ -56,6 +72,26 @@ export function PricingExplorer() {
   const [region, setRegion] = useState<Region | "All">("All");
   const [companies, setCompanies] = useState(1);
   const [users, setUsers] = useState(USERS_INCLUDED);
+  const [located, setLocated] = useState<string | null>(null);
+  const picked = useRef(Boolean(asked));
+
+  useEffect(() => {
+    if (picked.current) return;
+    let live = true;
+    detectCountry().then((c) => {
+      if (!live || picked.current || !c || !priceFor(c)) return;
+      setCode(c);
+      setLocated(c);
+    });
+    return () => {
+      live = false;
+    };
+  }, []);
+
+  const pick = (c: string) => {
+    picked.current = true;
+    setCode(c);
+  };
 
   const selected = priceFor(code) ?? COUNTRY_PRICES[0];
   const pkg = packageFor(pkgId);
@@ -98,12 +134,12 @@ export function PricingExplorer() {
               onClick={() => setCycle(c)}
               className={cn(
                 "rounded-full px-5 py-1.5 text-[14px] font-medium capitalize transition",
-                cycle === c ? "bg-lp-brand text-lp-navy" : "text-lp-body hover:text-lp-ink",
+                cycle === c ? "bg-lp-brand text-lp-on-brand" : "text-lp-body hover:text-lp-ink",
               )}
             >
               {c}
               {c === "annual" && annualSavingPct(selected, pkg) > 0 ? (
-                <span className={cn("ml-1.5 text-[12px]", cycle === c ? "text-lp-navy/70" : "text-lp-brand")}>
+                <span className={cn("ml-1.5 text-[12px]", cycle === c ? "text-lp-on-brand/75" : "text-lp-brand")}>
                   save {annualSavingPct(selected, pkg)}%
                 </span>
               ) : null}
@@ -164,7 +200,7 @@ export function PricingExplorer() {
                 {results.map((p) => (
                   <li key={p.code}>
                     <button
-                      onClick={() => setCode(p.code)}
+                      onClick={() => pick(p.code)}
                       aria-current={p.code === selected.code}
                       className={cn(
                         "flex w-full items-center justify-between gap-4 px-5 py-2.75 text-left transition",
@@ -205,6 +241,7 @@ export function PricingExplorer() {
             onCompanies={setCompanies}
             users={users}
             onUsers={setUsers}
+            located={located === selected.code}
           />
         </div>
       </div>
@@ -221,6 +258,7 @@ function SelectedCard({
   onCompanies,
   users,
   onUsers,
+  located,
 }: {
   price: CountryPrice;
   pkg: Package;
@@ -230,6 +268,7 @@ function SelectedCard({
   onCompanies: (n: number) => void;
   users: number;
   onUsers: (n: number) => void;
+  located: boolean;
 }) {
   const unit = amountFor(price, pkg, cycle);
   const multiplier = quoteMultiplier(companies, users);
@@ -248,6 +287,7 @@ function SelectedCard({
         <span className="rounded-full border border-lp-line px-1.5 py-px text-[10px] font-semibold text-lp-muted">
           {price.currency}
         </span>
+        {located ? <span className="ml-auto text-[12px] text-lp-muted">Based on your location</span> : null}
       </p>
 
       <p className="mt-5 text-[15px] font-semibold tracking-[-0.03em] text-lp-ink">{pkg.name}</p>

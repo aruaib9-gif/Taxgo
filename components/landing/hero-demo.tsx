@@ -229,7 +229,7 @@ export function HeroDemo({ children }: { children?: React.ReactNode }) {
           className="mt-7 text-[46px] font-semibold leading-[1.04] tracking-[-0.045em] text-lp-ink sm:text-[66px]"
         >
           <span aria-hidden>
-            Say <span className="lp-shimmer bg-[linear-gradient(100deg,#EC8A35_0%,#D9682A_35%,#F2A65A_50%,#D9682A_65%,#B9531B_100%)] bg-clip-text text-transparent">{BRAND.fullName}</span>
+            Say <span className="lp-shimmer bg-[linear-gradient(100deg,var(--lp-ink)_0%,var(--lp-brand)_35%,var(--lp-sky)_50%,var(--lp-brand)_65%,var(--lp-ink)_100%)] bg-clip-text text-transparent">{BRAND.fullName}</span>
           </span>
           <br />
           <span aria-hidden className="font-serif font-semibold italic tracking-[-0.02em] text-lp-brand">

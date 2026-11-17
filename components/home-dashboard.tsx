@@ -67,7 +67,7 @@ export function HomeDashboard() {
       <div className="mx-auto max-w-6xl px-4 py-10">
         <div className="mx-auto mb-8 max-w-2xl text-center">
           <h1 className="text-3xl font-semibold tracking-tight">
-            {greeting}, {BRAND.user.name}
+            {greeting}
           </h1>
           <p className="mt-3 text-balance leading-relaxed text-muted-foreground">
             <span className="animate-lp-rise">Cash stands at {money(kpis.cashBalance)}. </span>

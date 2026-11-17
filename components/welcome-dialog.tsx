@@ -52,7 +52,7 @@ export function WelcomeDialog() {
         className="relative w-full max-w-md animate-lp-rise rounded-lg border border-border bg-background p-5 shadow-lg"
       >
         <h2 id="welcome-title" className="text-xl font-semibold tracking-tight">
-          Welcome to {BRAND.fullName}, {BRAND.user.name}.
+          Welcome to {BRAND.fullName}.
         </h2>
         <p className="mt-1.5 text-sm text-muted-foreground">Your all-in-one business management platform. Here&apos;s what you can do:</p>
         <ul className="mt-5 space-y-3">

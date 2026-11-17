@@ -2,32 +2,32 @@
 
 /*
   Tax GO design system — ported from the captured platform (shadcn/ui + Tailwind).
-  Font: Outfit. Brand orange #D9682A (the logo tile). Warm cream canvas. radius 1rem.
-  Themes (top-bar menu): "blue" (labelled Warm) is the default palette below, [data-theme="light"] is a
-  neutral white variant, [data-theme="dark"] a derived slate palette.
+  Font: Outfit. Brand green #15803d (the logo's dot), white canvas, near-black text. radius 1rem.
+  Themes (top-bar menu): "blue" (labelled Default) is the default palette below, [data-theme="light"] a
+  neutral grey-white variant, [data-theme="dark"] a near-black palette with brighter green.
 */
 
 :root {
-  --background: #f4f0e9;
-  --body: #f4f0e9;
-  --foreground: #16233a;
+  --background: #ffffff;
+  --body: #ffffff;
+  --foreground: #0b0f0c;
   --card: #ffffff;
-  --card-foreground: #16233a;
+  --card-foreground: #0b0f0c;
   --popover: #ffffff;
-  --popover-foreground: #16233a;
-  --muted: #f0eee9;
-  --muted-foreground: #5d6473;
-  --secondary: #f0eee9;
-  --secondary-foreground: #16233a;
-  --border: #e5e1d8;
-  --input: #e5e1d8;
-  --ring: #d9682a;
+  --popover-foreground: #0b0f0c;
+  --muted: #f3f6f4;
+  --muted-foreground: #5f6862;
+  --secondary: #f3f6f4;
+  --secondary-foreground: #0b0f0c;
+  --border: #e3e8e4;
+  --input: #e3e8e4;
+  --ring: #15803d;
 
-  --brand: #d9682a;
-  --primary: #d9682a;
+  --brand: #15803d;
+  --primary: #15803d;
   --primary-foreground: #ffffff;
-  --accent: #fbede2;
-  --accent-foreground: #8a3d12;
+  --accent: #e3f4e8;
+  --accent-foreground: #14532d;
 
   --success: #16a34a;
   --success-foreground: #ffffff;
@@ -35,26 +35,26 @@
   --warning-foreground: #ffffff;
   --destructive: #dc2626;
   --destructive-foreground: #ffffff;
-  --info: #d9682a;
+  --info: #15803d;
   --info-foreground: #ffffff;
 
   /* AI legend: turquoise = AI did it, blue = needs a human */
   --ai-done: #0d9488;
   --needs-human: #2563eb;
 
-  --sidebar: #f9f7f2;
-  --sidebar-foreground: #16233a;
-  --sidebar-primary: #d9682a;
+  --sidebar: #f8faf9;
+  --sidebar-foreground: #0b0f0c;
+  --sidebar-primary: #15803d;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #fbede2;
-  --sidebar-accent-foreground: #8a3d12;
-  --sidebar-border: #e5e1d8;
-  --sidebar-ring: #d9682a;
+  --sidebar-accent: #e3f4e8;
+  --sidebar-accent-foreground: #14532d;
+  --sidebar-border: #e3e8e4;
+  --sidebar-ring: #15803d;
 
-  --chart-1: #d9682a;
-  --chart-2: #f0a055;
-  --chart-3: #f8d2ac;
-  --chart-4: #16a34a;
+  --chart-1: #15803d;
+  --chart-2: #4ade80;
+  --chart-3: #bbf7d0;
+  --chart-4: #0ea5e9;
   --chart-5: #eab308;
 
   --radius: 1rem;
@@ -63,7 +63,7 @@
 /* Neutral light theme */
 :root[data-theme="light"] {
   --background: #ffffff;
-  --body: #f7f7f8;
+  --body: #f7f8f7;
   --card: #ffffff;
   --popover: #ffffff;
   --muted: #f3f4f6;
@@ -71,59 +71,71 @@
   --secondary: #f3f4f6;
   --border: #e5e7eb;
   --input: #e5e7eb;
-  --accent: #fdf3ea;
+  --accent: #e9f6ed;
   --sidebar: #fafafa;
-  --sidebar-accent: #fdf3ea;
+  --sidebar-accent: #e9f6ed;
   --sidebar-border: #e5e7eb;
 }
 
 /* Dark theme — applied via [data-theme="dark"] or system preference (unless a light theme was picked) */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]):not([data-theme="blue"]) {
-    --background: #0c1320;
-    --body: #0a111c;
-    --foreground: #e6ebf2;
-    --card: #111a2b;
-    --card-foreground: #e6ebf2;
-    --popover: #111a2b;
-    --popover-foreground: #e6ebf2;
-    --muted: #1b2638;
-    --muted-foreground: #93a1b5;
-    --secondary: #162134;
-    --secondary-foreground: #e6ebf2;
-    --border: #22314a;
-    --input: #22314a;
-    --accent: #3a2416;
-    --accent-foreground: #f7b15a;
-    --sidebar: #0b1422;
-    --sidebar-foreground: #e6ebf2;
-    --sidebar-accent: #3a2416;
-    --sidebar-accent-foreground: #f7b15a;
-    --sidebar-border: #22314a;
+    --background: #0b0f0d;
+    --brand: #1f9a4a;
+    --primary: #1f9a4a;
+    --ring: #1f9a4a;
+    --info: #1f9a4a;
+    --sidebar-primary: #1f9a4a;
+    --sidebar-ring: #1f9a4a;
+    --body: #090c0a;
+    --foreground: #eef3ef;
+    --card: #121915;
+    --card-foreground: #eef3ef;
+    --popover: #121915;
+    --popover-foreground: #eef3ef;
+    --muted: #1a231e;
+    --muted-foreground: #8f9a93;
+    --secondary: #151d18;
+    --secondary-foreground: #eef3ef;
+    --border: #24302a;
+    --input: #24302a;
+    --accent: #12301c;
+    --accent-foreground: #6ee79a;
+    --sidebar: #0d1310;
+    --sidebar-foreground: #eef3ef;
+    --sidebar-accent: #12301c;
+    --sidebar-accent-foreground: #6ee79a;
+    --sidebar-border: #24302a;
   }
 }
 
 :root[data-theme="dark"] {
-  --background: #0c1320;
-  --body: #0a111c;
-  --foreground: #e6ebf2;
-  --card: #111a2b;
-  --card-foreground: #e6ebf2;
-  --popover: #111a2b;
-  --popover-foreground: #e6ebf2;
-  --muted: #1b2638;
-  --muted-foreground: #93a1b5;
-  --secondary: #162134;
-  --secondary-foreground: #e6ebf2;
-  --border: #22314a;
-  --input: #22314a;
-  --accent: #3a2416;
-  --accent-foreground: #f7b15a;
-  --sidebar: #0b1422;
-  --sidebar-foreground: #e6ebf2;
-  --sidebar-accent: #3a2416;
-  --sidebar-accent-foreground: #f7b15a;
-  --sidebar-border: #22314a;
+  --background: #0b0f0d;
+  --brand: #1f9a4a;
+  --primary: #1f9a4a;
+  --ring: #1f9a4a;
+  --info: #1f9a4a;
+  --sidebar-primary: #1f9a4a;
+  --sidebar-ring: #1f9a4a;
+  --body: #090c0a;
+  --foreground: #eef3ef;
+  --card: #121915;
+  --card-foreground: #eef3ef;
+  --popover: #121915;
+  --popover-foreground: #eef3ef;
+  --muted: #1a231e;
+  --muted-foreground: #8f9a93;
+  --secondary: #151d18;
+  --secondary-foreground: #eef3ef;
+  --border: #24302a;
+  --input: #24302a;
+  --accent: #12301c;
+  --accent-foreground: #6ee79a;
+  --sidebar: #0d1310;
+  --sidebar-foreground: #eef3ef;
+  --sidebar-accent: #12301c;
+  --sidebar-accent-foreground: #6ee79a;
+  --sidebar-border: #24302a;
 }
 
 @theme inline {
@@ -182,7 +194,7 @@
   --font-serif: var(--font-newsreader), ui-serif, Georgia, serif;
 }
 
-/* Marketing site palette: tokens resolve per theme (Warm default, Light, Dark) — see the --lp-* values below. */
+/* Marketing site palette: tokens resolve per theme (white/green default, Dark) — see the --lp-* values below. */
 @theme inline {
   --color-lp-canvas: var(--lp-canvas);
   --color-lp-alt: var(--lp-alt);
@@ -192,6 +204,7 @@
   --color-lp-body: var(--lp-body);
   --color-lp-muted: var(--lp-muted);
   --color-lp-brand: var(--lp-brand);
+  --color-lp-on-brand: var(--lp-on-brand);
   --color-lp-teal: var(--lp-teal);
   --color-lp-navy: var(--lp-navy);
   --color-lp-sky: var(--lp-sky);
@@ -321,87 +334,71 @@ body {
   .lp-shimmer, .lp-word-in, .lp-underline { animation: none; }
 }
 
-/* Marketing site themes. Warm is the default; Light and Dark follow the theme menu (data-theme),
-   and Dark also applies when the system prefers it and no theme was picked — same rule as the app. */
-:root {
-  --lp-canvas: #f3eeea;
-  --lp-alt: #efe9e5;
-  --lp-card: #fbf8f5;
-  --lp-line: #e3ddd7;
-  --lp-ink: #1a1714;
-  --lp-body: #393531;
-  --lp-muted: #6a645f;
-  --lp-brand: #d9682a;
-  --lp-teal: #1f7fa3;
-  --lp-navy: #0f2438;
-  --lp-sky: #f7b15a;
-  --lp-amber: #cd7b2e;
-  --lp-mint: #4fa590;
-  --lp-chip: #f6e4d5;
-  --lp-whatsapp: #5fcf6f;
-  --lp-glow-a: #dfe5ea;
-  --lp-glow-b: #e9e9ea;
-  --lp-map: #dcdfe2;
-}
+/* Marketing site themes: white with black and green text by default (Warm and Light share it); Dark follows
+   the theme menu (data-theme), and also applies when the system prefers it and no theme was picked. */
+:root,
 :root[data-theme="light"] {
   --lp-canvas: #ffffff;
-  --lp-alt: #f6f7f9;
+  --lp-alt: #f4f8f5;
   --lp-card: #ffffff;
-  --lp-line: #e5e7eb;
-  --lp-ink: #111827;
-  --lp-body: #374151;
-  --lp-muted: #6b7280;
-  --lp-brand: #d9682a;
+  --lp-line: #e3e8e4;
+  --lp-ink: #0b0f0c;
+  --lp-body: #2b302c;
+  --lp-muted: #5f6862;
+  --lp-brand: #15803d;
+  --lp-on-brand: #ffffff;
   --lp-teal: #1f7fa3;
-  --lp-navy: #0f2438;
-  --lp-sky: #f7b15a;
+  --lp-navy: #0b1a12;
+  --lp-sky: #4ade80;
   --lp-amber: #cd7b2e;
   --lp-mint: #4fa590;
-  --lp-chip: #fdeee3;
+  --lp-chip: #e3f4e8;
   --lp-whatsapp: #5fcf6f;
-  --lp-glow-a: #eef2f6;
-  --lp-glow-b: #f4f6f8;
-  --lp-map: #e8ebef;
+  --lp-glow-a: #eaf5ee;
+  --lp-glow-b: #f6f8f7;
+  --lp-map: #e6ebe7;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]):not([data-theme="blue"]) {
-    --lp-canvas: #0d1420;
-    --lp-alt: #111a29;
-    --lp-card: #162131;
-    --lp-line: #26344a;
-    --lp-ink: #f3efe9;
-    --lp-body: #c8ced8;
-    --lp-muted: #8e99aa;
-    --lp-brand: #e57a3a;
+    --lp-canvas: #0b0f0d;
+    --lp-alt: #0f1512;
+    --lp-card: #141b17;
+    --lp-line: #24302a;
+    --lp-ink: #f1f5f2;
+    --lp-body: #c5cdc8;
+    --lp-muted: #8b968f;
+    --lp-brand: #3fbf6a;
+    --lp-on-brand: #06120a;
     --lp-teal: #4fb3d1;
-    --lp-navy: #081019;
-    --lp-sky: #f7b15a;
+    --lp-navy: #050a07;
+    --lp-sky: #4ade80;
     --lp-amber: #cd7b2e;
     --lp-mint: #4fa590;
-    --lp-chip: #3a2416;
+    --lp-chip: #12301c;
     --lp-whatsapp: #5fcf6f;
-    --lp-glow-a: #16233a;
-    --lp-glow-b: #111b2c;
-    --lp-map: #1b2838;
+    --lp-glow-a: #13201a;
+    --lp-glow-b: #0f1713;
+    --lp-map: #1a2620;
   }
 }
 :root[data-theme="dark"] {
-  --lp-canvas: #0d1420;
-  --lp-alt: #111a29;
-  --lp-card: #162131;
-  --lp-line: #26344a;
-  --lp-ink: #f3efe9;
-  --lp-body: #c8ced8;
-  --lp-muted: #8e99aa;
-  --lp-brand: #e57a3a;
+  --lp-canvas: #0b0f0d;
+  --lp-alt: #0f1512;
+  --lp-card: #141b17;
+  --lp-line: #24302a;
+  --lp-ink: #f1f5f2;
+  --lp-body: #c5cdc8;
+  --lp-muted: #8b968f;
+  --lp-brand: #3fbf6a;
+  --lp-on-brand: #06120a;
   --lp-teal: #4fb3d1;
-  --lp-navy: #081019;
-  --lp-sky: #f7b15a;
+  --lp-navy: #050a07;
+  --lp-sky: #4ade80;
   --lp-amber: #cd7b2e;
   --lp-mint: #4fa590;
-  --lp-chip: #3a2416;
+  --lp-chip: #12301c;
   --lp-whatsapp: #5fcf6f;
-  --lp-glow-a: #16233a;
-  --lp-glow-b: #111b2c;
-  --lp-map: #1b2838;
+  --lp-glow-a: #13201a;
+  --lp-glow-b: #0f1713;
+  --lp-map: #1a2620;
 }

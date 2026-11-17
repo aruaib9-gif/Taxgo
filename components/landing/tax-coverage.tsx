@@ -14,7 +14,7 @@ export function TaxCoverage() {
   return (
     <div className="mt-10">
       <div className="relative overflow-hidden rounded-3xl bg-lp-navy px-5 pb-6 pt-6 text-white sm:px-8 sm:pt-8">
-        <div aria-hidden className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_70%_at_50%_45%,rgba(217,104,42,0.16),transparent_70%)]" />
+        <div aria-hidden className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_70%_at_50%_45%,rgba(63,191,106,0.16),transparent_70%)]" />
 
         <div className="relative flex flex-wrap items-end justify-between gap-6">
           <dl className="flex flex-wrap gap-x-10 gap-y-4">

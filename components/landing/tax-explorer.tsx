@@ -63,7 +63,7 @@ export function TaxExplorer() {
                 onClick={() => setRegion(t.slug)}
                 className={cn(
                   "flex shrink-0 items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-[13px] font-medium transition",
-                  region === t.slug ? "border-lp-brand bg-lp-brand text-white" : "border-lp-line bg-lp-card text-lp-body hover:text-lp-ink",
+                  region === t.slug ? "border-lp-brand bg-lp-brand text-lp-on-brand" : "border-lp-line bg-lp-card text-lp-body hover:text-lp-ink",
                 )}
               >
                 {t.name}
