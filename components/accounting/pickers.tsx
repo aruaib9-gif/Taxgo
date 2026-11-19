@@ -40,11 +40,15 @@ const triggerCls =
   "flex w-full items-center justify-between gap-2 rounded-md border border-input bg-transparent px-3 text-left text-sm shadow-sm focus:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50";
 const popoverCls = "fixed z-[70] overflow-hidden rounded-md border border-border bg-popover p-1 text-popover-foreground shadow-md animate-lp-rise [animation-duration:120ms]";
 
-export function Select({ value, onChange, options, className, placeholder, disabled, id, ariaLabel, size = "md" }: {
-  value: string;
-  onChange: (v: string) => void;
+export function Select({ value: controlled, defaultValue, onChange, options, className, triggerClassName, placeholder, disabled, id, ariaLabel, size = "md" }: {
+  /** Omit (with `defaultValue`) for an uncontrolled select that keeps its own value. */
+  value?: string;
+  defaultValue?: string;
+  onChange?: (v: string) => void;
   options: Option[];
   className?: string;
+  /** Extra classes for the trigger button, e.g. a taller or pill-shaped field. */
+  triggerClassName?: string;
   placeholder?: string;
   disabled?: boolean;
   id?: string;
@@ -53,6 +57,8 @@ export function Select({ value, onChange, options, className, placeholder, disab
 }) {
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(0);
+  const [own, setOwn] = useState(defaultValue ?? "");
+  const value = controlled ?? own;
   const ref = useDismiss(open, setOpen);
   const btnRef = useRef<HTMLButtonElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
@@ -70,7 +76,8 @@ export function Select({ value, onChange, options, className, placeholder, disab
     setOpen(true);
   }
   function choose(o: Option) {
-    onChange(optValue(o));
+    if (controlled === undefined) setOwn(optValue(o));
+    onChange?.(optValue(o));
     setOpen(false);
     btnRef.current?.focus();
   }
@@ -104,7 +111,7 @@ export function Select({ value, onChange, options, className, placeholder, disab
         disabled={disabled}
         onClick={() => (open ? setOpen(false) : openList())}
         onKeyDown={onKey}
-        className={cn(triggerCls, size === "sm" ? "h-8" : "h-9")}
+        className={cn(triggerCls, size === "sm" ? "h-8" : "h-9", triggerClassName)}
       >
         <span className={cn("min-w-0 flex-1 truncate", !value && "text-muted-foreground")}>{selected ? optLabel(selected) : (placeholder ?? "")}</span>
         <ChevronDown className="h-4 w-4 shrink-0 opacity-50" />

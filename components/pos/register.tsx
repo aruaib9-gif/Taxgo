@@ -303,10 +303,7 @@ function Till({ shift }: { shift: Rec }) {
               <div className="flex gap-1">{ORDER_TYPES.map(([k, lab]) => <button key={k} type="button" onClick={() => setOrderType(k)} className={cn("flex-1 rounded px-1 py-1 text-xs", orderType === k ? "bg-primary text-primary-foreground" : "bg-muted text-foreground")}>{lab}</button>)}</div>
               <div className="grid grid-cols-2 gap-2">
                 {orderType === "DINE_IN" && <input type="number" value={guests} onChange={(e) => setGuests(e.target.value)} placeholder="Guests" className={cn(inputCls, "h-8")} />}
-                <select value={staffId} onChange={(e) => setStaffId(e.target.value)} aria-label="Staff" className={cn("h-8 rounded-md border border-input bg-transparent px-2 text-sm", orderType === "DINE_IN" ? "" : "col-span-2")}>
-                  <option value="">Staff / server…</option>
-                  {employees.map((e) => <option key={e.id} value={e.id}>{String(e.fullName ?? ([e.firstName, e.lastName].filter(Boolean).join(" ") || e.employeeNumber || "—"))}</option>)}
-                </select>
+                <Select value={staffId} onChange={setStaffId} ariaLabel="Staff" placeholder="Staff / server…" size="sm" className={orderType === "DINE_IN" ? "" : "col-span-2"} options={employees.map((e) => ({ value: e.id, label: String(e.fullName ?? ([e.firstName, e.lastName].filter(Boolean).join(" ") || e.employeeNumber || "—")) }))} />
               </div>
               <div className="grid grid-cols-2 gap-2">
                 <input type="number" value={service} onChange={(e) => setService(e.target.value)} placeholder="Service charge" className={cn(inputCls, "h-8")} />

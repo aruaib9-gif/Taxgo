@@ -6,6 +6,7 @@ import { Button } from "@/components/ui";
 import { createRecord, updateRecord, nextNumber, useCollection, type Rec } from "@/lib/store";
 import type { EntitySchema, Field } from "@/lib/schemas";
 import { BRAND } from "@/lib/brand";
+import { Select } from "@/components/accounting/pickers";
 
 type Val = string | number | boolean;
 
@@ -141,17 +142,7 @@ function Label({ field }: { field: Field }) {
   );
 }
 
-function RefSelect({
-  field,
-  value,
-  onChange,
-  inputCls,
-}: {
-  field: Field;
-  value: Val;
-  onChange: (v: Val) => void;
-  inputCls: string;
-}) {
+function RefSelect({ field, value, onChange }: { field: Field; value: Val; onChange: (v: Val) => void }) {
   const rows = useCollection(field.refCollection ?? "");
   const labelKey = field.refLabel ?? "name";
   const fromStore = rows.map((r) => String(r[labelKey] ?? "")).filter(Boolean);
@@ -159,14 +150,7 @@ function RefSelect({
   return (
     <div className="space-y-1">
       <Label field={field} />
-      <select className={inputCls} value={String(value)} onChange={(e) => onChange(e.target.value)}>
-        <option value="">Select…</option>
-        {options.map((o) => (
-          <option key={o} value={o}>
-            {o}
-          </option>
-        ))}
-      </select>
+      <Select value={String(value)} onChange={onChange} placeholder="Select…" options={options} ariaLabel={field.label} />
     </div>
   );
 }
@@ -183,7 +167,7 @@ function FieldInput({
   inputCls: string;
 }) {
   if (field.type === "ref") {
-    return <RefSelect field={field} value={value} onChange={onChange} inputCls={inputCls} />;
+    return <RefSelect field={field} value={value} onChange={onChange} />;
   }
 
   if (field.type === "checkbox") {
@@ -204,14 +188,13 @@ function FieldInput({
     return (
       <div className="space-y-1">
         <Label field={field} />
-        <select className={inputCls} value={String(value)} onChange={(e) => onChange(e.target.value)}>
-          {!field.default ? <option value="">Select…</option> : null}
-          {field.options?.map((o) => (
-            <option key={o} value={o}>
-              {o}
-            </option>
-          ))}
-        </select>
+        <Select
+          value={String(value)}
+          onChange={onChange}
+          placeholder={field.default ? undefined : "Select…"}
+          options={field.options ?? []}
+          ariaLabel={field.label}
+        />
       </div>
     );
   }

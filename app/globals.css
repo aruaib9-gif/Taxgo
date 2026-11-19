@@ -402,3 +402,18 @@ body {
   --lp-glow-b: #0f1713;
   --lp-map: #1a2620;
 }
+
+/* Native dropdowns: the browser's arrow sits flush against the right edge and touches rounded borders.
+   Draw our own chevron, inset from the edge, with room for it. Unlayered so it wins over px-* utilities. */
+select:not([multiple]):not([size]) {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1.1rem center;
+  background-size: 1rem;
+  padding-right: 2.75rem;
+}
+select:not([multiple]):not([size])::-ms-expand {
+  display: none;
+}

@@ -312,7 +312,7 @@ function ClaimForm({ onDone }: { onDone: () => void }) {
         <div className="space-y-2"><div className="flex items-center justify-between"><Label>Items</Label><button type="button" className={btn.smOutline} onClick={() => setItems([...items, { category: "TRAVEL", date: todayIso(), description: "", amount: "" }])}><Plus /> Add line</button></div>
           {items.map((it, i) => (
             <div key={i} className="grid items-center gap-2 sm:grid-cols-[9rem_10rem_minmax(0,1fr)_8rem_2rem]">
-              <select aria-label="Category" value={it.category} onChange={(e) => setItems(items.map((x, j) => (j === i ? { ...x, category: e.target.value } : x)))} className={inputCls}>{CLAIM_CATEGORIES.map((c) => <option key={c}>{c}</option>)}</select>
+              <Select ariaLabel="Category" value={it.category} onChange={(v) => setItems(items.map((x, j) => (j === i ? { ...x, category: v } : x)))} options={[...CLAIM_CATEGORIES]} />
               <DateInput value={it.date} onChange={(v) => setItems(items.map((x, j) => (j === i ? { ...x, date: v } : x)))} />
               <input aria-label="Line description" placeholder="Description" value={it.description} onChange={(e) => setItems(items.map((x, j) => (j === i ? { ...x, description: e.target.value } : x)))} className={inputCls} />
               <input aria-label="Amount" type="number" step="0.001" placeholder="0.00" value={it.amount} onChange={(e) => setItems(items.map((x, j) => (j === i ? { ...x, amount: e.target.value } : x)))} className={inputCls} />
@@ -451,8 +451,8 @@ function LoanForm({ onDone }: { onDone: () => void }) {
       <div><h1 className="text-2xl font-semibold tracking-tight">New employee loan</h1><p className="text-sm text-muted-foreground">Principal, EMI schedule, auto-deduction from payroll</p></div>
       <Card className="max-w-2xl"><div className="space-y-4 p-5"><CardTitle>Loan details</CardTitle>
         <div className="grid gap-4 sm:grid-cols-2">
-          <Field label="Employee" htmlFor="ln-emp"><select id="ln-emp" value={f.employeeId} onChange={(ev) => setF({ ...f, employeeId: ev.target.value })} className={inputCls}><option value="">— Select —</option>{empOpts(emps).map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}</select></Field>
-          <Field label="Loan type" htmlFor="ln-type"><select id="ln-type" value={f.loanType} onChange={(ev) => setF({ ...f, loanType: ev.target.value })} className={inputCls}>{["PERSONAL", "EMERGENCY", "EDUCATION", "HOME", "VEHICLE", "SALARY_ADVANCE"].map((t) => <option key={t}>{t}</option>)}</select></Field>
+          <Field label="Employee" htmlFor="ln-emp"><Select id="ln-emp" value={f.employeeId} onChange={(v) => setF({ ...f, employeeId: v })} placeholder="— Select —" options={empOpts(emps)} /></Field>
+          <Field label="Loan type" htmlFor="ln-type"><Select id="ln-type" value={f.loanType} onChange={(v) => setF({ ...f, loanType: v })} options={["PERSONAL", "EMERGENCY", "EDUCATION", "HOME", "VEHICLE", "SALARY_ADVANCE"]} /></Field>
           <Field label="Principal amount" htmlFor="ln-p"><input id="ln-p" type="number" value={f.principal} onChange={(ev) => setF({ ...f, principal: ev.target.value })} className={inputCls} /></Field>
           <Field label="Interest rate %" htmlFor="ln-r"><input id="ln-r" type="number" step="0.01" value={f.interestRate} onChange={(ev) => setF({ ...f, interestRate: ev.target.value })} className={inputCls} /></Field>
           <Field label="Tenure months" htmlFor="ln-t"><input id="ln-t" type="number" min={1} value={f.tenureMonths} onChange={(ev) => setF({ ...f, tenureMonths: ev.target.value })} className={inputCls} /></Field>
@@ -505,7 +505,7 @@ function FnfForm({ onDone }: { onDone: () => void }) {
     <div className="space-y-4">
       <div><h1 className="text-2xl font-semibold tracking-tight">New FNF settlement</h1><p className="text-sm text-muted-foreground">Gratuity, leave encashment, notice recovery, loan close-out</p></div>
       <Card className="max-w-2xl"><div className="space-y-4 p-5"><CardTitle>Initiate full &amp; final settlement</CardTitle>
-        <Field label="Employee" htmlFor="fn-emp"><select id="fn-emp" value={f.employeeId} onChange={(ev) => { setF({ ...f, employeeId: ev.target.value }); setPreview(null); }} className={inputCls}><option value="">— Select —</option>{emps.map((e) => <option key={e.id} value={e.id}>{fullName(e)}</option>)}</select></Field>
+        <Field label="Employee" htmlFor="fn-emp"><Select id="fn-emp" value={f.employeeId} onChange={(v) => { setF({ ...f, employeeId: v }); setPreview(null); }} placeholder="— Select —" options={emps.map((e) => ({ value: e.id, label: fullName(e) }))} /></Field>
         <div className="grid gap-4 sm:grid-cols-2"><div className="space-y-2"><Label>Separation date</Label><DateInput value={f.separationDate} onChange={(v) => { setF({ ...f, separationDate: v }); setPreview(null); }} /></div><Field label="Notice days served" htmlFor="fn-notice"><input id="fn-notice" type="number" value={f.noticeServed} onChange={(ev) => setF({ ...f, noticeServed: ev.target.value })} className={inputCls} /></Field></div>
         <Field label="Reason" htmlFor="fn-reason"><input id="fn-reason" placeholder="Resignation / Termination" value={f.separationReason} onChange={(ev) => setF({ ...f, separationReason: ev.target.value })} className={inputCls} /></Field>
         <button type="button" className={btn.smOutline} disabled={!ok} onClick={() => setPreview(computeFnf(f.employeeId, f.separationDate, num(f.noticeServed)))}><Calculator /> Compute preview</button>

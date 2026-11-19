@@ -24,7 +24,6 @@ function useFlash() {
 }
 const staffName = (e: Rec) => String(e.fullName ?? ([e.firstName, e.lastName].filter(Boolean).join(" ") || e.employeeNumber || "—"));
 const useStaff = () => useCollection("employees").map((e) => ({ id: e.id, name: staffName(e) }));
-const nativeSelect = "flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm";
 const PAY_MODES = [{ value: "CASH", label: "Cash" }, { value: "BANK", label: "Card / bank" }, { value: "CREDIT", label: "On account" }];
 const invoiceMode = (m: string) => (m === "CREDIT" ? "Credit" : m === "BANK" ? "Bank Transfer" : "Cash");
 
@@ -259,7 +258,7 @@ export function RepairDetail({ id }: { id: string }) {
         {!billed && hasLines && !o.estimateApproved && <button type="button" className={btn.outline} onClick={() => save({ estimateApproved: true, estimateApprovedAt: new Date().toISOString(), status: o.status === "AWAITING_APPROVAL" || o.status === "DIAGNOSING" ? "APPROVED" : o.status })}><Check /> Approve estimate</button>}
         {billed && <button type="button" className={btn.outline} onClick={warrantyClaim}><ShieldCheck /> Warranty claim</button>}
         {billed ? <button type="button" className={btn.outline} onClick={() => router.push(`/ar/invoices/${o.invoiceId}`)}>View invoice</button> : <>
-          <select aria-label="Payment mode" value={mode} onChange={(e) => setMode(e.target.value)} className="h-9 rounded-md border border-input bg-transparent px-2 text-sm">{PAY_MODES.map((m) => <option key={m.value} value={m.value}>{m.label}</option>)}</select>
+          <Select ariaLabel="Payment mode" value={mode} onChange={setMode} options={PAY_MODES} className="w-44" />
           <button type="button" className={btn.primary} disabled={!hasLines} onClick={checkout}><Receipt /> {mode === "CREDIT" ? "Bill on account" : "Check out"} + issue parts</button>
         </>}
       </>} />
@@ -391,9 +390,9 @@ export function NewAppointment() {
       <Card>
         <div className="space-y-4 p-6">
           <div className="grid gap-4 sm:grid-cols-2">
-            <Field label="Customer" htmlFor="ap-cust"><select id="ap-cust" value={f.customerId} onChange={(e) => set("customerId", e.target.value)} className={nativeSelect}><option value="">Walk-in / none</option>{customers.map((c) => <option key={c.id} value={c.id}>{String(c.name)}</option>)}</select></Field>
-            <Field label="Provider (staff)" htmlFor="ap-staff"><select id="ap-staff" value={f.staffId} onChange={(e) => set("staffId", e.target.value)} className={nativeSelect}><option value="">Unassigned</option>{staff.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}</select></Field>
-            <Field label="Service" htmlFor="ap-svc"><select id="ap-svc" value={f.productId} onChange={(e) => pickService(e.target.value)} className={nativeSelect}><option value="">None</option>{services.map((p) => <option key={p.id} value={p.id}>{String(p.name)}</option>)}</select></Field>
+            <Field label="Customer" htmlFor="ap-cust"><Select id="ap-cust" value={f.customerId} onChange={(v) => set("customerId", v)} placeholder="Walk-in / none" options={customers.map((c) => ({ value: c.id, label: String(c.name) }))} /></Field>
+            <Field label="Provider (staff)" htmlFor="ap-staff"><Select id="ap-staff" value={f.staffId} onChange={(v) => set("staffId", v)} placeholder="Unassigned" options={staff.map((s) => ({ value: s.id, label: s.name }))} /></Field>
+            <Field label="Service" htmlFor="ap-svc"><Select id="ap-svc" value={f.productId} onChange={pickService} placeholder="None" options={services.map((p) => ({ value: p.id, label: String(p.name) }))} /></Field>
             {input("title", "Title", "text", "Haircut & style")}
             {input("startAt", "Start", "datetime-local")}
             {input("endAt", "End", "datetime-local")}
@@ -428,7 +427,7 @@ export function AppointmentDetail({ id }: { id: string }) {
       <PageHeader title={String(a.title || a.appointmentNumber)} subtitle={String(a.appointmentNumber)} actions={<>
         <Pill tone={APPT_TONE[String(a.status)]}>{String(a.status).replace("_", " ")}</Pill>
         {!a.invoiceId && num(a.price) > 0 && <>
-          <select aria-label="Payment mode" value={mode} onChange={(e) => setMode(e.target.value)} className="h-9 rounded-md border border-input bg-transparent px-2 text-sm">{PAY_MODES.map((m) => <option key={m.value} value={m.value}>{m.label}</option>)}</select>
+          <Select ariaLabel="Payment mode" value={mode} onChange={setMode} options={PAY_MODES} className="w-44" />
           <button type="button" className={btn.primary} onClick={bill}><Receipt /> {mode === "CREDIT" ? "Bill on account" : "Check out"}</button>
         </>}
         {Boolean(a.invoiceId) && <button type="button" className={btn.outline} onClick={() => router.push(`/ar/invoices/${a.invoiceId}`)}>View invoice</button>}

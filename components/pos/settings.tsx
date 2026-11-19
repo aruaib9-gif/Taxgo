@@ -264,7 +264,7 @@ export function Modifiers() {
           </Box>
           <Box title="Attach to product">
             <ProductPicker size="md" value={attach.product} onChange={(id) => setAttach((a) => ({ ...a, product: id }))} />
-            <select value={attach.groupId} onChange={(e) => setAttach((a) => ({ ...a, groupId: e.target.value }))} aria-label="Group" className="h-9 w-full rounded-md border border-input bg-transparent px-3 text-sm"><option value="">Select a group</option>{groups.map((x) => <option key={x.id} value={x.id}>{String(x.name)}</option>)}</select>
+            <Select value={attach.groupId} onChange={(v) => setAttach((a) => ({ ...a, groupId: v }))} ariaLabel="Group" placeholder="Select a group" options={groups.map((x) => ({ value: x.id, label: String(x.name) }))} />
             <button type="button" className={btn.smOutline} onClick={() => {
               if (!attach.product || !attach.groupId) return flash("Pick a product and a group", true);
               const grp = groups.find((x) => x.id === attach.groupId)!;

@@ -103,7 +103,7 @@ function InlineText({ value, onSave, type = "text", className }: { value: unknow
   return <input autoFocus type={type} value={v} onClick={(e) => e.stopPropagation()} onChange={(e) => setV(e.target.value)} onBlur={() => { setEdit(false); if (v !== String(value ?? "")) onSave(v); }} onKeyDown={(e) => { if (e.key === "Enter") e.currentTarget.blur(); if (e.key === "Escape") setEdit(false); }} className={cn(inputCls, "h-7 px-1")} />;
 }
 function InlineSelect({ value, options, onSave }: { value: unknown; options: { value: string; label: string }[]; onSave: (v: string) => void }) {
-  return <select value={String(value ?? "")} onClick={(e) => e.stopPropagation()} onChange={(e) => onSave(e.target.value)} aria-label="Edit value" className="h-7 w-full min-w-24 rounded bg-transparent px-1 text-sm hover:bg-accent">{options.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}</select>;
+  return <span className="block" onClick={(e) => e.stopPropagation()}><Select value={String(value ?? "")} onChange={onSave} ariaLabel="Edit value" options={options} className="min-w-24" triggerClassName="h-7 border-transparent px-1.5 shadow-none hover:bg-accent" /></span>;
 }
 
 export function Employees() {
@@ -296,7 +296,7 @@ function EmployeeProfile({ emp: e }: { emp: Rec }) {
     <div className="space-y-4">
       <button type="button" onClick={() => router.push(E_BASE)} className={cn(btn.ghost, "h-8 px-2 text-xs")}><ArrowLeft /> Back</button>
       <PageHeader title={fullName(e)} subtitle={`${e.employeeNumber}${des ? ` · ${des.name}` : ""}`} actions={<>
-        <select aria-label="Generate letter" defaultValue="" onChange={(ev) => { if (ev.target.value) letter(ev.target.value); ev.target.value = ""; }} className="h-9 rounded-md border border-input bg-background px-2 text-sm"><option value="">Letters…</option>{LETTERS.map((l) => <option key={l}>{l}</option>)}</select>
+        <Select ariaLabel="Generate letter" value="" onChange={(v) => v && letter(v)} placeholder="Letters…" options={[...LETTERS]} className="w-40" />
         <Link href={`${E_BASE}/${e.id}/edit`} className={btn.outline}><Pencil /> Edit</Link>
       </>} />
       <div className="grid gap-4 sm:grid-cols-3">

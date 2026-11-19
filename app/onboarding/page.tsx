@@ -30,6 +30,7 @@ import { BRAND } from "@/lib/brand";
 import { createRecord, setActiveCompany } from "@/lib/store";
 import { loadSample as loadSampleData, saveSetting } from "@/lib/system";
 import { ensureCompanies } from "@/lib/companies";
+import { Select } from "@/components/accounting/pickers";
 
 const COUNTRIES = [
   { label: "UAE / GCC — AED, 5% VAT", country: "United Arab Emirates", currency: "AED", tax: "UAE VAT" },
@@ -214,22 +215,22 @@ export default function OnboardingPage() {
       </div>
 
       {/* footer */}
-      <footer className="flex items-center justify-between border-t border-border px-6 py-4">
-        <div className="w-40">
+      <footer className="grid grid-cols-[1fr_auto_1fr] items-center gap-4 border-t border-border px-6 py-4">
+        <div>
           {step > 0 ? (
-            <button onClick={back} className="inline-flex items-center gap-1.5 rounded-full border border-border px-4 py-2 text-sm font-medium hover:bg-muted">
+            <button onClick={back} className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border border-border px-4 py-2 text-sm font-medium hover:bg-muted">
               <ArrowLeft className="h-4 w-4" /> Back
             </button>
           ) : null}
         </div>
-        <span className="hidden text-sm text-muted-foreground sm:block">{hint}</span>
-        <div className="flex w-40 items-center justify-end gap-3">
+        <span className="hidden whitespace-nowrap text-sm text-muted-foreground sm:block">{hint}</span>
+        <div className="col-start-3 flex items-center justify-end gap-3">
           {canSkip ? (
-            <button onClick={next} className="text-sm font-medium text-muted-foreground hover:text-foreground">
+            <button onClick={next} className="whitespace-nowrap text-sm font-medium text-muted-foreground hover:text-foreground">
               Skip for now
             </button>
           ) : null}
-          <button onClick={next} className="inline-flex items-center gap-1.5 rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90">
+          <button onClick={next} className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90">
             {primaryLabel} <ArrowRight className="h-4 w-4" />
           </button>
         </div>
@@ -258,6 +259,8 @@ function SummaryRow({ label, value }: { label: string; value: string }) {
 const fieldCls =
   "h-11 w-full rounded-full border border-input bg-card px-4 text-sm outline-none focus:ring-2 focus:ring-ring";
 const labelCls = "mb-1.5 block text-sm font-semibold";
+/** The custom dropdown, shaped like the step's pill inputs. */
+const pillTrigger = "h-11 rounded-full bg-card px-4 shadow-none focus-visible:ring-2";
 
 function CompanyStep({ company, setCompany, ci, setCi }: { company: string; setCompany: (v: string) => void; ci: number; setCi: (v: number) => void }) {
   return (
@@ -275,13 +278,13 @@ function CompanyStep({ company, setCompany, ci, setCi }: { company: string; setC
         </div>
         <div>
           <label className={labelCls}>Country of operation</label>
-          <select className={fieldCls} value={ci} onChange={(e) => setCi(Number(e.target.value))}>
-            {COUNTRIES.map((c, i) => (
-              <option key={c.label} value={i}>
-                {c.label}
-              </option>
-            ))}
-          </select>
+          <Select
+            value={String(ci)}
+            onChange={(v) => setCi(Number(v))}
+            options={COUNTRIES.map((c, i) => ({ value: String(i), label: c.label }))}
+            ariaLabel="Country of operation"
+            triggerClassName={pillTrigger}
+          />
         </div>
         <div>
           <label className={labelCls}>Company logo (optional)</label>
@@ -414,12 +417,7 @@ function UnitsStep({ name, units, setUnits, unitInput, setUnitInput }: { name: s
       <div className="mt-6 space-y-4">
         <div>
           <label className={labelCls}>Under</label>
-          <select className={fieldCls}>
-            <option>{name}</option>
-            {units.map((u) => (
-              <option key={u}>{u}</option>
-            ))}
-          </select>
+          <Select defaultValue={name} options={[name, ...units]} ariaLabel="Under" triggerClassName={pillTrigger} />
         </div>
         <div>
           <label className={labelCls}>Unit name</label>
@@ -527,12 +525,14 @@ function PeopleStep({ people, setPeople }: { people: { email: string; role: stri
         {people.map((p, i) => (
           <div key={i} className="flex gap-2">
             <input className={fieldCls} placeholder="teammate@company.com" value={p.email} onChange={(e) => update(i, { email: e.target.value })} />
-            <select className="h-11 w-32 rounded-full border border-input bg-card px-3 text-sm outline-none focus:ring-2 focus:ring-ring" value={p.role} onChange={(e) => update(i, { role: e.target.value })}>
-              <option>Member</option>
-              <option>Admin</option>
-              <option>Accountant</option>
-              <option>Read Only</option>
-            </select>
+            <Select
+              value={p.role}
+              onChange={(v) => update(i, { role: v })}
+              options={["Member", "Admin", "Accountant", "Read Only"]}
+              ariaLabel="Role"
+              className="w-40 shrink-0"
+              triggerClassName={pillTrigger}
+            />
           </div>
         ))}
         <button onClick={() => setPeople([...people, { email: "", role: "Member" }])} className="inline-flex items-center gap-1.5 text-sm font-medium text-primary">

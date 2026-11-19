@@ -130,7 +130,7 @@ export function Attendance() {
             <tbody>{rows.map(({ e, r }) => { const st = statusOf(e, r); return (
               <tr key={e.id} className="border-b border-border">
                 <td className="px-2 py-1.5 font-mono text-xs">{String(e.employeeNumber)}</td><td className="px-2 py-1.5 font-medium">{fullName(e)}</td>
-                <td className="px-2 py-1.5"><select aria-label={`Status of ${fullName(e)}`} value={String(st ?? "")} onChange={(ev) => save(e, { status: ev.target.value })} className={cn("h-7 rounded bg-transparent px-1 text-sm hover:bg-accent", !st && "text-muted-foreground", !r && st && "italic")}><option value="">— Not marked —</option>{ATT.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}</select></td>
+                <td className="px-2 py-1.5"><Select ariaLabel={`Status of ${fullName(e)}`} value={String(st ?? "")} onChange={(v) => save(e, { status: v })} placeholder="— Not marked —" options={ATT} className="min-w-36" triggerClassName={cn("h-7 border-transparent px-1.5 shadow-none hover:bg-accent", !r && st && "italic")} /></td>
                 <td className="px-2 py-1.5">{cell(`${e.id}-in`, String(r?.checkIn ?? ""), "time", (v) => save(e, { checkIn: v || null }))}</td>
                 <td className="px-2 py-1.5">{cell(`${e.id}-out`, String(r?.checkOut ?? ""), "time", (v) => save(e, { checkOut: v || null }))}</td>
                 <td className="px-2 py-1.5">{cell(`${e.id}-h`, r?.hoursWorked != null ? String(r.hoursWorked) : "", "number", (v) => save(e, { hoursWorked: v === "" ? null : num(v) }))}</td>
@@ -301,11 +301,11 @@ export function Recruitment() {
           <Field label="Title" htmlFor="rq-title"><input id="rq-title" value={f.title} onChange={(e) => setF({ ...f, title: e.target.value })} className={inputCls} /></Field>
           <div className="grid gap-3 sm:grid-cols-2">
             <Field label="Openings" htmlFor="rq-open"><input id="rq-open" type="number" value={f.openings} onChange={(e) => setF({ ...f, openings: e.target.value })} className={inputCls} /></Field>
-            <Field label="Employment type" htmlFor="rq-type"><select id="rq-type" value={f.employmentType} onChange={(e) => setF({ ...f, employmentType: e.target.value })} className={inputCls}>{["FULL_TIME", "PART_TIME", "CONTRACT", "INTERN", "TEMPORARY"].map((x) => <option key={x}>{x}</option>)}</select></Field>
+            <Field label="Employment type" htmlFor="rq-type"><Select id="rq-type" value={f.employmentType} onChange={(v) => setF({ ...f, employmentType: v })} options={["FULL_TIME", "PART_TIME", "CONTRACT", "INTERN", "TEMPORARY"]} /></Field>
             <Field label="Salary min" htmlFor="rq-min"><input id="rq-min" type="number" value={f.salaryMin} onChange={(e) => setF({ ...f, salaryMin: e.target.value })} className={inputCls} /></Field>
             <Field label="Salary max" htmlFor="rq-max"><input id="rq-max" type="number" value={f.salaryMax} onChange={(e) => setF({ ...f, salaryMax: e.target.value })} className={inputCls} /></Field>
           </div>
-          <Field label="Status" htmlFor="rq-status"><select id="rq-status" value={f.status} onChange={(e) => setF({ ...f, status: e.target.value })} className={inputCls}>{["DRAFT", "OPEN", "ON_HOLD", "CLOSED"].map((x) => <option key={x}>{x}</option>)}</select></Field>
+          <Field label="Status" htmlFor="rq-status"><Select id="rq-status" value={f.status} onChange={(v) => setF({ ...f, status: v })} options={["DRAFT", "OPEN", "ON_HOLD", "CLOSED"]} /></Field>
         </div>
         <div className="flex justify-end"><button type="button" className={btn.primary} disabled={!f.title.trim()} onClick={() => { createRecord("requisitions", { ...f, title: f.title.trim(), openings: num(f.openings) || 1, salaryMin: f.salaryMin ? num(f.salaryMin) : undefined, salaryMax: f.salaryMax ? num(f.salaryMax) : undefined }); setOpen(false); setF({ title: "", openings: "1", employmentType: "FULL_TIME", salaryMin: "", salaryMax: "", status: "OPEN" }); flash("Requisition created"); }}>Create</button></div>
       </Dialog>

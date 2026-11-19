@@ -1,9 +1,31 @@
 "use client";
 
+import { useState, useSyncExternalStore } from "react";
 import { useRouter } from "next/navigation";
 import { Fingerprint, KeyRound, LogOut, ShieldCheck, Upload } from "lucide-react";
 import { Card, Button, PageHeader } from "@/components/ui";
 import { BRAND } from "@/lib/brand";
+import { Select } from "@/components/accounting/pickers";
+import { THEMES, applyTheme, currentTheme, type Theme } from "@/lib/theme";
+
+const noSubscribe = () => () => {};
+
+/** The theme picker, wired to the same setting as the top bar's sun/moon menu. */
+function ThemeSelect() {
+  const saved = useSyncExternalStore(noSubscribe, currentTheme, () => "system" as Theme);
+  const [picked, setPicked] = useState<Theme | null>(null);
+  return (
+    <Select
+      value={picked ?? saved}
+      onChange={(v) => {
+        setPicked(v as Theme);
+        applyTheme(v as Theme);
+      }}
+      options={THEMES.map((t) => ({ value: t.value, label: t.label }))}
+      ariaLabel="Theme"
+    />
+  );
+}
 
 const field = "h-9 w-full rounded-md border border-input bg-background px-2.5 text-sm outline-none focus:ring-2 focus:ring-ring";
 
@@ -108,26 +130,17 @@ export default function ProfilePage() {
         <h2 className="mb-4 text-sm font-semibold">Preferences</h2>
         <div className="grid gap-4 sm:grid-cols-3">
           <Row label="Language">
-            <select className={field} defaultValue="English">
-              <option>English</option>
-              <option>العربية</option>
-              <option>हिन्दी</option>
-            </select>
+            <Select defaultValue="English" options={["English", "Français", "العربية", "हिन्दी"]} ariaLabel="Language" />
           </Row>
           <Row label="Timezone">
-            <select className={field} defaultValue="Asia/Dubai">
-              <option>Asia/Dubai</option>
-              <option>Asia/Kolkata</option>
-              <option>Europe/London</option>
-              <option>UTC</option>
-            </select>
+            <Select
+              defaultValue="America/Toronto"
+              options={["America/Toronto", "America/Vancouver", "America/New_York", "Europe/London", "Africa/Lagos", "Asia/Dubai", "Asia/Kolkata", "UTC"]}
+              ariaLabel="Timezone"
+            />
           </Row>
           <Row label="Theme">
-            <select className={field} defaultValue="System">
-              <option>System</option>
-              <option>Light</option>
-              <option>Dark</option>
-            </select>
+            <ThemeSelect />
           </Row>
         </div>
         <p className="mt-3 text-xs text-muted-foreground">Use the sun/moon toggle in the top bar to switch theme instantly.</p>
