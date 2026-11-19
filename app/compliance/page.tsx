@@ -7,6 +7,7 @@ import { Container, H2, Kicker, LandingFooter, LandingHeader, Serif, btnPrimary 
 import { TLogo, Watermark, WhatsAppButton } from "@/components/landing/brand";
 import { TaxExplorer } from "@/components/landing/tax-explorer";
 import { BackToTop } from "@/components/landing/back-to-top";
+import { EuVatTable, UsTaxDetail } from "@/components/landing/tax-detail";
 
 const AI = BRAND.fullName;
 
@@ -43,6 +44,11 @@ export default function CompliancePage() {
           </p>
         </Container>
       </section>
+
+      <Container className="space-y-20 pb-24">
+        <UsTaxDetail />
+        <EuVatTable />
+      </Container>
 
       <div className="relative overflow-hidden bg-lp-navy text-white">
         <Watermark className="-left-10 top-10 hidden w-155 text-white/5 md:block" tile="opacity-25" />

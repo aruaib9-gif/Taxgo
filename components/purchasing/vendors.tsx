@@ -228,8 +228,8 @@ function VendorForm({ record, onDone }: { record?: Rec; onDone: () => void }) {
           {input("taxId", <>Tax ID<Opt /></>)}
           {input("name", <>Name<Req /></>, "e.g. Acme Supplies")}
           {input("email", <>Email<Opt /></>, "e.g. accounts@supplier.com", "email")}
-          {input("phone", <>Phone<Opt /></>, "e.g. +1 201 555 0123")}
-          {input("mobile", <>Mobile Number<Opt /></>, "e.g. +1 201 555 0198")}
+          {input("phone", <>Phone<Opt /></>, "e.g. +1 416 555 0123")}
+          {input("mobile", <>Mobile Number<Opt /></>, "e.g. +1 416 555 0198")}
           {input("city", <>City<Opt /></>, "e.g. Kozhikode")}
           {input("pincode", <>Pincode<Opt /></>, "e.g. 673001")}
         </div>

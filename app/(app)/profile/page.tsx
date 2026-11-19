@@ -50,7 +50,7 @@ export default function ProfilePage() {
             <input type="email" className={field} defaultValue="arua.ib9@gmail.com" />
           </Row>
           <Row label="Phone">
-            <input type="tel" className={field} placeholder="+971 50 123 4567" />
+            <input type="tel" className={field} placeholder="+1 416 555 0123" />
           </Row>
           <Row label="Role">
             <input className={field + " text-muted-foreground"} defaultValue="Owner" readOnly />

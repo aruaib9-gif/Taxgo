@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import { LandingLogo } from "@/components/landing/brand";
 import { ThemeMenu } from "@/components/theme-toggle";
 import { ThemeIntro } from "@/components/landing/theme-intro";
+import { MobileNav } from "@/components/landing/mobile-nav";
 
 const AI = BRAND.fullName;
 
@@ -84,10 +85,11 @@ export function LandingHeader({ hrefPrefix = "" }: { hrefPrefix?: string }) {
             </Link>
             <Link
               href="/register"
-              className="rounded-full bg-lp-brand px-3.5 py-1.25 text-[14px] font-medium text-lp-on-brand transition hover:brightness-110"
+              className="hidden rounded-full bg-lp-brand px-3.5 py-1.25 text-[14px] font-medium text-lp-on-brand transition hover:brightness-110 min-[380px]:block"
             >
               Hire {AI}
             </Link>
+            <MobileNav links={navLinks} hrefPrefix={hrefPrefix} cta={`Hire ${AI}`} />
           </div>
         </Container>
       </header>

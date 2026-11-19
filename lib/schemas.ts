@@ -78,7 +78,7 @@ export const schemas: EntitySchema[] = [
       { name: "taxId", label: "Tax ID", type: "text", optional: true },
       { name: "name", label: "Name", type: "text", required: true, placeholder: "e.g. Acme Corp" },
       { name: "email", label: "Email", type: "email", optional: true, placeholder: "e.g. billing@acme.com" },
-      { name: "phone", label: "Phone", type: "tel", optional: true, placeholder: "e.g. +1 201 555 0123" },
+      { name: "phone", label: "Phone", type: "tel", optional: true, placeholder: "e.g. +1 416 555 0123" },
       { name: "mobile", label: "Mobile Number", type: "tel", optional: true },
       { name: "address1", label: "Address line 1", type: "text", section: "Address", placeholder: "Building, street" },
       { name: "address2", label: "Address line 2", type: "text", optional: true, section: "Address" },

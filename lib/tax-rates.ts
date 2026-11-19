@@ -2,7 +2,21 @@
 // Standard rates for reference only; they change, so check before relying on them.
 // Within each region the major markets come first; the landing page shows the first MAJOR_COUNT.
 
+import { EU_VAT } from "@/lib/tax-detail";
+
 export const MAJOR_COUNT = 5;
+
+/** Extra notes for EU members, shown after their reduced rates. */
+const EU_NOTES: Record<string, string> = { IT: "SDI e-invoicing", EL: "*17% on certain Aegean islands" };
+
+/** EU members as cards: the listed codes first (in that order), then the rest alphabetically. */
+function euRows(first: string[]): TaxRow[] {
+  const ordered = [...first.map((c) => EU_VAT.find((e) => e.code === c)!), ...EU_VAT.filter((e) => !first.includes(e.code))];
+  return ordered.map((e) => {
+    const reduced = e.reduced.startsWith("No") ? e.reduced : `Reduced ${e.reduced}`;
+    return { country: e.country, flag: e.flag, rate: e.standard, tax: "VAT", note: EU_NOTES[e.code] ? `${reduced} · ${EU_NOTES[e.code]}` : reduced };
+  });
+}
 
 export type TaxRow = {
   country: string;
@@ -33,7 +47,7 @@ export const TAX_REGIONS: TaxRegion[] = [
     regimes: ["Sales tax", "GST/HST", "IVA"],
     marker: { x: 255, y: 175 },
     rows: [
-      { country: "United States", flag: "🇺🇸", rate: "Varies", tax: "Sales tax", note: "No federal VAT; state and local sales taxes vary" },
+      { country: "United States", flag: "🇺🇸", rate: "Varies", tax: "Sales tax", note: "No federal VAT; state rates 0–7.25%, plus local taxes — see all 50 states below" },
       { country: "Canada", flag: "🇨🇦", rate: "5%", tax: "GST", note: "13–15% HST in participating provinces, PST in others" },
       { country: "Mexico", flag: "🇲🇽", rate: "16%", tax: "IVA", note: "8% in the northern border region" },
       { country: "Brazil", flag: "🇧🇷", rate: "Varies", tax: "ICMS · PIS/COFINS", note: "Dual VAT (CBS/IBS) phasing in from 2026" },
@@ -48,23 +62,13 @@ export const TAX_REGIONS: TaxRegion[] = [
   {
     slug: "europe",
     name: "Europe",
-    intro: "EU VAT, Peppol e-invoicing and UK Making Tax Digital.",
+    intro: "VAT for all 27 EU member states with their reduced rates, Peppol e-invoicing and UK Making Tax Digital.",
     regimes: ["VAT", "Peppol", "MTD"],
     marker: { x: 528, y: 92 },
     rows: [
-      { country: "United Kingdom", flag: "🇬🇧", rate: "20%", tax: "VAT", note: "Making Tax Digital" },
-      { country: "Germany", flag: "🇩🇪", rate: "19%", tax: "VAT", note: "7% reduced rate" },
-      { country: "France", flag: "🇫🇷", rate: "20%", tax: "VAT" },
-      { country: "Italy", flag: "🇮🇹", rate: "22%", tax: "VAT", note: "SDI e-invoicing" },
-      { country: "Spain", flag: "🇪🇸", rate: "21%", tax: "VAT" },
-      { country: "Netherlands", flag: "🇳🇱", rate: "21%", tax: "VAT" },
-      { country: "Ireland", flag: "🇮🇪", rate: "23%", tax: "VAT" },
-      { country: "Belgium", flag: "🇧🇪", rate: "21%", tax: "VAT" },
-      { country: "Poland", flag: "🇵🇱", rate: "23%", tax: "VAT" },
-      { country: "Portugal", flag: "🇵🇹", rate: "23%", tax: "VAT", note: "Mainland rate" },
-      { country: "Sweden", flag: "🇸🇪", rate: "25%", tax: "VAT" },
-      { country: "Greece", flag: "🇬🇷", rate: "24%", tax: "VAT" },
-      { country: "Switzerland", flag: "🇨🇭", rate: "8.1%", tax: "VAT" },
+      { country: "United Kingdom", flag: "🇬🇧", rate: "20%", tax: "VAT", note: "Making Tax Digital · reduced 5%" },
+      ...euRows(["DE", "FR", "IT", "ES", "NL", "IE", "BE", "PL", "PT", "SE", "EL", "AT"]),
+      { country: "Switzerland", flag: "🇨🇭", rate: "8.1%", tax: "VAT", note: "Reduced 2.6%, 3.8%" },
     ],
   },
   {

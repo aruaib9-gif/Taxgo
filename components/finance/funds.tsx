@@ -497,7 +497,7 @@ function GroupDetail({ id }: { id: string }) {
       <Dialog open={member.open} onClose={() => setMember({ ...member, open: false })} title="Add member">
         <div className="grid gap-3">
           <Field label="Name *"><input aria-label="Member name" placeholder="Full name" className={inputCls} value={member.name} onChange={(e) => setMember({ ...member, name: e.target.value })} /></Field>
-          <Field label="Phone"><input aria-label="Member phone" placeholder="+1 234 567 8900" className={inputCls} value={member.phone} onChange={(e) => setMember({ ...member, phone: e.target.value })} /></Field>
+          <Field label="Phone"><input aria-label="Member phone" placeholder="+1 416 555 0123" className={inputCls} value={member.phone} onChange={(e) => setMember({ ...member, phone: e.target.value })} /></Field>
           <Field label="Email"><input aria-label="Member email" placeholder="email@example.com" className={inputCls} value={member.email} onChange={(e) => setMember({ ...member, email: e.target.value })} /></Field>
         </div>
         <div className="flex justify-end gap-2"><button type="button" className={btn.outline} onClick={() => setMember({ ...member, open: false })}>Cancel</button><button type="button" className={btn.primary} onClick={() => act(() => addMember(g.id, member), "Member added") && setMember({ open: false, name: "", phone: "", email: "" })}>Add</button></div>

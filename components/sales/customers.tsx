@@ -336,10 +336,10 @@ function CustomerForm({ record, onDone }: { record?: Rec; onDone: () => void }) 
             <input id="c-email" type="email" value={f.email} onChange={(e) => set({ email: e.target.value })} placeholder="e.g. billing@acme.com" className={inputCls} />
           </Field>
           <Field label={<>Phone<Opt /></>} htmlFor="c-phone">
-            <input id="c-phone" value={f.phone} onChange={(e) => set({ phone: e.target.value })} placeholder="e.g. +1 201 555 0123" className={inputCls} />
+            <input id="c-phone" value={f.phone} onChange={(e) => set({ phone: e.target.value })} placeholder="e.g. +1 416 555 0123" className={inputCls} />
           </Field>
           <Field label={<>Mobile Number<Opt /></>} htmlFor="c-mobile">
-            <input id="c-mobile" value={f.mobile} onChange={(e) => set({ mobile: e.target.value })} placeholder="e.g. +1 201 555 0198" className={inputCls} />
+            <input id="c-mobile" value={f.mobile} onChange={(e) => set({ mobile: e.target.value })} placeholder="e.g. +1 416 555 0198" className={inputCls} />
           </Field>
         </div>
         <div className="space-y-3 rounded-lg border border-border p-4">
