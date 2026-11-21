@@ -7,6 +7,7 @@ import { useEffect } from "react";
 import { ChevronLeft, ChevronRight, Clock, Sparkles, X, type LucideIcon } from "lucide-react";
 import { BRAND } from "@/lib/brand";
 import { MODULES } from "@/lib/modules";
+import { ModuleChip } from "@/components/landing/module-chip";
 
 const AI = BRAND.fullName;
 
@@ -52,9 +53,7 @@ export function ModuleDialog({
         className="animate-lp-rise relative flex max-h-[92vh] w-full max-w-4xl flex-col overflow-hidden rounded-t-2xl border border-lp-line bg-lp-card shadow-[0_30px_80px_-20px_rgba(15,36,56,0.45)] [animation-duration:200ms] sm:rounded-2xl"
       >
         <div className="flex items-start gap-3.5 border-b border-lp-line px-6 py-5">
-          <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-lp-brand/10 text-lp-brand">
-            <m.icon className="h-5 w-5" strokeWidth={1.75} />
-          </span>
+          <ModuleChip mod={m} className="h-10 w-10" glyph="h-5 w-5" />
           <div className="min-w-0 flex-1">
             <h3 id="module-title" className="text-[20px] font-semibold tracking-[-0.03em] text-lp-ink">
               {m.title}

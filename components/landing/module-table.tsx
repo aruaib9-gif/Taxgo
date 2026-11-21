@@ -7,7 +7,7 @@ import { useCallback, useRef, useState } from "react";
 import { ArrowUpRight } from "lucide-react";
 import { BRAND } from "@/lib/brand";
 import { MODULES } from "@/lib/modules";
-import { cn } from "@/lib/utils";
+import { ModuleChip } from "@/components/landing/module-chip";
 import { ModuleDialog } from "@/components/landing/module-detail";
 
 const AI = BRAND.fullName;
@@ -50,10 +50,7 @@ export function ModuleTable() {
               className="group grid w-full gap-x-4 gap-y-1.5 px-5 py-4 text-left transition-colors hover:bg-lp-brand/6 focus-visible:bg-lp-brand/6 focus-visible:outline-none lg:grid-cols-[minmax(0,13rem)_minmax(0,1fr)_minmax(0,1.15fr)_1.25rem] lg:items-baseline"
             >
               <span className="flex items-center gap-2.5">
-                <m.icon
-                  className={cn("h-4 w-4 shrink-0", m.accent ? "text-lp-brand" : "text-lp-body group-hover:text-lp-brand")}
-                  strokeWidth={1.5}
-                />
+                <ModuleChip mod={m} className="h-7.5 w-7.5" glyph="h-4 w-4" />
                 <span className="text-[15px] font-semibold tracking-[-0.02em] text-lp-ink">{m.title}</span>
                 <span className="font-serif text-[13px] italic text-lp-muted/70 lg:hidden">{i + 1}</span>
               </span>

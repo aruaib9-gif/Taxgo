@@ -49,6 +49,7 @@ export const navLinks: { href: string; label: string; page?: boolean }[] = [
   { href: "/humans", label: "The humans", page: true },
   { href: "/pricing", label: "Pricing", page: true },
   { href: "#faq", label: "FAQ" },
+  { href: "/about", label: "About", page: true },
 ];
 
 /**
@@ -118,6 +119,12 @@ export function LandingFooter() {
           <Link href="/pricing" className="hover:text-white">
             Pricing
           </Link>
+          <Link href="/about" className="hover:text-white">
+            About us
+          </Link>
+          <a href={`mailto:${BRAND.contact.email}`} className="hover:text-white">
+            {BRAND.contact.email}
+          </a>
           <Link href="/login" className="hover:text-white">
             Sign in
           </Link>

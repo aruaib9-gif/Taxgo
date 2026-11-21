@@ -1,20 +1,14 @@
 import Link from "next/link";
+import { ArrowRight, Bot, Check, CheckCheck, MessageCircle, Quote, UserRoundCheck, type LucideIcon } from "lucide-react";
 import {
-  ArrowRight,
-  Banknote,
-  Bot,
-  Brain,
-  Calculator,
-  Check,
-  CheckCheck,
-  MessageCircle,
-  Plug,
-  Quote,
-  ScrollText,
-  ShieldCheck,
-  UserRoundCheck,
-  type LucideIcon,
-} from "lucide-react";
+  AccountantMark,
+  AuditMark,
+  CfoMark,
+  MigrationMark,
+  PayrollMark,
+  TaxFilingMark,
+  type HumanMark,
+} from "@/components/landing/human-icons";
 import { BRAND } from "@/lib/brand";
 import {
   Container,
@@ -39,7 +33,7 @@ export const metadata = {
 };
 
 type Expert = {
-  icon: LucideIcon;
+  icon: HumanMark;
   title: string;
   tagline: string;
   intro?: string;
@@ -52,7 +46,7 @@ type Expert = {
 
 const experts: Expert[] = [
   {
-    icon: Calculator,
+    icon: AccountantMark,
     title: "On-demand professional accountant",
     tagline: "Your personal accounting expert, whenever you need one.",
     intro: `Your accountant works directly with your ${AI} records, helping you keep accurate financial information and understand your business performance.`,
@@ -71,7 +65,7 @@ const experts: Expert[] = [
     benefit: "Professional accounting support without maintaining a full-time accounting department.",
   },
   {
-    icon: Brain,
+    icon: CfoMark,
     title: "Virtual & fractional CFO",
     tagline: "Strategic financial leadership without the cost of a full-time CFO.",
     intro:
@@ -92,7 +86,7 @@ const experts: Expert[] = [
     benefit: "Experienced financial leadership when your business needs it.",
   },
   {
-    icon: ScrollText,
+    icon: TaxFilingMark,
     title: "Tax & compliance specialist",
     tagline: "Local tax expertise for businesses operating nationally or internationally.",
     intro: `${AI} organises and calculates your tax information, while qualified professionals review your obligations, prepare filings and advise on compliance.`,
@@ -120,7 +114,7 @@ const experts: Expert[] = [
     benefit: "Professional guidance to reduce compliance risk and avoid costly mistakes.",
   },
   {
-    icon: Banknote,
+    icon: PayrollMark,
     title: "Human payroll specialist",
     tagline: "Payroll processed and reviewed by a professional who knows local employment rules.",
     gets: [
@@ -138,7 +132,7 @@ const experts: Expert[] = [
     benefit: "Less payroll administration, and greater confidence in every salary calculation.",
   },
   {
-    icon: ShieldCheck,
+    icon: AuditMark,
     title: "Audit & assurance support",
     tagline: "Help when auditors, regulators, lenders or investors ask for your financial records.",
     gets: [
@@ -157,7 +151,7 @@ const experts: Expert[] = [
     note: "Independent audit opinions and assurance reports, where required, must be issued by appropriately authorised independent professionals.",
   },
   {
-    icon: Plug,
+    icon: MigrationMark,
     title: "Setup, migration & training specialist",
     tagline: `Move to ${AI} with professional help from the beginning.`,
     gets: [
@@ -239,9 +233,7 @@ export default function HumansPage() {
           <div className="mt-11 grid gap-5 lg:grid-cols-2">
             {experts.map((e) => (
               <Panel key={e.title} className="flex flex-col px-6 pb-6 pt-6">
-                <span className="grid h-9 w-9 place-items-center rounded-xl bg-lp-brand/10 text-lp-brand">
-                  <e.icon className="h-4.5 w-4.5" strokeWidth={1.75} />
-                </span>
+                <e.icon className="h-11 w-11" />
                 <h3 className="mt-4 text-[18px] font-semibold tracking-[-0.035em] text-lp-ink">{e.title}</h3>
                 <p className="mt-1.5 text-[14.5px] font-medium leading-[1.55] text-lp-ink">{e.tagline}</p>
                 {e.intro && <p className="mt-2 text-[14px] leading-[1.65] text-lp-muted">{e.intro}</p>}

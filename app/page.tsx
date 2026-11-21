@@ -1,26 +1,36 @@
 import Link from "next/link";
 import {
   ArrowRight,
-  Brain,
-  Banknote,
-  Calculator,
-  ChartLine,
   Check,
-  FileText,
   Hourglass,
-  Landmark,
-  MessageSquare,
-  Plug,
   Plus,
-  ScrollText,
-  Search,
   ShieldCheck,
-  Tags,
-  TriangleAlert,
   Users,
   type LucideIcon,
 } from "lucide-react";
 import { BRAND } from "@/lib/brand";
+import {
+  AccountantChip,
+  AnomalyChip,
+  AskChip,
+  AssistantChip,
+  CategoryChip,
+  CfoChip,
+  DecidesMark,
+  ForecastChip,
+  ReadsMark,
+  WorksMark,
+  type Mark,
+} from "@/components/landing/how-icons";
+import {
+  AccountantMark,
+  AuditMark,
+  CfoMark,
+  MigrationMark,
+  PayrollMark,
+  TaxFilingMark,
+  type HumanMark,
+} from "@/components/landing/human-icons";
 import { PriceLookup } from "@/components/landing/price-lookup";
 import { ModuleExplorer } from "@/components/landing/module-explorer";
 import { TaxCoverage } from "@/components/landing/tax-coverage";
@@ -88,35 +98,35 @@ const stats = [
   { n: "24/7", count: true, t: "She works around the clock — nights, weekends, and month-end. No overtime. No downtime for holidays." },
 ];
 
-const steps: { icon: LucideIcon; title: string; text: string; tag: string }[] = [
+const steps: { icon: Mark; title: string; text: string; tag: string }[] = [
   {
-    icon: FileText,
+    icon: ReadsMark,
     title: "She Captures Everything",
     text: `Invoices, receipts, bank transactions, customer enquiries, emails, and inventory movements — ${AI} brings your business information together automatically.`,
     tag: "No duplicate entries. No endless paperwork.",
   },
   {
-    icon: Landmark,
+    icon: WorksMark,
     title: "She Gets the Work Done",
     text: "From accounting entries and bank reconciliations to customer follow-ups, payroll processing, and inventory management, she handles routine operations across your business.",
     tag: "Less manual work. Greater accuracy. Higher productivity.",
   },
   {
-    icon: ShieldCheck,
+    icon: DecidesMark,
     title: "She Brings You the Decisions",
     text: `${AI} identifies unusual transactions, financial risks, business opportunities, and matters requiring your approval.`,
     tag: "You make the important decisions. She handles the execution.",
   },
 ];
 
-const agents: { icon: LucideIcon; title: string; text: string }[] = [
-  { icon: Brain, title: "Virtual CFO", text: "Monitors financial performance, identifies risks, and delivers insights to improve profitability and cash flow." },
-  { icon: Calculator, title: "Virtual Accountant", text: "Automates bookkeeping, reconciliations, financial reporting, and month-end processes." },
-  { icon: TriangleAlert, title: "Intelligent Anomaly Detection", text: "Flags duplicate invoices, unusual payments, suspicious transactions, and potential accounting errors." },
-  { icon: ChartLine, title: "Cash Flow Forecasting", text: "Predicts future cash requirements, highlights potential shortfalls, and supports smarter financial planning." },
-  { icon: Search, title: "Ask Your Business Anything", text: "Simply ask, “How much profit did we make last month?” and receive an instant, easy-to-understand answer from your business data." },
-  { icon: Tags, title: "Smart Transaction Categorization", text: "Automatically classifies transactions into the appropriate accounts and cost centres." },
-  { icon: MessageSquare, title: "AI Business Assistant", text: "Guides you through everyday tasks, automates workflows, and executes approved actions across your business." },
+const agents: { icon: Mark; title: string; text: string }[] = [
+  { icon: CfoChip, title: "Virtual CFO", text: "Monitors financial performance, identifies risks, and delivers insights to improve profitability and cash flow." },
+  { icon: AccountantChip, title: "Virtual Accountant", text: "Automates bookkeeping, reconciliations, financial reporting, and month-end processes." },
+  { icon: AnomalyChip, title: "Intelligent Anomaly Detection", text: "Flags duplicate invoices, unusual payments, suspicious transactions, and potential accounting errors." },
+  { icon: ForecastChip, title: "Cash Flow Forecasting", text: "Predicts future cash requirements, highlights potential shortfalls, and supports smarter financial planning." },
+  { icon: AskChip, title: "Ask Your Business Anything", text: "Simply ask, “How much profit did we make last month?” and receive an instant, easy-to-understand answer from your business data." },
+  { icon: CategoryChip, title: "Smart Transaction Categorization", text: "Automatically classifies transactions into the appropriate accounts and cost centres." },
+  { icon: AssistantChip, title: "AI Business Assistant", text: "Guides you through everyday tasks, automates workflows, and executes approved actions across your business." },
 ];
 
 const weekOne = [
@@ -146,34 +156,34 @@ const weekOne = [
   },
 ];
 
-const humans: { icon: LucideIcon; title: string; text: string }[] = [
+const humans: { icon: HumanMark; title: string; text: string }[] = [
   {
-    icon: Calculator,
+    icon: AccountantMark,
     title: "On-Demand Accountant",
     text: `Qualified accountants manage your bookkeeping, reconciliations, month-end closing, and financial reporting — directly within ${AI}.`,
   },
   {
-    icon: Brain,
+    icon: CfoMark,
     title: "Virtual & Fractional CFO",
     text: "Access experienced CFOs for financial strategy, cash-flow management, budgeting, forecasting, investor reporting, and fundraising support.",
   },
   {
-    icon: ScrollText,
+    icon: TaxFilingMark,
     title: "Tax & Regulatory Compliance",
     text: "Professional assistance with Sales Tax, VAT, GST, e-invoicing, tax returns, and statutory compliance, tailored to your country's requirements.",
   },
   {
-    icon: Banknote,
+    icon: PayrollMark,
     title: "Managed Payroll Services",
     text: "Payroll specialists handle salary processing, payslips, deductions, and statutory obligations while ensuring compliance with local regulations.",
   },
   {
-    icon: ShieldCheck,
+    icon: AuditMark,
     title: "Audit & Assurance Support",
     text: "Keep your financial records audit-ready with professional support for year-end accounts, audit preparation, and auditor enquiries.",
   },
   {
-    icon: Plug,
+    icon: MigrationMark,
     title: "Setup & Data Migration",
     text: `Move from Tally, Sage, Zoho, QuickBooks, or spreadsheets to ${AI} with expert assistance, ensuring your financial records are properly transferred and configured.`,
   },
@@ -528,7 +538,7 @@ export default function LandingPage() {
           <Panel className="mt-10 grid md:grid-cols-3 md:divide-x divide-y md:divide-y-0 divide-lp-line">
             {steps.map((s) => (
               <div key={s.title} className="px-5.75 pb-8 pt-7">
-                <s.icon className="h-4 w-4 text-lp-brand" strokeWidth={1.75} />
+                <s.icon className="h-10 w-10" />
                 <h3 className="mt-7 text-[17px] font-semibold tracking-[-0.035em] text-lp-ink">{s.title}</h3>
                 <p className="mt-3 text-[14px] leading-[1.65] text-lp-body">{s.text}</p>
                 <p className="mt-3 text-[14px] font-semibold leading-[1.55] text-lp-ink">{s.tag}</p>
@@ -539,7 +549,7 @@ export default function LandingPage() {
           <div className="mt-7 grid gap-x-10 gap-y-7 sm:grid-cols-2 lg:grid-cols-3">
             {agents.map((a) => (
               <div key={a.title} className="flex gap-3">
-                <a.icon className="mt-0.75 h-4 w-4 shrink-0 text-lp-body" strokeWidth={1.5} />
+                <a.icon className="h-9 w-9 shrink-0" />
                 <div>
                   <h3 className="text-[15px] font-semibold tracking-[-0.02em] text-lp-ink">{a.title}</h3>
                   <p className="mt-1 text-[14px] leading-[1.6] text-lp-muted">{a.text}</p>
@@ -619,7 +629,7 @@ export default function LandingPage() {
           <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {humans.map((h) => (
               <Panel key={h.title} className="px-5 pb-7 pt-6">
-                <h.icon className="h-4 w-4 text-lp-brand" strokeWidth={1.75} />
+                <h.icon className="h-10 w-10" />
                 <h3 className="mt-4 text-[16px] font-semibold tracking-[-0.035em] text-lp-ink">{h.title}</h3>
                 <p className="mt-2.5 text-[14px] leading-[1.65] text-lp-muted">{h.text}</p>
               </Panel>

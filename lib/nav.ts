@@ -553,6 +553,7 @@ export const moduleGroups: NavGroup[] = [
       { label: "Settings", href: "/settings", icon: Settings },
       { label: "Organization", href: "/settings/organization", icon: Building },
       { label: "Users", href: "/settings/users", icon: Users },
+      { label: "Billing", href: "/settings/billing", icon: CreditCard },
       { label: "Roles & Permissions", href: "/settings/roles", icon: Shield },
       { label: "Templates", href: "/settings/templates", icon: FileText },
       { label: "Posting Preferences", href: "/settings/posting", icon: Settings },

@@ -7,6 +7,7 @@ import { useCallback, useRef, useState } from "react";
 import { ArrowUpRight } from "lucide-react";
 import { MODULES } from "@/lib/modules";
 import { cn } from "@/lib/utils";
+import { ModuleChip } from "@/components/landing/module-chip";
 import { ModuleDialog } from "@/components/landing/module-detail";
 
 export function ModuleExplorer({ className }: { className?: string }) {
@@ -40,7 +41,7 @@ export function ModuleExplorer({ className }: { className?: string }) {
             className="group -mb-px -mr-px border-b border-r border-lp-line px-4.25 pb-4.75 pt-4.25 text-left transition-colors hover:bg-lp-brand/6 focus-visible:bg-lp-brand/6 focus-visible:outline-none"
           >
             <span className="flex items-center justify-between">
-              <mod.icon className={cn("h-4 w-4", mod.accent ? "text-lp-brand" : "text-lp-body group-hover:text-lp-brand")} strokeWidth={1.5} />
+              <ModuleChip mod={mod} className="h-8 w-8" glyph="h-4 w-4" />
               <ArrowUpRight className="h-3.5 w-3.5 text-lp-muted opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100" />
             </span>
             <h3 className="mt-3 text-[15px] font-semibold tracking-[-0.02em] text-lp-ink">{mod.title}</h3>

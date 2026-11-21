@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { ArrowRight, FileText, Landmark, ShieldCheck, type LucideIcon } from "lucide-react";
+import { ArrowRight } from "lucide-react";
+import { DecidesMark, ReadsMark, WorksMark, type Mark } from "@/components/landing/how-icons";
 import { BRAND } from "@/lib/brand";
 import { MODULES } from "@/lib/modules";
 import {
@@ -25,19 +26,19 @@ export const metadata = {
 };
 
 /** How she works — the three steps, in the order a day actually runs. */
-const steps: { icon: LucideIcon; title: string; text: string }[] = [
+const steps: { icon: Mark; title: string; text: string }[] = [
   {
-    icon: FileText,
+    icon: ReadsMark,
     title: "She understands your business",
     text: `${AI} collects information from your invoices, receipts, customers, bank feeds and operational records.`,
   },
   {
-    icon: Landmark,
+    icon: WorksMark,
     title: "She automates the work",
     text: "She processes transactions, prepares reconciliations, monitors inventory and manages routine workflows based on your settings.",
   },
   {
-    icon: ShieldCheck,
+    icon: DecidesMark,
     title: "She brings you the decisions",
     text: `${AI} highlights financial risks, unusual transactions, cash-flow concerns and opportunities requiring your judgement.`,
   },
@@ -92,7 +93,7 @@ export default function HandlesPage() {
             {steps.map((s, i) => (
               <div key={s.title} className="px-5.75 pb-8 pt-7">
                 <div className="flex items-start justify-between">
-                  <s.icon className="h-4 w-4 text-lp-brand" strokeWidth={1.75} />
+                  <s.icon className="h-10 w-10" />
                   <span className="font-serif text-[26px] italic leading-none text-lp-muted/50">{i + 1}</span>
                 </div>
                 <h3 className="mt-7 text-[17px] font-semibold tracking-[-0.035em] text-lp-ink">{s.title}</h3>

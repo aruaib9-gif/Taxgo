@@ -4,7 +4,7 @@
 // (grey macOS menus, the Chrome calendar) don't match the rest of the app.
 
 import { useEffect, useId, useLayoutEffect, useRef, useState } from "react";
-import { Calendar, Check, ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
+import { Calendar, Check, ChevronDown, ChevronLeft, ChevronRight, Search } from "lucide-react";
 import { useDismiss } from "@/lib/use-dismiss";
 import { cn } from "@/lib/utils";
 
@@ -40,7 +40,7 @@ const triggerCls =
   "flex w-full items-center justify-between gap-2 rounded-md border border-input bg-transparent px-3 text-left text-sm shadow-sm focus:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50";
 const popoverCls = "fixed z-[70] overflow-hidden rounded-md border border-border bg-popover p-1 text-popover-foreground shadow-md animate-lp-rise [animation-duration:120ms]";
 
-export function Select({ value: controlled, defaultValue, onChange, options, className, triggerClassName, placeholder, disabled, id, ariaLabel, size = "md" }: {
+export function Select({ value: controlled, defaultValue, onChange, options, className, triggerClassName, placeholder, disabled, id, ariaLabel, size = "md", searchable = false }: {
   /** Omit (with `defaultValue`) for an uncontrolled select that keeps its own value. */
   value?: string;
   defaultValue?: string;
@@ -54,8 +54,11 @@ export function Select({ value: controlled, defaultValue, onChange, options, cla
   id?: string;
   ariaLabel?: string;
   size?: "sm" | "md";
+  /** Adds a filter box at the top of the list, for long lists such as countries. */
+  searchable?: boolean;
 }) {
   const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState("");
   const [active, setActive] = useState(0);
   const [own, setOwn] = useState(defaultValue ?? "");
   const value = controlled ?? own;
@@ -65,13 +68,16 @@ export function Select({ value: controlled, defaultValue, onChange, options, cla
   const listId = useId();
   const all: Option[] = placeholder !== undefined ? [{ value: "", label: placeholder }, ...options] : options;
   const selected = all.find((o) => optValue(o) === value);
-  const pos = usePopoverPosition(open, btnRef, Math.min(288, all.length * 32 + 8));
+  const q = query.trim().toLowerCase();
+  const shown = searchable && q ? all.filter((o) => optLabel(o).toLowerCase().includes(q)) : all;
+  const pos = usePopoverPosition(open, btnRef, Math.min(288, all.length * 32 + 8) + (searchable ? 44 : 0));
 
   useEffect(() => {
     if (open) listRef.current?.querySelector<HTMLElement>(`[data-index="${active}"]`)?.scrollIntoView({ block: "nearest" });
   }, [open, active]);
 
   function openList() {
+    setQuery("");
     setActive(Math.max(0, all.findIndex((o) => optValue(o) === value)));
     setOpen(true);
   }
@@ -89,10 +95,15 @@ export function Select({ value: controlled, defaultValue, onChange, options, cla
       }
       return;
     }
-    if (e.key === "ArrowDown") setActive((i) => Math.min(all.length - 1, i + 1));
+    const typing = e.target instanceof HTMLInputElement;
+    if (e.key === "ArrowDown") setActive((i) => Math.min(shown.length - 1, i + 1));
     else if (e.key === "ArrowUp") setActive((i) => Math.max(0, i - 1));
-    else if (e.key === "Enter" || e.key === " ") choose(all[active]);
-    else if (e.key === "Tab") setOpen(false);
+    else if (e.key === "Enter" || (e.key === " " && !typing)) {
+      if (shown[active]) choose(shown[active]);
+    } else if (e.key === "Escape") {
+      setOpen(false);
+      btnRef.current?.focus();
+    } else if (e.key === "Tab") setOpen(false);
     else return;
     e.preventDefault();
   }
@@ -117,8 +128,28 @@ export function Select({ value: controlled, defaultValue, onChange, options, cla
         <ChevronDown className="h-4 w-4 shrink-0 opacity-50" />
       </button>
       {open && pos && (
-        <div ref={listRef} id={listId} role="listbox" style={{ top: pos.top, left: pos.left, minWidth: pos.width }} className={cn(popoverCls, "max-h-72 overflow-y-auto")}>
-          {all.map((o, i) => {
+        <div style={{ top: pos.top, left: pos.left, minWidth: pos.width }} className={cn(popoverCls, "flex max-h-[332px] flex-col p-0")}>
+          {searchable && (
+            <label className="flex shrink-0 items-center gap-2 border-b border-border px-2.5 py-2">
+              <Search className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+              <input
+                autoFocus
+                value={query}
+                onChange={(e) => {
+                  setQuery(e.target.value);
+                  setActive(0);
+                }}
+                onKeyDown={onKey}
+                placeholder="Search…"
+                aria-label={`Search ${ariaLabel ?? "options"}`}
+                aria-controls={listId}
+                className="w-full bg-transparent text-sm outline-none placeholder:text-muted-foreground"
+              />
+            </label>
+          )}
+        <div ref={listRef} id={listId} role="listbox" className="max-h-72 overflow-y-auto p-1">
+          {shown.length === 0 && <p className="px-2 py-3 text-center text-sm text-muted-foreground">No matches</p>}
+          {shown.map((o, i) => {
             const isSel = optValue(o) === value;
             return (
               <div
@@ -136,6 +167,7 @@ export function Select({ value: controlled, defaultValue, onChange, options, cla
               </div>
             );
           })}
+        </div>
         </div>
       )}
     </div>

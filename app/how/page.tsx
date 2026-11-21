@@ -2,19 +2,16 @@ import Link from "next/link";
 import {
   ArrowRight,
   Brain,
-  Check,
   CornerDownRight,
-  FileText,
-  Landmark,
   Lightbulb,
   MessagesSquare,
   Quote,
-  ShieldCheck,
   Sparkles,
   Target,
   Wand2,
   type LucideIcon,
 } from "lucide-react";
+import { DecidesMark, ReadsMark, ResultTick, WorksMark, type Mark } from "@/components/landing/how-icons";
 import { BRAND } from "@/lib/brand";
 import {
   Container,
@@ -39,19 +36,19 @@ export const metadata = {
 };
 
 /** What she does with a day's business activity, in three moves. */
-const steps: { icon: LucideIcon; title: string; text: string }[] = [
+const steps: { icon: Mark; title: string; text: string }[] = [
   {
-    icon: FileText,
+    icon: ReadsMark,
     title: "She reads everything",
     text: "Invoices, receipts, bank feeds, emails, stock counts and sales — all your business data in one place.",
   },
   {
-    icon: Landmark,
+    icon: WorksMark,
     title: "She does the work",
     text: "Posts entries, reconciles bank and receivables, runs payroll, reorders stock and keeps a true double-entry ledger.",
   },
   {
-    icon: ShieldCheck,
+    icon: DecidesMark,
     title: "She brings you the decisions",
     text: "Flags unusual items, cash risks and key opportunities — so you can make the right call, faster.",
   },
@@ -177,7 +174,7 @@ export default function HowPage() {
           <Panel className="relative z-10 mt-12 grid divide-y divide-lp-line md:grid-cols-3 md:divide-x md:divide-y-0">
             {steps.map((s) => (
               <div key={s.title} className="px-5.75 pb-8 pt-7">
-                <s.icon className="h-4 w-4 text-lp-brand" strokeWidth={1.75} />
+                <s.icon className="h-11 w-11" />
                 <h3 className="mt-7 text-[17px] font-semibold tracking-[-0.035em] text-lp-ink">{s.title}</h3>
                 <p className="mt-3 text-[14px] leading-[1.65] text-lp-body">{s.text}</p>
               </div>
@@ -186,7 +183,7 @@ export default function HowPage() {
           <ul className="relative z-10 mt-6 flex flex-wrap justify-center gap-x-5 gap-y-2.5 text-[14px] text-lp-body">
             {results.map((r) => (
               <li key={r} className="flex items-center gap-1.5">
-                <Check className="h-3.5 w-3.5 text-lp-brand" strokeWidth={2} /> {r}
+                <ResultTick className="h-4 w-4" /> {r}
               </li>
             ))}
           </ul>

@@ -6,7 +6,7 @@
 import { useEffect, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { AlertTriangle, BookOpen, Building2, ChevronDown, ChevronRight, Copy, Eye, EyeOff, Fingerprint, GitBranch, Keyboard, MessageSquare, Package, Plus, Search, Trash2, Upload, X } from "lucide-react";
+import { AlertTriangle, BookOpen, Building2, ChevronDown, CreditCard, ChevronRight, Copy, Eye, EyeOff, Fingerprint, GitBranch, Keyboard, MessageSquare, Package, Plus, Search, Trash2, Upload, X } from "lucide-react";
 import { createRecord, deleteRecord, readCollection, updateRecord, useCollection, type Rec } from "@/lib/store";
 import { SEED_ACCOUNTS } from "@/lib/accounting-seed";
 import { useAccounts } from "@/lib/ledger";
@@ -56,6 +56,7 @@ export function SettingsHome() {
       <PageHeader title="Settings" />
       <Row icon={Building2} title="Company Profile" text="Legal name, company type, tax registration (GST/VAT/TRN/EIN), address & contact" onClick={() => setProf(profile)} />
       <Row icon={Fingerprint} title="Sign-in & security" text="Fingerprint / Face sign-in (passkeys) and a 6-digit quick-unlock PIN for your devices" href="/profile" />
+      <Row icon={CreditCard} title="Billing" text="Your plan, users and AI credits — choose a package priced for your country" href="/settings/billing" />
       <Row icon={MessageSquare} title="WhatsApp" text="Pair a WhatsApp number, authorize operators & run the whole system from chat" href="/settings/whatsapp" />
       <Row icon={GitBranch} title="Manage organization" text="One place for your org structure — add, nest, rename units and control access. Used across HR, finance & inventory." href="/settings/organization" />
       <Card><div className="space-y-3 p-5"><CardTitle>Keyboard</CardTitle><p className="text-sm text-muted-foreground">How you move through screens and enter data on this device.</p>
