@@ -11,6 +11,10 @@ const nextConfig: NextConfig = {
       },
     },
   },
+  experimental: {
+    // Only surface `next dev` upgrade nudges for published security advisories.
+    agentUpgrade: "security",
+  },
 };
 
 export default nextConfig;
