@@ -25,7 +25,7 @@ export default function ResetPasswordPage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-[var(--body)] px-6">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-(--body) px-6">
       <div className="absolute top-8">
         <BrandMark href="/" />
       </div>

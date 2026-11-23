@@ -361,7 +361,7 @@ export function BillReferences() {
   ];
   return (
     <div className="space-y-4">
-      <PageHeader title="Bill-wise References" subtitle="Tally-style references carried on journal-voucher lines — New Ref / Advance / On Account, settled by Against Ref lines or on-account adjustments. Trade documents live in Bills Outstanding." />
+      <PageHeader title="Bill-wise References" subtitle="Bill-wise references carried on journal-voucher lines — New Ref / Advance / On Account, settled by Against Ref lines or on-account adjustments. Trade documents live in Bills Outstanding." />
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-2 text-sm">
           <span>Status</span>

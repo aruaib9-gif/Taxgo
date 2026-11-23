@@ -78,7 +78,7 @@ export function RecurringJournals() {
     <div className="space-y-4">
       <PageHeader
         title="Recurring Journals"
-        subtitle="Templates that post journal entries on a schedule — rent, salaries, accruals. Reversing templates auto-reverse each entry (Tally reversing journal)."
+        subtitle="Templates that post journal entries on a schedule — rent, salaries, accruals. Reversing templates auto-reverse each entry."
       />
       <div className="flex flex-wrap items-center gap-2">
         <button type="button" onClick={() => setOpen(true)} className={btn.primary}>
@@ -158,7 +158,7 @@ function RecurringDialog({ onClose }: { onClose: () => void }) {
           </Field>
         </div>
         <label className="flex items-center gap-2 text-sm">
-          <input type="checkbox" checked={postImmediately} onChange={(e) => setPostImmediately(e.target.checked)} className="h-4 w-4 accent-[var(--primary)]" />
+          <input type="checkbox" checked={postImmediately} onChange={(e) => setPostImmediately(e.target.checked)} className="h-4 w-4 accent-(--primary)" />
           Post generated entries immediately
         </label>
         <div className="space-y-2">

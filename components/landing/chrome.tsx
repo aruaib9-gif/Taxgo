@@ -5,6 +5,7 @@ import { LandingLogo } from "@/components/landing/brand";
 import { ThemeMenu } from "@/components/theme-toggle";
 import { ThemeIntro } from "@/components/landing/theme-intro";
 import { MobileNav } from "@/components/landing/mobile-nav";
+import { NavLinks, type NavLink } from "@/components/landing/nav-links";
 
 const AI = BRAND.fullName;
 
@@ -43,12 +44,13 @@ export const btnOutline =
 
 /* ---------- nav ---------- */
 
-export const navLinks: { href: string; label: string; page?: boolean }[] = [
-  { href: "/handles", label: `What ${AI} handles`, page: true },
-  { href: "/how", label: `How ${AI} works`, page: true },
+export const navLinks: NavLink[] = [
+  { href: "/handles", label: "Her Task & Our Products", page: true },
+  { href: "/how", label: "How she works", page: true },
   { href: "/humans", label: "The humans", page: true },
   { href: "/pricing", label: "Pricing", page: true },
   { href: "#faq", label: "FAQ" },
+  { href: "/partners", label: "Partners", page: true },
   { href: "/about", label: "About", page: true },
 ];
 
@@ -63,19 +65,7 @@ export function LandingHeader({ hrefPrefix = "" }: { hrefPrefix?: string }) {
         <Container className="flex h-12.5 items-center justify-between gap-6">
           <div className="flex items-center gap-6.5">
             <LandingLogo />
-            <nav className="hidden items-center gap-5.5 text-[14px] text-lp-body lg:flex">
-              {navLinks.map((l) =>
-                l.page ? (
-                  <Link key={l.href} href={l.href} className="transition-colors hover:text-lp-ink">
-                    {l.label}
-                  </Link>
-                ) : (
-                  <a key={l.href} href={`${hrefPrefix}${l.href}`} className="transition-colors hover:text-lp-ink">
-                    {l.label}
-                  </a>
-                ),
-              )}
-            </nav>
+            <NavLinks links={navLinks} hrefPrefix={hrefPrefix} />
           </div>
           <div className="flex items-center gap-3 sm:gap-5">
             <div className="text-lp-body [&_button[aria-haspopup]]:hover:bg-lp-alt [&_button[aria-haspopup]]:hover:text-lp-ink">
@@ -108,10 +98,10 @@ export function LandingFooter() {
         <LandingLogo dark />
         <nav className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-[14px] text-white/65">
           <Link href="/handles" className="hover:text-white">
-            What {AI} handles
+            Her Task &amp; Our Products
           </Link>
           <Link href="/how" className="hover:text-white">
-            How {AI} works
+            How she works
           </Link>
           <Link href="/humans" className="hover:text-white">
             The humans
@@ -131,9 +121,9 @@ export function LandingFooter() {
           <Link href="/register" className="hover:text-white">
             Create account
           </Link>
-          <a href={BRAND.whatsapp} target="_blank" rel="noopener noreferrer" className="hover:text-white">
+          <Link href="/partners" className="hover:text-white">
             Partners
-          </a>
+          </Link>
           <span>© 2026 {AI}. All rights reserved.</span>
         </nav>
       </Container>

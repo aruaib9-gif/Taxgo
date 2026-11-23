@@ -22,7 +22,7 @@ export default function CompliancePage() {
       <LandingHeader hrefPrefix="/" />
 
       <section className="relative overflow-hidden bg-[radial-gradient(ellipse_70%_90%_at_100%_0%,var(--lp-glow-a)_0%,var(--lp-glow-b)_45%,transparent_80%)]">
-        <Watermark showTile={false} className="left-1/2 top-0 hidden w-320 -translate-x-1/2 text-[var(--lp-map)] lg:block" />
+        <Watermark showTile={false} className="left-1/2 top-0 hidden w-320 -translate-x-1/2 text-(--lp-map) lg:block" />
         <Container className="relative pb-20 pt-16">
           <div className="relative z-10 text-center">
             <Kicker>Global tax coverage</Kicker>

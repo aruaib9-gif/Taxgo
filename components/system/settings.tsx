@@ -39,7 +39,7 @@ export function SettingsHome() {
   const activeCo = useSyncExternalStore(noSubscribe, activeCompanyId, () => DEFAULT_COMPANY);
   const companyName = useCompanyName();
   const profile = useSetting<Profile>("company-profile", { ...BLANK_PROFILE, legalName: companyName, tradeName: companyName });
-  const keyboard = useSetting("keyboard", { tally: false });
+  const keyboard = useSetting("keyboard", { fastEntry: false });
   const logo = useSetting("company-logo", { dataUrl: "" });
   const accounts = useAccounts();
   const rules = useCollection("posting-rules");
@@ -60,7 +60,7 @@ export function SettingsHome() {
       <Row icon={MessageSquare} title="WhatsApp" text="Pair a WhatsApp number, authorize operators & run the whole system from chat" href="/settings/whatsapp" />
       <Row icon={GitBranch} title="Manage organization" text="One place for your org structure — add, nest, rename units and control access. Used across HR, finance & inventory." href="/settings/organization" />
       <Card><div className="space-y-3 p-5"><CardTitle>Keyboard</CardTitle><p className="text-sm text-muted-foreground">How you move through screens and enter data on this device.</p>
-        <div className="flex items-center gap-4"><span className="flex size-9 items-center justify-center rounded-full bg-primary/10 text-primary"><Keyboard className="size-4" /></span><div className="flex-1"><p className="font-medium">Tally-style keyboard entry</p><p className="text-xs text-muted-foreground">F-key shortcuts, the right-hand button bar and Enter-to-advance data entry, for teams migrating from Tally</p></div><Switch checked={keyboard.tally} onChange={(v) => saveSetting("keyboard", { tally: v })} label="Tally-style keyboard entry" /></div>
+        <div className="flex items-center gap-4"><span className="flex size-9 items-center justify-center rounded-full bg-primary/10 text-primary"><Keyboard className="size-4" /></span><div className="flex-1"><p className="font-medium">Keyboard-first data entry</p><p className="text-xs text-muted-foreground">F-key shortcuts, the right-hand button bar and Enter-to-advance data entry, for teams coming from desktop accounting software</p></div><Switch checked={keyboard.fastEntry} onChange={(v) => saveSetting("keyboard", { fastEntry: v })} label="Keyboard-first data entry" /></div>
       </div></Card>
       <Card><div className="space-y-3 p-5"><CardTitle>Company Setup</CardTitle><p className="text-sm text-muted-foreground">Initialize your company with a chart of accounts, tax configuration, fiscal year, and posting rules.</p>
         <div className="flex items-center justify-between rounded-md bg-success/10 p-3 text-success"><div><p className="font-medium">Company accounting system is initialized</p><p className="text-xs">Country: {profile.country || "GENERIC"} · {accounts.length} accounts · {rules.length} posting rules</p></div><button type="button" className={btn.smOutline} onClick={() => setResetOpen(true)}>Reset Setup</button></div>

@@ -72,7 +72,7 @@ export default function PricingPage() {
         {/* bare map, centred behind the heading — the T tile would land on the headline */}
         <Watermark
           showTile={false}
-          className="left-1/2 top-0 hidden w-320 -translate-x-1/2 text-[var(--lp-map)] lg:block"
+          className="left-1/2 top-0 hidden w-320 -translate-x-1/2 text-(--lp-map) lg:block"
         />
         <Container className="relative pb-24 pt-16">
           <div className="relative z-10 text-center">

@@ -139,7 +139,7 @@ const weekOne = [
   {
     day: "Day 2",
     title: "Your Business Data Moves with You",
-    text: "Switch from QuickBooks, Tally, Zoho, or spreadsheets. We help migrate your accounts, customers, suppliers, inventory, and outstanding invoices.",
+    text: "Switch from QuickBooks, Sage, Zoho, or spreadsheets. We help migrate your accounts, customers, suppliers, inventory, and outstanding invoices.",
     tag: "Your history stays. Your inefficiencies go.",
   },
   {
@@ -185,7 +185,7 @@ const humans: { icon: HumanMark; title: string; text: string }[] = [
   {
     icon: MigrationMark,
     title: "Setup & Data Migration",
-    text: `Move from Tally, Sage, Zoho, QuickBooks, or spreadsheets to ${AI} with expert assistance, ensuring your financial records are properly transferred and configured.`,
+    text: `Move from Sage, Zoho, QuickBooks, or spreadsheets to ${AI} with expert assistance, ensuring your financial records are properly transferred and configured.`,
   },
 ];
 
@@ -271,7 +271,7 @@ const faqs: [string, string][] = [
     `${AI} is built for global compliance: EU VAT and Peppol e-invoicing, retail sales tax and GST/HST in the Americas, GST and VAT across Asia and the Middle East, VAT across Africa, GST in Australia, and multi-entity VAT. When you pick your country, your chart of accounts, tax rates, currencies and e-invoicing requirements are set up for you.`,
   ],
   [
-    "Can I switch from QuickBooks, Tally, Sage, Zoho or spreadsheets?",
+    "Can I switch from QuickBooks, Sage, Zoho or spreadsheets?",
     "Yes — switching is the part we handle. We help migrate your accounts, customers, suppliers, inventory and outstanding invoices, so your history comes with you. Migration assistance is included, subject to data compatibility and the scope of your business.",
   ],
   [
@@ -315,7 +315,7 @@ export default function LandingPage() {
       {/* hero */}
       <section className="relative overflow-hidden bg-[radial-gradient(ellipse_70%_90%_at_100%_0%,var(--lp-glow-a)_0%,var(--lp-glow-b)_45%,transparent_80%)]">
         {/* bare map; the logo sits apart from it, at the map's far right, above the result card */}
-        <Watermark showTile={false} className="-right-20 top-5 hidden w-190 text-[var(--lp-map)] lg:block" />
+        <Watermark showTile={false} className="-right-20 top-5 hidden w-190 text-(--lp-map) lg:block" />
         <TLogo className="pointer-events-none absolute right-10 top-5 hidden h-21 w-21 opacity-60 drop-shadow-[0_14px_24px_rgba(15,36,56,0.16)] lg:block" />
         <Container className="relative pb-20 pt-20">
           <HeroDemo>
@@ -529,7 +529,7 @@ export default function LandingPage() {
       {/* how Tax GO works */}
       <section id="how" className="scroll-mt-12 border-y border-lp-line bg-lp-alt">
         <Container className="py-24">
-          <Kicker>How {AI} works</Kicker>
+          <Kicker>How she works</Kicker>
           <H2>You Ask. She Understands. She Delivers.</H2>
           <p className="mt-4 max-w-170 text-[17px] font-semibold leading-[1.6] text-lp-ink">
             {AI} isn&rsquo;t just another business software. She&rsquo;s your intelligent AI colleague, working 24/7 to make your

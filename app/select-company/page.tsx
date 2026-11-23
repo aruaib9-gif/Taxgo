@@ -6,7 +6,7 @@ export const metadata = { title: "Select company" };
 
 export default function SelectCompanyPage() {
   return (
-    <div className="flex min-h-screen flex-col items-center bg-[var(--body)] px-6 py-10">
+    <div className="flex min-h-screen flex-col items-center bg-(--body) px-6 py-10">
       <div className="mb-8">
         <BrandMark href="/home" />
       </div>

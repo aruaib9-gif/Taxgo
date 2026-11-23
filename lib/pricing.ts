@@ -174,7 +174,7 @@ export const PACKAGES: Package[] = [
     includes: [
       "General ledger, tax & compliance",
       "Banking, loans, budgets & reconciliations",
-      "Quick entry, daybook & Tally-style vouchers",
+      "Quick entry, daybook & voucher entry",
       "Reports, statements & analytics",
       "Real double-entry & full audit trail",
     ],

@@ -175,7 +175,7 @@ function FieldInput({
       <label className="flex items-center gap-2 text-sm">
         <input
           type="checkbox"
-          className="accent-[var(--primary)]"
+          className="accent-(--primary)"
           checked={Boolean(value)}
           onChange={(e) => onChange(e.target.checked)}
         />

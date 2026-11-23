@@ -1,7 +1,7 @@
 "use client";
 
 // System › platform pages: approval policies, integration clients, WhatsApp, cost categories,
-// Tally import, posting events & rules, webhooks and website enquiries.
+// Ledger XML import, posting events & rules, webhooks and website enquiries.
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -10,7 +10,7 @@ import { Bot, Check, Copy, KeyRound, Plus, QrCode, Send, Trash2, Upload, X } fro
 import { createRecord, deleteRecord, nextNumber, readCollection, updateRecord, useCollection, type Rec } from "@/lib/store";
 import { postJournal, useAccounts } from "@/lib/ledger";
 import { answer } from "@/lib/analyst";
-import { CLIENT_EVENTS, EVENT_TYPES, SOURCE_EVENT, WEBHOOK_EVENTS, eventLabel, importTally, parseTally, randomKey, seedPostingRules, sha256, testWebhook, type TallyPreview } from "@/lib/system";
+import { CLIENT_EVENTS, EVENT_TYPES, SOURCE_EVENT, WEBHOOK_EVENTS, eventLabel, importLedgerXml, parseLedgerXml, randomKey, seedPostingRules, sha256, testWebhook, type LedgerXmlPreview } from "@/lib/system";
 import { cn } from "@/lib/utils";
 import { AccountPicker, Badge, Card, CardTitle, DataTable, Dialog, Field, PageHeader, SidePanel, Switch, btn, inputCls, money, num, textareaCls } from "@/components/accounting/kit";
 import { Select } from "@/components/accounting/pickers";
@@ -221,26 +221,26 @@ export function CostCategories() {
   );
 }
 
-/* ---------- Tally import ---------- */
+/* ---------- ledger XML import ---------- */
 
-export function TallyImport() {
+export function LedgerImport() {
   const [file, setFile] = useState("");
   const [xml, setXml] = useState("");
-  const [p, setP] = useState<TallyPreview | null>(null);
+  const [p, setP] = useState<LedgerXmlPreview | null>(null);
   const [done, setDone] = useState("");
   const [err, setErr] = useState("");
   return (
     <div className="space-y-4">
-      <PageHeader title="Import from Tally" subtitle="Bring your Tally masters and vouchers in from an XML export" />
-      <Card><div className="space-y-3 p-5"><CardTitle>1. Choose your Tally XML export</CardTitle>
-        <Field label="Tally XML or Excel file"><input aria-label="Tally XML file" type="file" accept=".xml,.xlsx,.xls" className={cn(inputCls, "pt-1.5")} onChange={async (e) => { const f = e.target.files?.[0]; setP(null); setDone(""); setErr(""); if (!f) return; setFile(f.name); if (!/\.xml$/i.test(f.name)) { setErr("Excel exports aren't read here — export Masters and Day Book from Tally as XML (Export › XML)."); return; } setXml(await f.text()); }} /></Field>
-        <div className="flex gap-2"><button type="button" className={btn.outline} disabled={!xml} onClick={() => setP(parseTally(xml))}>Preview</button><button type="button" className={btn.primary} disabled={!p || (!p.ledgers.some((l) => !l.exists) && !p.vouchers.some((v) => !v.exists))} onClick={() => { const r = importTally(p!); setDone(`Imported ${r.ledgers} ledger(s) and ${r.vouchers} voucher(s) from ${file}.`); setP(parseTally(xml)); }}><Upload /> Import</button></div>
+      <PageHeader title="Import ledger data" subtitle="Bring your masters and vouchers in from an XML export" />
+      <Card><div className="space-y-3 p-5"><CardTitle>1. Choose your XML export</CardTitle>
+        <Field label="XML or Excel file"><input aria-label="XML file" type="file" accept=".xml,.xlsx,.xls" className={cn(inputCls, "pt-1.5")} onChange={async (e) => { const f = e.target.files?.[0]; setP(null); setDone(""); setErr(""); if (!f) return; setFile(f.name); if (!/\.xml$/i.test(f.name)) { setErr("Excel exports aren't read here — export your masters and day book as XML."); return; } setXml(await f.text()); }} /></Field>
+        <div className="flex gap-2"><button type="button" className={btn.outline} disabled={!xml} onClick={() => setP(parseLedgerXml(xml))}>Preview</button><button type="button" className={btn.primary} disabled={!p || (!p.ledgers.some((l) => !l.exists) && !p.vouchers.some((v) => !v.exists))} onClick={() => { const r = importLedgerXml(p!); setDone(`Imported ${r.ledgers} ledger(s) and ${r.vouchers} voucher(s) from ${file}.`); setP(parseLedgerXml(xml)); }}><Upload /> Import</button></div>
         <p className="text-xs text-muted-foreground">Preview shows what will be created without writing anything. Import is safe to re-run — existing ledgers and vouchers are skipped.</p>
         {err && <p className="text-sm text-destructive">{err}</p>}{done && <p className="text-sm text-success">{done}</p>}
       </div></Card>
       {p && <>
         {p.errors.length > 0 && <Card><div className="space-y-1 p-5 text-sm text-destructive">{p.errors.map((e) => <p key={e}>{e}</p>)}</div></Card>}
-        <Card><div className="p-5"><CardTitle className="mb-2">Ledgers ({p.ledgers.length})</CardTitle><table className="w-full text-sm"><thead><tr className="border-b border-border"><Th>Name</Th><Th>Tally group</Th><Th>Becomes</Th><Th /></tr></thead><tbody>{p.ledgers.map((l) => <tr key={l.name} className="border-b border-border"><td className="px-2 py-1.5">{l.name}</td><td className="px-2 py-1.5">{l.parent}</td><td className="px-2 py-1.5">{l.kind === "CUSTOMER" ? "Customer" : l.kind === "VENDOR" ? "Vendor" : `${l.type.toLowerCase()} account`}</td><td className="px-2 py-1.5">{l.exists ? <Badge>Exists — skipped</Badge> : <Badge tone="success">New</Badge>}</td></tr>)}</tbody></table></div></Card>
+        <Card><div className="p-5"><CardTitle className="mb-2">Ledgers ({p.ledgers.length})</CardTitle><table className="w-full text-sm"><thead><tr className="border-b border-border"><Th>Name</Th><Th>Source group</Th><Th>Becomes</Th><Th /></tr></thead><tbody>{p.ledgers.map((l) => <tr key={l.name} className="border-b border-border"><td className="px-2 py-1.5">{l.name}</td><td className="px-2 py-1.5">{l.parent}</td><td className="px-2 py-1.5">{l.kind === "CUSTOMER" ? "Customer" : l.kind === "VENDOR" ? "Vendor" : `${l.type.toLowerCase()} account`}</td><td className="px-2 py-1.5">{l.exists ? <Badge>Exists — skipped</Badge> : <Badge tone="success">New</Badge>}</td></tr>)}</tbody></table></div></Card>
         <Card><div className="p-5"><CardTitle className="mb-2">Vouchers ({p.vouchers.length})</CardTitle><table className="w-full text-sm"><thead><tr className="border-b border-border"><Th>Date</Th><Th>Type</Th><Th>No.</Th><Th>Narration</Th><Th className="text-right">Amount</Th><Th /></tr></thead><tbody>{p.vouchers.map((v, i) => <tr key={i} className="border-b border-border"><td className="px-2 py-1.5">{v.date}</td><td className="px-2 py-1.5">{v.type}</td><td className="px-2 py-1.5">{v.number}</td><td className="px-2 py-1.5">{v.narration}</td><td className="px-2 py-1.5 text-right tabular-nums">{money(v.lines.filter((l) => l.amount < 0).reduce((s, l) => s - l.amount, 0))}</td><td className="px-2 py-1.5">{v.exists ? <Badge>Imported</Badge> : <Badge tone="success">New</Badge>}</td></tr>)}</tbody></table></div></Card>
       </>}
     </div>

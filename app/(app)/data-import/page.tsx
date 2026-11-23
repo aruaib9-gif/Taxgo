@@ -1,7 +1,7 @@
-import { TallyImport } from "@/components/system/platform";
+import { LedgerImport } from "@/components/system/platform";
 
-export const metadata = { title: "Import from Tally" };
+export const metadata = { title: "Import ledger data" };
 
 export default function Page() {
-  return <TallyImport />;
+  return <LedgerImport />;
 }

@@ -15,9 +15,9 @@ export function TLogo({ className }: { className?: string }) {
 
 export function LandingLogo({ dark = false }: { dark?: boolean }) {
   return (
-    <Link href="/" className={cn("inline-flex items-center gap-2.5", dark ? "text-white" : "text-lp-ink")}>
+    <Link href="/" className={cn("inline-flex shrink-0 items-center gap-2.5", dark ? "text-white" : "text-lp-ink")}>
       <TLogo className="h-7 w-7" />
-      <span className="font-display text-[19px] font-semibold tracking-[-0.035em]">{BRAND.name}</span>
+      <span className="whitespace-nowrap font-display text-[19px] font-semibold tracking-[-0.035em]">{BRAND.name}</span>
     </Link>
   );
 }

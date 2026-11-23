@@ -340,7 +340,7 @@ function TaxCategoryForm({ record, rates, onDone }: { record?: Rec; rates: Rec[]
           {rates.length === 0 && <p className="p-2 text-sm text-muted-foreground">No tax rates yet.</p>}
           {rates.map((r) => (
             <label key={r.id} className="flex cursor-pointer items-center gap-2 rounded px-2 py-1.5 text-sm hover:bg-muted/60">
-              <input type="checkbox" checked={rateIds.includes(r.id)} onChange={() => toggle(r.id)} className="h-4 w-4 rounded-full accent-[var(--primary)]" />
+              <input type="checkbox" checked={rateIds.includes(r.id)} onChange={() => toggle(r.id)} className="h-4 w-4 rounded-full accent-(--primary)" />
               <span className="flex-1">{String(r.name)}</span>
               <span className="text-muted-foreground">{num(r.rate).toFixed(2)}%</span>
             </label>

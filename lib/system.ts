@@ -2,7 +2,7 @@
 
 // System settings and platform services: key/value settings, document numbering, posting
 // preferences, org units, roles, sample data (loaded through the real posting code and removable
-// again), "clear all data", Tally XML import, webhook test deliveries and API keys.
+// again), "clear all data", ledger XML import, webhook test deliveries and API keys.
 
 import { collectionOfKey, createRecord, deleteRecord, readCollection, type Rec, updateRecord, useCollection } from "@/lib/store";
 import { moduleGroups } from "@/lib/nav";
@@ -150,16 +150,16 @@ export function clearAllData() {
   return keys.length;
 }
 
-/* ---------- Tally XML import ---------- */
+/* ---------- ledger XML import ---------- */
 
-export type TallyPreview = { ledgers: { name: string; parent: string; kind: "CUSTOMER" | "VENDOR" | "ACCOUNT"; type: string; exists: boolean; opening: number }[]; vouchers: { number: string; date: string; type: string; narration: string; lines: { ledger: string; amount: number }[]; exists: boolean }[]; errors: string[] };
+export type LedgerXmlPreview = { ledgers: { name: string; parent: string; kind: "CUSTOMER" | "VENDOR" | "ACCOUNT"; type: string; exists: boolean; opening: number }[]; vouchers: { number: string; date: string; type: string; narration: string; lines: { ledger: string; amount: number }[]; exists: boolean }[]; errors: string[] };
 
 const GROUP_TYPE: [RegExp, string][] = [[/sundry debtors|receivable/i, "ASSET"], [/sundry creditors|payable/i, "LIABILITY"], [/bank|cash|current assets|fixed assets|investments|loans & advances \(asset\)|deposits|stock/i, "ASSET"], [/capital|reserves|surplus/i, "EQUITY"], [/loans|liabilit|duties|provisions/i, "LIABILITY"], [/sales|income|revenue/i, "REVENUE"], [/purchase|expense|cost/i, "EXPENSE"]];
-const tallyDate = (s: string) => (/^\d{8}$/.test(s) ? `${s.slice(0, 4)}-${s.slice(4, 6)}-${s.slice(6, 8)}` : s);
+const xmlDate = (s: string) => (/^\d{8}$/.test(s) ? `${s.slice(0, 4)}-${s.slice(4, 6)}-${s.slice(6, 8)}` : s);
 
-export function parseTally(xml: string): TallyPreview {
+export function parseLedgerXml(xml: string): LedgerXmlPreview {
   const doc = new DOMParser().parseFromString(xml, "text/xml");
-  if (doc.querySelector("parsererror")) return { ledgers: [], vouchers: [], errors: ["The file isn't valid XML — export Masters / Day Book from Tally as XML."] };
+  if (doc.querySelector("parsererror")) return { ledgers: [], vouchers: [], errors: ["The file isn't valid XML — export your masters and day book as XML."] };
   const txt = (el: Element, tag: string) => el.getElementsByTagName(tag)[0]?.textContent?.trim() ?? "";
   const accounts = readCollection("accounts"), customers = readCollection("customers"), vendors = readCollection("vendors"), journals = readCollection("journal-entries");
   const ledgers = Array.from(doc.getElementsByTagName("LEDGER")).map((l) => {
@@ -173,10 +173,10 @@ export function parseTally(xml: string): TallyPreview {
   const vouchers = Array.from(doc.getElementsByTagName("VOUCHER")).map((v) => {
     const number = txt(v, "VOUCHERNUMBER");
     const entries = [...Array.from(v.getElementsByTagName("ALLLEDGERENTRIES.LIST")), ...Array.from(v.getElementsByTagName("LEDGERENTRIES.LIST"))];
-    // Tally: negative AMOUNT = debit, positive = credit.
+    // Negative AMOUNT = debit, positive = credit.
     const lines = entries.map((e) => ({ ledger: txt(e, "LEDGERNAME"), amount: Number(txt(e, "AMOUNT") || 0) })).filter((x) => x.ledger && x.amount);
     const type = v.getAttribute("VCHTYPE") || txt(v, "VOUCHERTYPENAME");
-    return { number, date: tallyDate(txt(v, "DATE")), type, narration: txt(v, "NARRATION"), lines, exists: journals.some((j) => j.tallyRef === `${type}/${number}`) };
+    return { number, date: xmlDate(txt(v, "DATE")), type, narration: txt(v, "NARRATION"), lines, exists: journals.some((j) => j.importRef === `${type}/${number}`) };
   });
   const errors = vouchers.filter((v) => Math.abs(v.lines.reduce((s, l) => s + l.amount, 0)) > 0.005).map((v) => `Voucher ${v.type} ${v.number} doesn't balance — skipped`);
   if (!ledgers.length && !vouchers.length) errors.push("No LEDGER or VOUCHER elements found in this file.");
@@ -186,16 +186,16 @@ export function parseTally(xml: string): TallyPreview {
 const NORMAL: Record<string, string> = { ASSET: "DEBIT", EXPENSE: "DEBIT", LIABILITY: "CREDIT", EQUITY: "CREDIT", REVENUE: "CREDIT" };
 const PREFIX: Record<string, string> = { ASSET: "1", LIABILITY: "2", EQUITY: "3", REVENUE: "4", EXPENSE: "6" };
 
-export function importTally(p: TallyPreview) {
+export function importLedgerXml(p: LedgerXmlPreview) {
   let ledgers = 0, vouchers = 0;
   for (const l of p.ledgers.filter((x) => !x.exists)) {
-    if (l.kind === "CUSTOMER") createRecord("customers", { name: l.name, status: "ACTIVE", source: "Tally" });
-    else if (l.kind === "VENDOR") createRecord("vendors", { name: l.name, status: "ACTIVE", source: "Tally" });
+    if (l.kind === "CUSTOMER") createRecord("customers", { name: l.name, status: "ACTIVE", source: "XML import" });
+    else if (l.kind === "VENDOR") createRecord("vendors", { name: l.name, status: "ACTIVE", source: "XML import" });
     else {
       const used = new Set(readCollection("accounts").map((a) => String(a.code)));
       let code = Number(`${PREFIX[l.type]}900`);
       while (used.has(String(code))) code++;
-      createRecord("accounts", { code: String(code), name: l.name, type: l.type, normalBalance: NORMAL[l.type], parentId: null, isActive: true, source: "Tally" });
+      createRecord("accounts", { code: String(code), name: l.name, type: l.type, normalBalance: NORMAL[l.type], parentId: null, isActive: true, source: "XML import" });
     }
     ledgers++;
   }
@@ -208,8 +208,8 @@ export function importTally(p: TallyPreview) {
   for (const v of p.vouchers.filter((x) => !x.exists && Math.abs(x.lines.reduce((s, l) => s + l.amount, 0)) <= 0.005)) {
     const lines = v.lines.map((l) => ({ accountId: accFor(l.ledger) ?? "", memo: l.ledger, debit: l.amount < 0 ? -l.amount : 0, credit: l.amount > 0 ? l.amount : 0 }));
     if (lines.some((l) => !l.accountId)) continue;
-    const je = createJournal({ date: v.date || todayIso(), description: `${v.type} ${v.number}${v.narration ? ` — ${v.narration}` : ""}`, status: "POSTED", source: "Tally Import", lines });
-    updateRecord("journal-entries", je.id, { tallyRef: `${v.type}/${v.number}` });
+    const je = createJournal({ date: v.date || todayIso(), description: `${v.type} ${v.number}${v.narration ? ` — ${v.narration}` : ""}`, status: "POSTED", source: "XML import", lines });
+    updateRecord("journal-entries", je.id, { importRef: `${v.type}/${v.number}` });
     vouchers++;
   }
   return { ledgers, vouchers };

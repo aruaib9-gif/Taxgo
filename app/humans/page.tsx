@@ -155,7 +155,7 @@ const experts: Expert[] = [
     title: "Setup, migration & training specialist",
     tagline: `Move to ${AI} with professional help from the beginning.`,
     gets: [
-      "Migration from QuickBooks, Sage, Tally, Zoho or spreadsheets",
+      "Migration from QuickBooks, Sage, Zoho or spreadsheets",
       "Chart of accounts setup and review",
       "Opening balance verification",
       "Customer, supplier and inventory data migration",
@@ -202,7 +202,7 @@ export default function HumansPage() {
 
       {/* heading */}
       <section className="relative overflow-hidden bg-[radial-gradient(ellipse_70%_90%_at_100%_0%,var(--lp-glow-a)_0%,var(--lp-glow-b)_45%,transparent_80%)]">
-        <Watermark showTile={false} className="left-1/2 top-0 hidden w-320 -translate-x-1/2 text-[var(--lp-map)] lg:block" />
+        <Watermark showTile={false} className="left-1/2 top-0 hidden w-320 -translate-x-1/2 text-(--lp-map) lg:block" />
         <Container className="relative pb-16 pt-16">
           <div className="relative z-10 text-center">
             <Kicker>The humans behind {AI}</Kicker>

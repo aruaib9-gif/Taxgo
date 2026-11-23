@@ -205,7 +205,7 @@ export default function OnboardingPage() {
         </div>
 
         {/* right: preview */}
-        <div className="hidden items-center justify-center bg-[var(--body)] p-10 lg:flex">
+        <div className="hidden items-center justify-center bg-(--body) p-10 lg:flex">
           {phase === 0 && <CompanyPreview name={name} c={c} step={step} pills={pills} />}
           {phase === 1 && <OrgPreview name={name} units={units} />}
           {phase === 2 && <InvoicePreview docName={docName} color={color} currency={c.currency} />}
@@ -338,7 +338,7 @@ function BusinessStep({ biz, toggleBiz, loadSample, setLoadSample }: { biz: stri
           );
         })}
         <label className="flex items-start gap-2.5 rounded-2xl bg-muted/50 p-3 text-sm">
-          <input type="checkbox" className="mt-0.5 accent-[var(--primary)]" checked={loadSample} onChange={(e) => setLoadSample(e.target.checked)} />
+          <input type="checkbox" className="mt-0.5 accent-(--primary)" checked={loadSample} onChange={(e) => setLoadSample(e.target.checked)} />
           <span>
             <b>Load sample data to explore.</b> <span className="text-muted-foreground">Demo customers, products, invoices — clear anytime.</span>
           </span>

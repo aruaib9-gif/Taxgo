@@ -320,7 +320,7 @@ export function Exceptions() {
   const block = (title: string, none: string, headers: string[], rows: React.ReactNode[][], right: number[] = []) => <Card><div className="p-4"><CardTitle className="mb-2 px-3">{title}</CardTitle>{rows.length === 0 ? <p className="px-3 text-sm text-muted-foreground">{none}</p> : <SimpleTable headers={headers} right={right} rows={rows} />}</div></Card>;
   return (
     <div className="space-y-4">
-      <ReportHeader title="Exception Reports" subtitle="Tally-style exception set — anything listed here needs attention" />
+      <ReportHeader title="Exception Reports" subtitle="The exception set — anything listed here needs attention" />
       <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-6">{stats.map(([v, l]) => <Card key={l}><div className="p-4"><p className={cn("text-2xl font-bold", v > 0 && "text-destructive")}>{v}</p><p className="text-xs text-muted-foreground">{l}</p></div></Card>)}</div>
       {block("Documents with no journal entry (saved successfully but never reached the ledger)", "None — every payment, sale, asset, depreciation entry and reconciliation adjustment has a journal entry behind it.", ["Type", "Number", "Party", "Amount"], x.unposted.map((u) => [u.kind, u.number, u.party, money(u.amount)]), [3])}
       {block("Negative stock", "None — stock never went below zero.", ["Product", "Warehouse", "Quantity"], x.negative.map((u) => [u.product, u.warehouse, u.qty]), [2])}

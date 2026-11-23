@@ -35,6 +35,8 @@ export type Module = {
   realWorld: string;
   /** The chip colour this module carries in the artwork. */
   hue: string;
+  /** A module with its own page opens that instead of the module window. */
+  page?: string;
   summary: string;
   features: string[];
   example: string;
@@ -46,6 +48,7 @@ export const MODULES: Module[] = [
   {
     icon: Calculator,
     title: "Accounting",
+    page: "/modules/accounting",
     text: "GL, tax & compliance",
     handles: "General ledger, tax, reconciliations, financial statements",
     realWorld: "Automatically records supplier invoices and updates the profit and loss statement.",
@@ -72,6 +75,7 @@ export const MODULES: Module[] = [
   {
     icon: ShoppingCart,
     title: "Sales",
+    page: "/modules/sales",
     text: "Quote-to-cash, invoicing & AR",
     handles: "Quotations, invoicing, payments, receivables",
     realWorld: "Converts an approved quotation into an invoice and tracks the payment.",
@@ -85,6 +89,7 @@ export const MODULES: Module[] = [
   {
     icon: Layers,
     title: "Purchasing",
+    page: "/modules/purchasing",
     text: "Procure-to-pay & bills",
     handles: "Suppliers, purchase orders, bills, approvals",
     realWorld: "Matches supplier invoices against purchase orders.",
@@ -98,6 +103,7 @@ export const MODULES: Module[] = [
   {
     icon: Boxes,
     title: "Inventory",
+    page: "/modules/inventory",
     text: "Products, stock & warehouses",
     handles: "Stock levels, warehouses, transfers, reordering",
     realWorld: "Identifies low stock and prepares a replenishment order.",
@@ -111,6 +117,7 @@ export const MODULES: Module[] = [
   {
     icon: UsersRound,
     title: "CRM",
+    page: "/modules/crm",
     text: "Leads, pipeline & activities",
     handles: "Leads, customer relationships, sales pipeline",
     realWorld: "Captures a customer enquiry and schedules the follow-up.",
@@ -124,6 +131,7 @@ export const MODULES: Module[] = [
   {
     icon: Headset,
     title: "Operations",
+    page: "/modules/operations",
     text: "POS, van sales & helpdesk",
     handles: "POS, van sales, helpdesk, daily workflows",
     realWorld: "Records shop sales and updates inventory automatically.",
@@ -137,6 +145,7 @@ export const MODULES: Module[] = [
   {
     icon: Factory,
     title: "Manufacturing",
+    page: "/modules/manufacturing",
     text: "Production & work orders",
     handles: "Production planning, work orders, material usage",
     realWorld: "Calculates production costs and tracks finished goods.",
@@ -150,6 +159,7 @@ export const MODULES: Module[] = [
   {
     icon: Briefcase,
     title: "Projects",
+    page: "/modules/projects",
     text: "Projects, tasks & timesheets",
     handles: "Budgets, tasks, timesheets, profitability",
     realWorld: "Tracks project expenses against approved budgets.",
@@ -163,6 +173,7 @@ export const MODULES: Module[] = [
   {
     icon: UsersRound,
     title: "HR",
+    page: "/modules/hr",
     text: "Employees, leave & attendance",
     handles: "Employees, attendance, leave, performance",
     realWorld: "Processes leave requests and updates attendance records.",
@@ -176,6 +187,7 @@ export const MODULES: Module[] = [
   {
     icon: Coins,
     title: "Payroll",
+    page: "/modules/payroll",
     text: "Salary runs, claims & payslips",
     handles: "Salaries, deductions, payslips, statutory payments",
     realWorld: "Calculates monthly payroll and prepares payslips.",
@@ -189,6 +201,7 @@ export const MODULES: Module[] = [
   {
     icon: Landmark,
     title: "Finance",
+    page: "/modules/finance",
     text: "Banking, loans & budgets",
     handles: "Banking, loans, budgets, cash management",
     realWorld: "Forecasts whether available cash will cover upcoming payments.",
@@ -215,6 +228,7 @@ export const MODULES: Module[] = [
   {
     icon: ChartColumn,
     title: "Analytics",
+    page: "/modules/analytics",
     text: "Reports & live dashboards",
     handles: "Dashboards, KPIs, financial insights",
     realWorld: "Shows revenue, expenses, profitability and business trends.",
