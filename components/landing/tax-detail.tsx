@@ -4,9 +4,19 @@
 // rates, an illustrative sales tax calculator, what the US tax engine does) and the full EU VAT table.
 
 import { useState } from "react";
-import { AlertTriangle, Calculator, FileCheck2, History, MapPin, PackageSearch, Radar, ReceiptText, Search, X, type LucideIcon } from "lucide-react";
+import { AlertTriangle, Calculator, ExternalLink, FileCheck2, History, MapPin, PackageSearch, Radar, ReceiptText, Search, X, type LucideIcon } from "lucide-react";
 import { BRAND } from "@/lib/brand";
-import { EU_VAT, US_BRACKETS_SINGLE, US_ENGINE_FEATURES, US_FEDERAL, US_STATES } from "@/lib/tax-detail";
+import {
+  EU_VAT,
+  EU_VAT_SOURCES,
+  US_BRACKETS_SINGLE,
+  US_ENGINE_FEATURES,
+  US_FEDERAL,
+  US_FEDERAL_SOURCES,
+  US_STATE_SOURCES,
+  US_STATES,
+  type TaxSource,
+} from "@/lib/tax-detail";
 import { cn } from "@/lib/utils";
 
 const FEATURE_ICONS: LucideIcon[] = [MapPin, Radar, PackageSearch, FileCheck2, ReceiptText, History];
@@ -21,11 +31,11 @@ const pct = (n: number) => `${n}%`;
 const MAX_COMBINED = Math.max(...US_STATES.map((s) => s.combined));
 const usd = (n: number) => n.toLocaleString("en-US", { style: "currency", currency: "USD" });
 
-function SectionHead({ kicker, title, children }: { kicker: string; title: string; children?: React.ReactNode }) {
+function SectionHead({ id, kicker, title, children }: { id?: string; kicker: string; title: string; children?: React.ReactNode }) {
   return (
     <div>
       <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-lp-brand">{kicker}</p>
-      <h2 className="mt-2 text-[26px] font-semibold tracking-[-0.045em] text-lp-ink sm:text-[30px]">{title}</h2>
+      <h2 id={id} className="mt-2 text-[26px] font-semibold tracking-[-0.045em] text-lp-ink sm:text-[30px]">{title}</h2>
       {children ? <p className="mt-2 max-w-180 text-[15px] leading-[1.6] text-lp-body">{children}</p> : null}
     </div>
   );
@@ -33,6 +43,27 @@ function SectionHead({ kicker, title, children }: { kicker: string; title: strin
 
 function Card({ className, children }: { className?: string; children: React.ReactNode }) {
   return <div className={cn("rounded-2xl border border-lp-line bg-lp-card", className)}>{children}</div>;
+}
+
+/** Links straight to the authority that publishes each figure, so a reader can check it at the source. */
+function Sources({ links, className }: { links: TaxSource[]; className?: string }) {
+  return (
+    <p className={cn("flex flex-wrap items-center gap-x-4 gap-y-1 text-[12.5px] leading-normal text-lp-muted", className)}>
+      <span className="font-semibold text-lp-body">Official source{links.length > 1 ? "s" : ""}:</span>
+      {links.map((l) => (
+        <a
+          key={l.href}
+          href={l.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1 text-lp-body underline decoration-lp-line underline-offset-3 transition hover:text-lp-brand hover:decoration-lp-brand/60"
+        >
+          {l.label}
+          <ExternalLink className="h-3 w-3 shrink-0" aria-hidden />
+        </a>
+      ))}
+    </p>
+  );
 }
 
 export function UsTaxDetail() {
@@ -44,13 +75,15 @@ export function UsTaxDetail() {
 
   return (
     <section id="united-states" aria-labelledby="us-title" className="scroll-mt-20 border-t border-lp-line pt-16">
-      <SectionHead kicker="United States in depth" title="Sales tax in all 50 states">
-        State rates and population-weighted average combined (state + local) rates as of January 1, 2026, cross-checked
-        against the Sales Tax Institute&rsquo;s November 1, 2026 reference.
+      <SectionHead id="us-title" kicker="United States in depth" title="Federal and state taxes">
+        The United States has no national VAT. Federal taxes are set by the IRS, and each state sets its own sales tax
+        &mdash; so a US business files with both. State rates and population-weighted average combined rates below are as
+        of January 1, 2026, cross-checked against the Sales Tax Institute&rsquo;s November 1, 2026 reference.
       </SectionHead>
 
       {/* state table */}
-      <Card className="mt-7 overflow-hidden">
+      <h3 className="mt-12 text-[20px] font-semibold tracking-[-0.035em] text-lp-ink">State sales tax &mdash; all 50 states</h3>
+      <Card className="mt-5 overflow-hidden">
         <div className="flex flex-col gap-3 border-b border-lp-line px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
           <div role="tablist" aria-label="Filter states" className="flex flex-wrap gap-1.5">
             {FILTERS.map((f) => (
@@ -132,6 +165,7 @@ export function UsTaxDetail() {
         local sales taxes. Hawaii uses a general excise tax, and New Mexico a gross receipts tax, rather than a conventional retail
         sales tax. California&rsquo;s 7.25% minimum includes a mandatory statewide county component.
       </p>
+      <Sources links={US_STATE_SOURCES} className="mt-3" />
 
       {/* federal */}
       <h3 className="mt-14 text-[20px] font-semibold tracking-[-0.035em] text-lp-ink">Federal tax rates — 2026</h3>
@@ -164,6 +198,7 @@ export function UsTaxDetail() {
           </p>
         </Card>
       </div>
+      <Sources links={US_FEDERAL_SOURCES} className="mt-3" />
 
       <div className="mt-14 grid gap-6 lg:grid-cols-[400px_1fr] lg:items-start">
         <SalesTaxCalculator />
@@ -250,7 +285,7 @@ function SalesTaxCalculator() {
 export function EuVatTable() {
   return (
     <section id="eu-vat" aria-labelledby="eu-title" className="scroll-mt-20 border-t border-lp-line pt-16">
-      <SectionHead kicker="European Union in depth" title="VAT rates in all 27 EU countries">
+      <SectionHead id="eu-title" kicker="European Union in depth" title="VAT rates in all 27 EU countries">
         Every member state has a standard rate and most have several reduced rates. Standard and principal reduced rates as of
         November 2026.
       </SectionHead>
@@ -287,6 +322,7 @@ export function EuVatTable() {
           and zero rates may also apply.
         </p>
       </Card>
+      <Sources links={EU_VAT_SOURCES} className="mt-3" />
     </section>
   );
 }

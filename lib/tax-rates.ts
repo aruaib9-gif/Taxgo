@@ -47,7 +47,7 @@ export const TAX_REGIONS: TaxRegion[] = [
     regimes: ["Sales tax", "GST/HST", "IVA"],
     marker: { x: 255, y: 175 },
     rows: [
-      { country: "United States", flag: "🇺🇸", rate: "Varies", tax: "Sales tax", note: "No federal VAT; state rates 0–7.25%, plus local taxes — see all 50 states below" },
+      { country: "United States", flag: "🇺🇸", rate: "Varies", tax: "Sales tax", note: "Federal and state taxes; no federal VAT, state rates 0–7.25% — see all 50 states below" },
       { country: "Canada", flag: "🇨🇦", rate: "5%", tax: "GST", note: "13–15% HST in participating provinces, PST in others" },
       { country: "Mexico", flag: "🇲🇽", rate: "16%", tax: "IVA", note: "8% in the northern border region" },
       { country: "Brazil", flag: "🇧🇷", rate: "Varies", tax: "ICMS · PIS/COFINS", note: "Dual VAT (CBS/IBS) phasing in from 2026" },

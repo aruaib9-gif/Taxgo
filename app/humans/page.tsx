@@ -93,8 +93,8 @@ const experts: Expert[] = [
     regions: [
       {
         flag: "🇺🇸",
-        label: "United States — Sales Tax",
-        text: "State and local sales tax obligations, taxable sales reviews, filing requirements and returns.",
+        label: "United States — Federal & State Tax",
+        text: "Federal and state tax obligations, taxable sales reviews, filing requirements and returns.",
       },
       {
         flag: "🇨🇦",

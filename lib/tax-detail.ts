@@ -72,6 +72,19 @@ export const US_FEDERAL = {
   corporate: { rate: "21%", note: "Flat rate on taxable C-corporation profits" },
 };
 
+/** A figure and where it is published, so every rate on /compliance can be checked at the authority that sets it. */
+export type TaxSource = { label: string; href: string };
+
+/** Federal figures come from the IRS; state sales tax rates are set state by state. */
+export const US_FEDERAL_SOURCES: TaxSource[] = [
+  { label: "IRS — federal income tax rates and brackets", href: "https://www.irs.gov/filing/federal-income-tax-rates-and-brackets" },
+  { label: "IRS — corporations", href: "https://www.irs.gov/businesses/small-businesses-self-employed/corporations" },
+];
+
+export const US_STATE_SOURCES: TaxSource[] = [
+  { label: "Streamlined Sales Tax Governing Board — state rate and boundary files", href: "https://www.streamlinedsalestax.org/" },
+];
+
 /** 2026 federal individual income tax brackets, single filers. Marginal rates; thresholds vary by filing status. */
 export const US_BRACKETS_SINGLE: { rate: string; income: string }[] = [
   { rate: "10%", income: "$0 – $12,400" },
@@ -96,6 +109,11 @@ export const US_ENGINE_FEATURES: { title: string; text: string }[] = [
 /* ---------- EU VAT ---------- */
 
 export type EuVat = { country: string; code: string; flag: string; standard: string; reduced: string };
+
+export const EU_VAT_SOURCES: TaxSource[] = [
+  { label: "European Commission — VAT rates", href: "https://taxation-customs.ec.europa.eu/taxation/vat/vat-rates_en" },
+  { label: "Your Europe — VAT rules and rates", href: "https://europa.eu/youreurope/business/taxation/vat/vat-rules-rates/index_en.htm" },
+];
 
 /** All 27 EU member states, standard and principal reduced VAT rates, November 2026 (source: Your Europe). */
 export const EU_VAT: EuVat[] = [

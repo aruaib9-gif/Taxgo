@@ -347,7 +347,7 @@ export default function AccountingPage() {
                   head={["Country / region", "Tax types"]}
                   rows={[
                     ["Canada", "GST, HST, PST, QST"],
-                    ["United States", "State and local sales tax, use tax"],
+                    ["United States", "Federal and state taxes, sales and use tax"],
                     ["European Union", "VAT"],
                     ["United Kingdom", "VAT"],
                     ["India", "CGST, SGST, IGST, UTGST"],

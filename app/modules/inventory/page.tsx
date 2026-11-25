@@ -493,7 +493,7 @@ export default function InventoryPage() {
               <div className="mt-3 grid gap-3 sm:grid-cols-3">
                 {shirts.map(([colour, src, alt]) => (
                   <figure key={colour} className="overflow-hidden rounded-xl border border-lp-line bg-lp-card">
-                    <div className="relative aspect-[4/3] bg-lp-alt">
+                    <div className="relative aspect-square bg-lp-alt">
                       <Image src={src} alt={alt} fill sizes="(min-width: 640px) 30vw, 90vw" className="object-cover" />
                     </div>
                     <figcaption className="px-4 py-3 text-[13.5px] font-medium text-lp-ink">{colour}</figcaption>
